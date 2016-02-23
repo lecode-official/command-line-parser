@@ -7,19 +7,19 @@ defaultParameter: String
     | QuotedString
     ;
 
-parameter: WindowsStyleIdentifier                       # WindowsStyleSwitch
-    | WindowsStyleIdentifier AssignmentOperator value   # WindowsStyleParameter
-    | UnixStyleIdentifier                               # UnixStyleSwitch
-    | UnixStyleIdentifier AssignmentOperator value      # UnixStyleParameter
-    | UnixStyleFlaggedIdentifiers                       # UnixStyleFlaggedSwitches
+parameter: WindowsStyleIdentifier
+    | WindowsStyleIdentifier AssignmentOperator value
+    | UnixStyleIdentifier
+    | UnixStyleIdentifier AssignmentOperator value
+    | UnixStyleFlaggedIdentifiers
     ;
 
-value: String                                           # String
-    | QuotedString                                      # QuotedString
-    | Number                                            # Number
-    | '[' value (',' value)+ ']'                        # Array
-    | True                                              # True
-    | False                                             # False
+value: String
+    | QuotedString
+    | Number
+    | '[' value (',' value)+ ']'
+    | True
+    | False
     ;
 
 UnixStyleFlaggedIdentifiers: '-' [a-zA-Z]+;
