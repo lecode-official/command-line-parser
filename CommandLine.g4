@@ -50,9 +50,9 @@ True: 'true';
 False: 'false';
 
 // Numbers can come in three different styles: 123, 123.456, .456, and 123.
-Number: Digit+
-    | Digit+ '.' Digit*
-    | '.' Digit+
+Number: '-'? Digit+
+    | '-'? Digit+ '.' Digit*
+    | '-'? '.' Digit+
     ;
 Digit: [0-9];
 
