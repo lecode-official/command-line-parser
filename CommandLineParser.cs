@@ -17,7 +17,7 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace System.CommandLine.Parser {
+namespace System.CommandLine.Parser.Antlr {
 using System;
 using System.Text;
 using System.Diagnostics;
@@ -397,4 +397,4 @@ public partial class CommandLineParser : Parser {
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }
-} // namespace System.CommandLine.Parser
+} // namespace System.CommandLine.Parser.Antlr

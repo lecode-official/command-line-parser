@@ -17,7 +17,7 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace System.CommandLine.Parser {
+namespace System.CommandLine.Parser.Antlr {
 
 using Antlr4.Runtime.Misc;
 using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
@@ -95,4 +95,4 @@ public partial class CommandLineBaseListener : ICommandLineListener {
 	/// <remarks>The default implementation does nothing.</remarks>
 	public virtual void VisitErrorNode([NotNull] IErrorNode node) { }
 }
-} // namespace System.CommandLine.Parser
+} // namespace System.CommandLine.Parser.Antlr
