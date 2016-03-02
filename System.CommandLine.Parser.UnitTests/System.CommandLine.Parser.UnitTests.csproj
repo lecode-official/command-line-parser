@@ -6,8 +6,8 @@
     <ProjectGuid>{421171E6-9970-4E6B-82DF-BFC1E41C4A81}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.CommandLine.Parser.Test</RootNamespace>
-    <AssemblyName>System.CommandLine.Parser.Test</AssemblyName>
+    <RootNamespace>System.CommandLine.Parser.UnitTests</RootNamespace>
+    <AssemblyName>System.CommandLine.Parser.UnitTests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

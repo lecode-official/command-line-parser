@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #endregion
 
-namespace System.CommandLine.Parser.Test
+namespace System.CommandLine.Parser.UnitTests
 {
     /// <summary>
     /// Represents a unit testing class, which contains all of the unit tests for the command line parser.
