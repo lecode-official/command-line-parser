@@ -44,7 +44,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr\CommandLine.g4" />
-    <None Include="Antlr\LICENSE" />
     <None Include="Antlr\Makefile" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
