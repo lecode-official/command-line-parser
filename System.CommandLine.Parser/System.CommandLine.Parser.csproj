@@ -36,7 +36,16 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Antlr\CommandLineBaseListener.cs" />
+    <Compile Include="Antlr\CommandLineLexer.cs" />
+    <Compile Include="Antlr\CommandLineListener.cs" />
+    <Compile Include="Antlr\CommandLineParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Antlr\CommandLine.g4" />
+    <None Include="Antlr\LICENSE" />
+    <None Include="Antlr\Makefile" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
