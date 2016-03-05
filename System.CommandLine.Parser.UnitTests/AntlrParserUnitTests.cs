@@ -1,7 +1,11 @@
 ﻿
 #region Using Directives
 
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.CommandLine.Parser.Antlr;
+using System.IO;
 
 #endregion
 
@@ -16,11 +20,18 @@ namespace System.CommandLine.Parser.UnitTests
         #region Test Methods
 
         /// <summary>
-        /// A first test method.
+        /// Test if the ANTLR4 lexer and parser can handle empty command line parameters.
         /// </summary>
         [TestMethod]
-        public void TestMethod1()
+        public void EmptyCommandLineParamentersTest()
         {
+            AntlrInputStream stream = new AntlrInputStream(new StringReader(string.Empty));
+            ITokenSource lexer = new CommandLineLexer(stream);
+            ITokenStream tokens = new CommonTokenStream(lexer);
+            CommandLineParser parser = new CommandLineParser(tokens);
+            parser.BuildParseTree = true;
+            IParseTree tree = parser.commandLine();
+
         }
 
         #endregion
