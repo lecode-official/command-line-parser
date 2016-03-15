@@ -1,6 +1,7 @@
 ﻿
 #region Using Directives
 
+using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -18,6 +19,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("5e4fb20c-183e-46e0-ac8a-53d6637184a5")]
+[assembly: CLSCompliant(false)]
 
 #endregion
 
