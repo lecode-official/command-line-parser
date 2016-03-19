@@ -31,7 +31,6 @@ namespace System.CommandLine.Parser.UnitTests
             CommandLineParser parser = new CommandLineParser(tokens);
             parser.BuildParseTree = true;
             IParseTree tree = parser.commandLine();
-
         }
 
         #endregion
