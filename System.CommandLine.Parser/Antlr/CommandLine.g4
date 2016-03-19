@@ -26,7 +26,7 @@ parameter: WindowsStyleIdentifier
 value: String
     | QuotedString
     | Number
-    | '[' value (',' value)+ ']'
+    | '[' (value (',' value)*)? ']'
     | True
     | False
     ;
