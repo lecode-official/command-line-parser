@@ -26,7 +26,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
 [System.CLSCompliant(false)]
-internal partial class CommandLineLexer : Lexer {
+public partial class CommandLineLexer : Lexer {
 	public const int
 		T__0=1, T__1=2, T__2=3, UnixStyleFlaggedIdentifiers=4, WindowsStyleIdentifier=5, 
 		UnixStyleIdentifier=6, AssignmentOperator=7, True=8, False=9, Number=10, 
