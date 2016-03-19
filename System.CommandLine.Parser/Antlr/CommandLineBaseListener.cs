@@ -32,7 +32,7 @@ using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 /// </summary>
 [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
 [System.CLSCompliant(false)]
-public partial class CommandLineBaseListener : ICommandLineListener {
+internal partial class CommandLineBaseListener : ICommandLineListener {
 	/// <summary>
 	/// Enter a parse tree produced by <see cref="CommandLineParser.commandLine"/>.
 	/// <para>The default implementation does nothing.</para>
