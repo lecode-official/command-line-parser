@@ -4,6 +4,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
 using System.IO;
 using System.Linq;
@@ -51,6 +52,22 @@ namespace System.CommandLine.Parser.UnitTests
             return parseTree;
         }
 
+        private string GetTokenTypeName(CommandLineLexer lexer, IToken token)
+        {
+            // Since the token type map may contain multiple versions of the same token type (because there may be explicit and implicit versions of the token
+            // in the grammar), all of them are retrieved
+            IEnumerable<string> tokenTypeNames = lexer.TokenTypeMap.Where(keyValuePair => keyValuePair.Value == token.Type).Select(keyValuePair => keyValuePair.Key);
+
+            // Gets the first token type that is not implicit, but an explicit version of the token type, which is when it does not start and end with "'",
+            // if such an explicit token type was found, then it is returned
+            string explicitTokenTypeName = tokenTypeNames.FirstOrDefault(tokenTypeName => !tokenTypeName.StartsWith("'") && !tokenTypeName.EndsWith("'"));
+            if (!string.IsNullOrWhiteSpace(explicitTokenTypeName))
+                return explicitTokenTypeName;
+
+            // If no explicit token type was found, then the first one is returned
+            return tokenTypeNames.FirstOrDefault();
+        }
+
         #endregion
 
         #region General Test Methods
@@ -75,69 +92,6 @@ namespace System.CommandLine.Parser.UnitTests
         #region Data Type Test Methods
 
         /// <summary>
-        /// Tests how the ANTLR4 lexer handles the lexing of numbers.
-        /// </summary>
-        [TestMethod]
-        public void NumberDataTypeTest()
-        {
-            // Lexes a positive integer and checks if the correct token was recognized
-            CommandLineLexer lexer = this.LexInput("123");
-            IToken token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123");
-            string tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-
-            // Lexes a negative integer and checks if the correct token was recognized
-            lexer = this.LexInput("-123");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-123");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-
-            // Lexes a positive floating point number and checks if the correct token was recognized
-            lexer = this.LexInput("123.456");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123.456");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-
-            // Lexes a negative floating point number and checks if the correct token was recognized
-            lexer = this.LexInput("-123.456");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-123.456");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-
-            // Lexes a positive floating point number with no digits before the decimal point and checks if the correct token was recognized
-            lexer = this.LexInput(".123");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, ".123");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-
-            // Lexes a negative floating point number with no digits before the decimal point and checks if the correct token was recognized
-            lexer = this.LexInput("-.123");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-.123");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-
-            // Lexes a positive floating point number with no digits after the decimal point and checks if the correct token was recognized
-            lexer = this.LexInput("123.");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123.");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-
-            // Lexes a negative floating point number with no digits after the decimal point and checks if the correct token was recognized
-            lexer = this.LexInput("-123.");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-123.");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
-            Assert.AreEqual(tokenType, "Number");
-        }
-
-        /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of boolean values.
         /// </summary>
         [TestMethod]
@@ -147,20 +101,79 @@ namespace System.CommandLine.Parser.UnitTests
             CommandLineLexer lexer = this.LexInput("true");
             IToken token = lexer.NextToken();
             Assert.AreEqual(token.Text, "true");
-            string tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
+            string tokenType = this.GetTokenTypeName(lexer, token);
             Assert.AreEqual(tokenType, "True");
 
             // Lexes the boolean value false and checks if the correct token was recognized
             lexer = this.LexInput("false");
             token = lexer.NextToken();
             Assert.AreEqual(token.Text, "false");
-            tokenType = lexer.TokenTypeMap.Last(keyValuePair => keyValuePair.Value == token.Type).Key;
+            tokenType = this.GetTokenTypeName(lexer, token);
             Assert.AreEqual(tokenType, "False");
         }
 
-        #endregion
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of numbers.
+        /// </summary>
+        [TestMethod]
+        public void NumberDataTypeTest()
+        {
+            // Lexes a positive integer and checks if the correct token was recognized
+            CommandLineLexer lexer = this.LexInput("123");
+            IToken token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "123");
+            string tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
 
-        #region Parameter Test Methods
+            // Lexes a negative integer and checks if the correct token was recognized
+            lexer = this.LexInput("-123");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "-123");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+
+            // Lexes a positive floating point number and checks if the correct token was recognized
+            lexer = this.LexInput("123.456");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "123.456");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+
+            // Lexes a negative floating point number and checks if the correct token was recognized
+            lexer = this.LexInput("-123.456");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "-123.456");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+
+            // Lexes a positive floating point number with no digits before the decimal point and checks if the correct token was recognized
+            lexer = this.LexInput(".123");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, ".123");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+
+            // Lexes a negative floating point number with no digits before the decimal point and checks if the correct token was recognized
+            lexer = this.LexInput("-.123");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "-.123");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+
+            // Lexes a positive floating point number with no digits after the decimal point and checks if the correct token was recognized
+            lexer = this.LexInput("123.");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "123.");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+
+            // Lexes a negative floating point number with no digits after the decimal point and checks if the correct token was recognized
+            lexer = this.LexInput("-123.");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "-123.");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+        }
 
         #endregion
     }
