@@ -54,7 +54,7 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AntlrParserUnitTests.cs" />
+    <Compile Include="AntlrLexerAndParserUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
