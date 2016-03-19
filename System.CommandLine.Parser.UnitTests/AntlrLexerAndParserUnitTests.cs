@@ -17,7 +17,7 @@ namespace System.CommandLine.Parser.UnitTests
     /// Represents a unit testing class, which contains all of the unit tests for the command line parser.
     /// </summary>
     [TestClass]
-    public class AntlrParserUnitTests
+    public class AntlrLexerAndParserUnitTests
     {
         #region Private Methods
 
