@@ -57,6 +57,20 @@ namespace System.CommandLine.Parser.UnitTests
             return tokenTypeNames.FirstOrDefault();
         }
 
+        /// <summary>
+        /// Retrieves the next token and validates whether the expected token was matched and whether the token has the expected token type.
+        /// </summary>
+        /// <param name="lexer">The lexer, which is used to retrieve the next token.</param>
+        /// <param name="expectedToken">The token that was expected.</param>
+        /// <param name="expectedTokenType">The token type that was expected.</param>
+        private void ValidateMatchedToken(CommandLineLexer lexer, string expectedToken, string expectedTokenType)
+        {
+            IToken token = lexer.NextToken();
+            Assert.AreEqual(token.Text, expectedToken);
+            string tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, expectedTokenType);
+        }
+
         #endregion
 
         #region Data Type Test Methods
@@ -69,17 +83,11 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Lexes the boolean value true and checks if the correct token was recognized
             CommandLineLexer lexer = this.LexInput("true");
-            IToken token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "true");
-            string tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "True");
+            this.ValidateMatchedToken(lexer, "true", "True");
 
             // Lexes the boolean value false and checks if the correct token was recognized
             lexer = this.LexInput("false");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "false");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "False");
+            this.ValidateMatchedToken(lexer, "false", "False");
         }
 
         /// <summary>
@@ -90,59 +98,35 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Lexes a positive integer and checks if the correct token was recognized
             CommandLineLexer lexer = this.LexInput("123");
-            IToken token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123");
-            string tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, "123", "Number");
 
             // Lexes a negative integer and checks if the correct token was recognized
             lexer = this.LexInput("-123");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-123");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, "-123", "Number");
 
             // Lexes a positive floating point number and checks if the correct token was recognized
             lexer = this.LexInput("123.456");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123.456");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, "123.456", "Number");
 
             // Lexes a negative floating point number and checks if the correct token was recognized
             lexer = this.LexInput("-123.456");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-123.456");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, "-123.456", "Number");
 
             // Lexes a positive floating point number with no digits before the decimal point and checks if the correct token was recognized
             lexer = this.LexInput(".123");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, ".123");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, ".123", "Number");
 
             // Lexes a negative floating point number with no digits before the decimal point and checks if the correct token was recognized
             lexer = this.LexInput("-.123");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-.123");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, "-.123", "Number");
 
             // Lexes a positive floating point number with no digits after the decimal point and checks if the correct token was recognized
             lexer = this.LexInput("123.");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123.");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, "123.", "Number");
 
             // Lexes a negative floating point number with no digits after the decimal point and checks if the correct token was recognized
             lexer = this.LexInput("-123.");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "-123.");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
+            this.ValidateMatchedToken(lexer, "-123.", "Number");
         }
 
         /// <summary>
@@ -153,21 +137,12 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Lexes an arbitrary un-quoted string and checks if the correct token was recognized
             CommandLineLexer lexer = this.LexInput("abcXYZ");
-            IToken token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "abcXYZ");
-            string tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "String");
+            this.ValidateMatchedToken(lexer, "abcXYZ", "String");
 
             // Lexes two arbitrary un-quoted strings, since there is a white space between them and checks if the correct were recognized
             lexer = this.LexInput("abc XYZ");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "abc");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "String");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "XYZ");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "String");
+            this.ValidateMatchedToken(lexer, "abc", "String");
+            this.ValidateMatchedToken(lexer, "XYZ", "String");
         }
 
         /// <summary>
@@ -178,10 +153,7 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Lexes an arbitrary uquoted string and checks if the correct token was recognized
             CommandLineLexer lexer = this.LexInput("\"abc XYZ 123 ! § $ % & / ( ) = ? \\\"");
-            IToken token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "\"abc XYZ 123 ! § $ % & / ( ) = ? \\\"");
-            string tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "QuotedString");
+            this.ValidateMatchedToken(lexer, "\"abc XYZ 123 ! § $ % & / ( ) = ? \\\"", "QuotedString");
         }
 
         /// <summary>
@@ -192,107 +164,38 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Lexes an empty array and checks if the correct tokens were recognized
             CommandLineLexer lexer = this.LexInput("[]");
-            IToken token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "[");
-            string tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "'['");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "]");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "']'");
+            this.ValidateMatchedToken(lexer, "[", "'['");
+            this.ValidateMatchedToken(lexer, "]", "']'");
 
             // Lexes an array with one element and checks if the correct tokens were recognized
             lexer = this.LexInput("[123]");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "[");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "'['");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "]");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "']'");
+            this.ValidateMatchedToken(lexer, "[", "'['");
+            this.ValidateMatchedToken(lexer, "123", "Number");
+            this.ValidateMatchedToken(lexer, "]", "']'");
 
             // Lexes an array with all different kinds of data types and checks if the correct tokens were recognized
             lexer = this.LexInput("[false, 123.456, abcXYZ, \"abc XYZ 123\"]");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "[");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "'['");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "false");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "False");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, ",");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "','");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123.456");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, ",");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "','");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "abcXYZ");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "String");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, ",");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "','");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "\"abc XYZ 123\"");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "QuotedString");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "]");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "']'");
+            this.ValidateMatchedToken(lexer, "[", "'['");
+            this.ValidateMatchedToken(lexer, "false", "False");
+            this.ValidateMatchedToken(lexer, ",", "','");
+            this.ValidateMatchedToken(lexer, "123.456", "Number");
+            this.ValidateMatchedToken(lexer, ",", "','");
+            this.ValidateMatchedToken(lexer, "abcXYZ", "String");
+            this.ValidateMatchedToken(lexer, ",", "','");
+            this.ValidateMatchedToken(lexer, "\"abc XYZ 123\"", "QuotedString");
+            this.ValidateMatchedToken(lexer, "]", "']'");
 
             // Lexes a jagged array (array of arrays) and checks if the correct tokens were recognized
             lexer = this.LexInput("[123, [abcXYZ, true]]");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "[");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "'['");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "123");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "Number");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, ",");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "','");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "[");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "'['");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "abcXYZ");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "String");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, ",");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "','");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "true");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "True");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "]");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "']'");
-            token = lexer.NextToken();
-            Assert.AreEqual(token.Text, "]");
-            tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, "']'");
+            this.ValidateMatchedToken(lexer, "[", "'['");
+            this.ValidateMatchedToken(lexer, "123", "Number");
+            this.ValidateMatchedToken(lexer, ",", "','");
+            this.ValidateMatchedToken(lexer, "[", "'['");
+            this.ValidateMatchedToken(lexer, "abcXYZ", "String");
+            this.ValidateMatchedToken(lexer, ",", "','");
+            this.ValidateMatchedToken(lexer, "true", "True");
+            this.ValidateMatchedToken(lexer, "]", "']'");
+            this.ValidateMatchedToken(lexer, "]", "']'");
         }
 
         #endregion
