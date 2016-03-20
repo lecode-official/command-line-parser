@@ -170,6 +170,20 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(tokenType, "String");
         }
 
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of quoted strings.
+        /// </summary>
+        [TestMethod]
+        public void QuotedStringDataTypeTest()
+        {
+            // Lexes an arbitrary uquoted string and checks if the correct token was recognized
+            CommandLineLexer lexer = this.LexInput("\"abc XYZ 123 ! § $ % & / ( ) = ? \\\"");
+            IToken token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "\"abc XYZ 123 ! § $ % & / ( ) = ? \\\"");
+            string tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "QuotedString");
+        }
+
         #endregion
     }
 }
