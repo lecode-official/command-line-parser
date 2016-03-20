@@ -57,7 +57,7 @@ namespace System.CommandLine.Parser.UnitTests
         #region General Test Methods
 
         /// <summary>
-        /// Test if the ANTLR4 lexer and parser can handle empty command line parameters.
+        /// Tests how the ANTLR4 parser handles empty command line parameters.
         /// </summary>
         [TestMethod]
         public void EmptyCommandLineParamentersTest()
@@ -69,6 +69,99 @@ namespace System.CommandLine.Parser.UnitTests
             // Parses the tokens and checks whether the resulting tree is empty
             IParseTree tree = this.ParseTokens(lexer);
             Assert.AreEqual(tree.ChildCount, 0);
+        }
+
+        #endregion
+
+        #region Default Parameter Test Methods
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles a single default parameter.
+        /// </summary>
+        [TestMethod]
+        public void SingleDefaultParameterTest()
+        {
+
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles multiple default parameters.
+        /// </summary>
+        [TestMethod]
+        public void MutlipleDefaultParameterTest()
+        {
+
+        }
+
+        #endregion
+
+        #region Parameter Test Methods
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles Windows style switches.
+        /// </summary>
+        [TestMethod]
+        public void WindowsStyleSwitchTest()
+        {
+
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles Windows style parameters.
+        /// </summary>
+        [TestMethod]
+        public void WindowsStyleParameterTest()
+        {
+
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles UNIX style switches.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleSwitchTest()
+        {
+
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles UNIX style parameters.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleParameterTest()
+        {
+
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles UNIX style flagged switches.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleFlaggedSwitchesTest()
+        {
+
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles multiple parameters.
+        /// </summary>
+        [TestMethod]
+        public void MultipleParameterTest()
+        {
+
+        }
+
+        #endregion
+
+        #region Mixed Default Parameter & Parameter Test Methods
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles mixing of default parameters and parameters.
+        /// </summary>
+        [TestMethod]
+        public void MixedDefaultParameterAndParameterTest()
+        {
+
         }
 
         #endregion
