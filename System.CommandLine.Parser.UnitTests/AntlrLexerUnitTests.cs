@@ -145,6 +145,31 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(tokenType, "Number");
         }
 
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of un-quoted strings.
+        /// </summary>
+        [TestMethod]
+        public void StringDataTypeTest()
+        {
+            // Lexes an arbitrary un-quoted string and checks if the correct token was recognized
+            CommandLineLexer lexer = this.LexInput("abcXYZ");
+            IToken token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "abcXYZ");
+            string tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "String");
+
+            // Lexes two arbitrary un-quoted strings, since there is a white space between them and checks if the correct were recognized
+            lexer = this.LexInput("abc XYZ");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "abc");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "String");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "XYZ");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "String");
+        }
+
         #endregion
     }
 }
