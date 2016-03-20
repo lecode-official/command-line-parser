@@ -199,5 +199,46 @@ namespace System.CommandLine.Parser.UnitTests
         }
 
         #endregion
+
+        #region Paramater Test Methods
+
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of UNIX style flagged parameters.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleFlaggedParameterTest()
+        {
+            // Lexes a UNIX style flagged parameter with one flag and checks if the correct token was recognized
+            CommandLineLexer lexer = this.LexInput("-a");
+            this.ValidateMatchedToken(lexer, "-a", "UnixStyleFlaggedIdentifiers");
+
+            // Lexes a UNIX style flagged parameter with multiple flags and checks if the correct token was recognized
+            lexer = this.LexInput("-uAcL");
+            this.ValidateMatchedToken(lexer, "-uAcL", "UnixStyleFlaggedIdentifiers");
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of Windows style parameters.
+        /// </summary>
+        [TestMethod]
+        public void WindowsStyleParameterTest()
+        {
+            // Lexes a Windows style flagged parameter with one flag and checks if the correct token was recognized
+            CommandLineLexer lexer = this.LexInput("/Parameter");
+            this.ValidateMatchedToken(lexer, "/Parameter", "WindowsStyleIdentifier");
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of UNIX style parameters.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleParameterTest()
+        {
+            // Lexes a UNIX style flagged parameter with one flag and checks if the correct token was recognized
+            CommandLineLexer lexer = this.LexInput("--Parameter");
+            this.ValidateMatchedToken(lexer, "--Parameter", "UnixStyleIdentifier");
+        }
+
+        #endregion
     }
 }
