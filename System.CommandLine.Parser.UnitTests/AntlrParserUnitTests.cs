@@ -170,7 +170,7 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void MutlipleDefaultParameterTest()
         {
-            // Parses a single string default parameter
+            // Parses multiple default parameters
             CommandLineParser parser;
             IParseTree parseTree = this.ParseTokens(this.LexInput("abc \"123 456\" XYZ \"789 0\""), out parser);
 
@@ -242,7 +242,30 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void WindowsStyleSwitchTest()
         {
+            // Parses a Windows style switch
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("/Switch"), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/Switch"
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -251,7 +274,47 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void WindowsStyleParameterTest()
         {
+            // Parses a Windows style parameter
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("/Parameter:123"), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/Parameter"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = ":"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -260,7 +323,30 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void UnixStyleSwitchTest()
         {
+            // Parses a UNIX style switch
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("--Switch"), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--Switch"
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -269,7 +355,47 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void UnixStyleParameterTest()
         {
+            // Parses a UNIX style parameter
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("--Parameter=\"abc XYZ\""), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--Parameter"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "="
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "\"abc XYZ\""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
@@ -278,7 +404,30 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void UnixStyleFlaggedSwitchesTest()
         {
+            // Parses UNIX style flagged switches
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("-sUtZ"), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "-sUtZ"
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         /// <summary>
