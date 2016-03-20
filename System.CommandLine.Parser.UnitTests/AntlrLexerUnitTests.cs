@@ -184,6 +184,30 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(tokenType, "QuotedString");
         }
 
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of arrays.
+        /// </summary>
+        [TestMethod]
+        public void ArrayDataTypeTest()
+        {
+            // Lexes an empty array and checks if the correct tokens were recognized
+            CommandLineLexer lexer = this.LexInput("[]");
+            IToken token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "[");
+            string tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "'['");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "]");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "']'");
+
+            // Lexes an array with one element and checks if the correct tokens were recognized
+
+            // Lexes an array with all different kinds of data types and checks if the correct tokens were recognized
+
+            // Lexes a jagged array (array of arrays) and checks if the correct tokens were recognized
+        }
+
         #endregion
     }
 }
