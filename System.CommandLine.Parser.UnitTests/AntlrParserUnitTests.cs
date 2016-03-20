@@ -170,7 +170,66 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void MutlipleDefaultParameterTest()
         {
+            // Parses a single string default parameter
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("abc \"123 456\" XYZ \"789 0\""), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "defaultParameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "abc"
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "defaultParameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "\"123 456\""
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "defaultParameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "XYZ"
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "defaultParameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "\"789 0\""
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         #endregion
