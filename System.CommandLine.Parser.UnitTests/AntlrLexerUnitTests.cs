@@ -202,10 +202,97 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(tokenType, "']'");
 
             // Lexes an array with one element and checks if the correct tokens were recognized
+            lexer = this.LexInput("[123]");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "[");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "'['");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "123");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "]");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "']'");
 
             // Lexes an array with all different kinds of data types and checks if the correct tokens were recognized
+            lexer = this.LexInput("[false, 123.456, abcXYZ, \"abc XYZ 123\"]");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "[");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "'['");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "false");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "False");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, ",");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "','");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "123.456");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, ",");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "','");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "abcXYZ");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "String");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, ",");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "','");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "\"abc XYZ 123\"");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "QuotedString");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "]");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "']'");
 
             // Lexes a jagged array (array of arrays) and checks if the correct tokens were recognized
+            lexer = this.LexInput("[123, [abcXYZ, true]]");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "[");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "'['");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "123");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "Number");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, ",");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "','");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "[");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "'['");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "abcXYZ");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "String");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, ",");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "','");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "true");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "True");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "]");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "']'");
+            token = lexer.NextToken();
+            Assert.AreEqual(token.Text, "]");
+            tokenType = this.GetTokenTypeName(lexer, token);
+            Assert.AreEqual(tokenType, "']'");
         }
 
         #endregion
