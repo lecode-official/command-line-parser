@@ -436,7 +436,112 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void MultipleParameterTest()
         {
+            // Parses multiple parameters
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("/on /key:value --auto --parameter=123 -aFl"), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/on"
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/key"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = ":"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "value"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--auto"
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--parameter"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "="
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "-aFl"
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         #endregion
@@ -449,7 +554,71 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void MixedDefaultParameterAndParameterTest()
         {
+            // Parses multiple parameters
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("\"C:\\Users\\name\\Downloads\" /key:value --auto"), out parser);
 
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "defaultParameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "\"C:\\Users\\name\\Downloads\""
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/key"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = ":"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "value"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--auto"
+                            }
+                        }
+                    }
+                }
+            });
         }
 
         #endregion
