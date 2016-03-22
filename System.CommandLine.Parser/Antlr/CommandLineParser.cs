@@ -89,13 +89,10 @@ internal partial class CommandLineParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_commandLine; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterCommandLine(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitCommandLine(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitCommandLine(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -154,13 +151,10 @@ internal partial class CommandLineParser : Parser {
 		{
 		}
 		public override int RuleIndex { get { return RULE_defaultParameter; } }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterDefaultParameter(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitDefaultParameter(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitDefaultParameter(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -208,13 +202,10 @@ internal partial class CommandLineParser : Parser {
 	public partial class UnixStyleSwitchContext : ParameterContext {
 		public ITerminalNode UnixStyleIdentifier() { return GetToken(CommandLineParser.UnixStyleIdentifier, 0); }
 		public UnixStyleSwitchContext(ParameterContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterUnixStyleSwitch(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitUnixStyleSwitch(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUnixStyleSwitch(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class WindowsStyleParameterContext : ParameterContext {
@@ -224,13 +215,10 @@ internal partial class CommandLineParser : Parser {
 			return GetRuleContext<ValueContext>(0);
 		}
 		public WindowsStyleParameterContext(ParameterContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterWindowsStyleParameter(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitWindowsStyleParameter(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitWindowsStyleParameter(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class UnixStyleParameterContext : ParameterContext {
@@ -240,37 +228,28 @@ internal partial class CommandLineParser : Parser {
 			return GetRuleContext<ValueContext>(0);
 		}
 		public UnixStyleParameterContext(ParameterContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterUnixStyleParameter(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitUnixStyleParameter(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUnixStyleParameter(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class UnixStyleFlaggedSwitchContext : ParameterContext {
 		public ITerminalNode UnixStyleFlaggedIdentifiers() { return GetToken(CommandLineParser.UnixStyleFlaggedIdentifiers, 0); }
 		public UnixStyleFlaggedSwitchContext(ParameterContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterUnixStyleFlaggedSwitch(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitUnixStyleFlaggedSwitch(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUnixStyleFlaggedSwitch(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class WindowsStyleSwitchContext : ParameterContext {
 		public ITerminalNode WindowsStyleIdentifier() { return GetToken(CommandLineParser.WindowsStyleIdentifier, 0); }
 		public WindowsStyleSwitchContext(ParameterContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterWindowsStyleSwitch(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitWindowsStyleSwitch(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitWindowsStyleSwitch(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
@@ -364,26 +343,20 @@ internal partial class CommandLineParser : Parser {
 	public partial class NumberContext : ValueContext {
 		public ITerminalNode Number() { return GetToken(CommandLineParser.Number, 0); }
 		public NumberContext(ValueContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterNumber(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitNumber(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitNumber(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class StringContext : ValueContext {
 		public ITerminalNode String() { return GetToken(CommandLineParser.String, 0); }
 		public ITerminalNode QuotedString() { return GetToken(CommandLineParser.QuotedString, 0); }
 		public StringContext(ValueContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterString(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitString(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitString(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class ArrayContext : ValueContext {
@@ -394,26 +367,20 @@ internal partial class CommandLineParser : Parser {
 			return GetRuleContext<ValueContext>(i);
 		}
 		public ArrayContext(ValueContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterArray(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitArray(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitArray(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 	public partial class BooleanContext : ValueContext {
 		public ITerminalNode True() { return GetToken(CommandLineParser.True, 0); }
 		public ITerminalNode False() { return GetToken(CommandLineParser.False, 0); }
 		public BooleanContext(ValueContext context) { CopyFrom(context); }
-		public override void EnterRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterBoolean(this);
-		}
-		public override void ExitRule(IParseTreeListener listener) {
-			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitBoolean(this);
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitBoolean(this);
+			else return visitor.VisitChildren(this);
 		}
 	}
 
