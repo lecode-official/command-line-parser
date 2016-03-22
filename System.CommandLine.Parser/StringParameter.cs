@@ -4,7 +4,7 @@ namespace System.CommandLine.Parser
     /// <summary>
     /// Represents a string command line parameter.
     /// </summary>
-    public class StringCommandLineParameter : CommandLineParameter
+    public class StringParameter : Parameter
     {
         #region Public Properties
 
