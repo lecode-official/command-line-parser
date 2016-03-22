@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5E4FB20C-183E-46E0-AC8A-53D6637184A5}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>System.CommandLine.Parser</RootNamespace>
-    <AssemblyName>System.CommandLine.Parser</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <RootNamespace>CommandLineParser.Samples.Console</RootNamespace>
+    <AssemblyName>CommandLineParser.Samples.Console</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -31,35 +33,22 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Antlr4.Runtime, Version=4.5.2.0, Culture=neutral, PublicKeyToken=e78b2c5abd1fcb3f, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libraries\Antlr4.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Antlr\CommandLineBaseListener.cs" />
-    <Compile Include="Antlr\CommandLineLexer.cs" />
-    <Compile Include="Antlr\CommandLineListener.cs" />
-    <Compile Include="Antlr\CommandLineParser.cs" />
-    <Compile Include="ArrayParameter.cs" />
-    <Compile Include="BooleanParameter.cs" />
-    <Compile Include="CommandLineListener.cs" />
-    <Compile Include="Parameter.cs" />
-    <Compile Include="NumberParameter.cs" />
-    <Compile Include="Parser.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ParameterBag.cs" />
-    <Compile Include="StringParameter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Antlr\CommandLine.g4" />
-    <None Include="Antlr\Makefile" />
+    <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libraries\Antlr4.Runtime.dll" />
+    <ProjectReference Include="..\..\System.CommandLine.Parser\System.CommandLine.Parser.csproj">
+      <Project>{5e4fb20c-183e-46e0-ac8a-53d6637184a5}</Project>
+      <Name>System.CommandLine.Parser</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
