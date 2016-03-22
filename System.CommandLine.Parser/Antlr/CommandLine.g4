@@ -15,22 +15,22 @@ defaultParameter: String
 // The parameters can be either Windows style (starting with "/") or Unix style (starting with "--"), Unix style flagged switches are also
 // supported (flags start with a "-" followed by one or more characters, which each represent a switch), parameters can either be key-value-pairs
 // or switches (switches do not require a value, because when they are specified they implicitely have the boolean value true)
-parameter: WindowsStyleIdentifier
-    | WindowsStyleIdentifier AssignmentOperator value
-    | WindowsStyleIdentifier value
-    | UnixStyleIdentifier
-    | UnixStyleIdentifier AssignmentOperator value
-    | UnixStyleIdentifier value
-    | UnixStyleFlaggedIdentifiers
+parameter: WindowsStyleIdentifier                           # WindowsStyleSwitch
+    | WindowsStyleIdentifier AssignmentOperator value       # WindowsStyleParameter
+    | WindowsStyleIdentifier value                          # WindowsStyleParameter
+    | UnixStyleIdentifier                                   # UnixStyleSwitch
+    | UnixStyleIdentifier AssignmentOperator value          # UnixStyleParameter
+    | UnixStyleIdentifier value                             # UnixStyleParameter
+    | UnixStyleFlaggedIdentifiers                           # UnixStyleFlaggedSwitch
     ;
 
 // Currently strings, numbers, arrays, and boolean values are supported as values for parameters
-value: String
-    | QuotedString
-    | Number
-    | '[' (value (',' value)*)? ']'
-    | True
-    | False
+value: String                                               # String
+    | QuotedString                                          # String
+    | Number                                                # Number
+    | '[' (value (',' value)*)? ']'                         # Array
+    | True                                                  # Boolean
+    | False                                                 # Boolean
     ;
 
 // The Unix style flagged identifier starts with a "-" followed by one or more switches, each represented by a single character
