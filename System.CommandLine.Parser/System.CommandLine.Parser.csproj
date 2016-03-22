@@ -44,7 +44,10 @@
     <Compile Include="Antlr\CommandLineLexer.cs" />
     <Compile Include="Antlr\CommandLineListener.cs" />
     <Compile Include="Antlr\CommandLineParser.cs" />
+    <Compile Include="CommandLineParameter.cs" />
+    <Compile Include="CommandLineParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ParameterBag.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr\CommandLine.g4" />
