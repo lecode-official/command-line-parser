@@ -1,4 +1,14 @@
 ﻿
+#region Using Directives
+
+using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using System.CommandLine.Parser.Antlr;
+using System.IO;
+using System.Text.RegularExpressions;
+
+#endregion
+
 namespace System.CommandLine.Parser
 {
     /// <summary>
@@ -7,22 +17,35 @@ namespace System.CommandLine.Parser
     public static class Parser
     {
         #region Public Static Methods
+        
+        /// <summary>
+        /// Parses the specified command line parameters.
+        /// </summary>
+        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <returns>Returns the parsed parameters.</returns>
+        public static ParameterBag Parse(string commandLineParameters)
+        {
+            // Parses the command line parameters using the ANTRL4 generated parsers
+            CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
+            CommandLineParser parser = new CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
+            IParseTree parseTree = parser.commandLine();
+            ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
+            CommandLineListener commandLineListener = new CommandLineListener();
+            parseTreeWalker.Walk(commandLineListener, parseTree);
+
+            // Returns the parsed parameters wrapped in a parameter bag
+            return new ParameterBag
+            {
+                CommandLineParameters = commandLineParameters,
+                Parameters = commandLineListener.Parameters
+            };
+        }
 
         /// <summary>
-        /// Retrieves the command line parameters that have been passed to the program via the command line.
+        /// Parses the command line parameters that have been passed to the program.
         /// </summary>
-        /// <returns>Returns the command line parameters that have been passed to the program via the command line.</returns>
-        public static string RetrieveCommandLineParameters()
-        {
-            // Gets the command line parameters that have been passed to the program
-            string commandLineParameters = Environment.CommandLine;
-
-            // The command line parameters start with image file name, from which the program was loaded, this is unuseful during parsing and is therefore removed
-
-
-            // Returns the retrieved command line parameters
-            return commandLineParameters;
-        }
+        /// <returns>Returns the parsed parameters.</returns>
+        public static ParameterBag Parse() => Parser.Parse(Environment.CommandLine);
 
         #endregion
     }
