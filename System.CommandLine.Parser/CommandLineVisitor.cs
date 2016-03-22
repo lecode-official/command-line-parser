@@ -1,9 +1,10 @@
 ﻿
 #region Using Directives
 
+using Antlr4.Runtime.Misc;
 using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
-using Antlr4.Runtime.Misc;
+using System.Globalization;
 using System.Linq;
 
 #endregion
@@ -15,58 +16,222 @@ namespace System.CommandLine.Parser
     /// </summary>
     internal class CommandLineVisitor : CommandLineBaseVisitor<IEnumerable<Parameter>>
     {
-        #region Public Properties
+        #region Private Static Fields
 
         /// <summary>
-        /// Gets the default parameters, which are the result of the listener walking the parse tree.
+        /// Contains an american culture info, which is used for number conversion.
         /// </summary>
-        public List<string> DefaultParameters { get; } = new List<string>();
-
-        /// <summary>
-        /// Gets the parameters, which are the result of the listener walking the parse tree.
-        /// </summary>
-        public List<Parameter> Parameters { get; } = new List<Parameter>();
+        private static CultureInfo americanCultureInfo = new CultureInfo("en-US");
 
         #endregion
 
         #region CommandLineBaseListener Implementation
-        
-        ///// <summary>
-        ///// Is called when the tree walker exits the default parameter rule.
-        ///// </summary>
-        ///// <param name="context">The default parameter context, which contains all the information about the default parameter being parsed.</param>
-        //public override void VisitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context) => this.DefaultParameters.Add(context.GetText().Replace("\"", string.Empty));
 
-        ///// <summary>
-        ///// Is called when the tree walker exits the Windows style switch rule.
-        ///// </summary>
-        ///// <param name="context">The Windows style switch context, which contains all the information about the Windows style switch being parsed.</param>
-        //public override void ExitWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context) => this.Parameters.Add(new BooleanParameter
-        //{
-        //    Name = context.GetText().Replace("/", string.Empty),
-        //    Value = true
-        //});
+        /// <summary>
+        /// Is called when the visitor reaches the start rule of the grammar.
+        /// </summary>
+        /// <param name="context">The context, which contains all information about the start rule of the grammar</param>
+        /// <returns>Returns a list of all the parameters (default and named) that have been parsed.</returns>
+        public override IEnumerable<Parameter> VisitCommandLine([NotNull] CommandLineParser.CommandLineContext context)
+        {
+            // Creates a new result set, which is being returned
+            List<Parameter> parameters = new List<Parameter>();
 
-        ///// <summary>
-        ///// Is called when the tree walker exits the UNIX style switch rule.
-        ///// </summary>
-        ///// <param name="context">The UNIX style switch context, which contains all the information about the UNIX style switch being parsed.</param>
-        //public override void ExitUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context) => this.Parameters.Add(new BooleanParameter
-        //{
-        //    Name = context.GetText().Replace("-", string.Empty),
-        //    Value = true
-        //});
+            // Visits the default parameters
+            foreach (CommandLineParser.DefaultParameterContext defaultParameterContext in context.defaultParameter())
+            {
+                IEnumerable<Parameter> defaultParameters = this.Visit(defaultParameterContext);
+                if (defaultParameters != null)
+                    parameters.AddRange(defaultParameters);
+            }
 
-        ///// <summary>
-        ///// Is called when the tree walker exits the UNIX style flagged switch rule.
-        ///// </summary>
-        ///// <param name="context">The UNIX style flagged switch context, which contains all the information about the UNIX style flagged switch being parsed.</param>
-        //public override void ExitUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context) => this.Parameters.AddRange(context.GetText().Replace("-", string.Empty).Select(flaggedSwitch => new BooleanParameter
-        //{
-        //    Name = flaggedSwitch.ToString(),
-        //    Value = true
-        //}));
-        
+            // Visits the parameters
+            foreach (CommandLineParser.ParameterContext parameterContext in context.parameter())
+            {
+                IEnumerable<Parameter> namedParameters = this.Visit(parameterContext);
+                if (namedParameters != null)
+                    parameters.AddRange(namedParameters);
+            }
+
+            // Returns the combined list of parameters
+            return parameters;
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a default parameter.
+        /// </summary>
+        /// <param name="context">The context, which contains all information about the default parameter that is being visited.</param>
+        /// <returns>Returns the default parameter that was being visited.</returns>
+        public override IEnumerable<Parameter> VisitDefaultParameterString([NotNull] CommandLineParser.DefaultParameterStringContext context)
+        {
+            // Checks if the default parameter is a string or a quoted string
+            string defaultParameterValue = null;
+            if (context.String() != null)
+                defaultParameterValue = context.String().GetText();
+            if (context.QuotedString() != null)
+                defaultParameterValue = context.QuotedString().GetText().Replace("\"", string.Empty);
+
+            // Returns the parsed default parameter
+            return new List<Parameter>
+            {
+                new DefaultParameter { Value = defaultParameterValue }
+            };
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a boolean value.
+        /// </summary>
+        /// <param name="context">the context, which contains all information about the boolean value.</param>
+        /// <returns>Returns a new parameter with the boolean value.</returns>
+        public override IEnumerable<Parameter> VisitBoolean([NotNull] CommandLineParser.BooleanContext context)
+        {
+            return new List<Parameter>
+            {
+                new BooleanParameter { Value = context.True() != null ? true : false }
+            };
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a number value.
+        /// </summary>
+        /// <param name="context">the context, which contains all information about the number value.</param>
+        /// <returns>Returns a new parameter with the number value.</returns>
+        public override IEnumerable<Parameter> VisitNumber([NotNull] CommandLineParser.NumberContext context)
+        {
+            return new List<Parameter>
+            {
+                new NumberParameter { Value = double.Parse(context.Number().GetText(), CommandLineVisitor.americanCultureInfo) }
+            };
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a string value.
+        /// </summary>
+        /// <param name="context">the context, which contains all information about the string value.</param>
+        /// <returns>Returns a new parameter with the string value.</returns>
+        public override IEnumerable<Parameter> VisitString([NotNull] CommandLineParser.StringContext context)
+        {
+            // Checks if the string parameter is a string or a quoted string
+            string parameterValue = null;
+            if (context.String() != null)
+                parameterValue = context.String().GetText();
+            if (context.QuotedString() != null)
+                parameterValue = context.QuotedString().GetText().Replace("\"", string.Empty);
+
+            // Creates a new string parameter and returns it
+            return new List<Parameter>
+            {
+                new StringParameter { Value = parameterValue }
+            };
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches an array value.
+        /// </summary>
+        /// <param name="context">the context, which contains all information about the array value.</param>
+        /// <returns>Returns a new parameter with the array value.</returns>
+        public override IEnumerable<Parameter> VisitArray([NotNull] CommandLineParser.ArrayContext context)
+        {
+            // Parses the content of the array
+            List<Parameter> arrayContent = new List<Parameter>();
+            for (int i = 0; i < context.ChildCount; i++)
+            {
+                IEnumerable<Parameter> newArrayContent = this.Visit(context.GetChild(i));
+                if (newArrayContent != null)
+                    arrayContent.AddRange(newArrayContent);
+            }
+
+            // Returns a new array parameter
+            return new List<Parameter>
+            {
+                new ArrayParameter { Value = arrayContent }
+            };
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a UNIX style flagged switch.
+        /// </summary>
+        /// <param name="context">The context, which contains all the information about the UNIX style flagged switch.</param>
+        /// <returns>Returns a parameter for each flag.</returns>
+        public override IEnumerable<Parameter> VisitUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context)
+        {
+            return context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty).Select(flag => new BooleanParameter
+            {
+                Name = flag.ToString(),
+                Value = true
+            });
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a UNIX style switch.
+        /// </summary>
+        /// <param name="context">The context, which contains all the information about the UNIX style switch.</param>
+        /// <returns>Returns a paramter for the switch.</returns>
+        public override IEnumerable<Parameter> VisitUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context)
+        {
+            return new List<Parameter>
+            {
+                new BooleanParameter
+                {
+                    Name = context.UnixStyleIdentifier().GetText().Replace("-", string.Empty),
+                    Value = true
+                }
+            };
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a Windows style switch.
+        /// </summary>
+        /// <param name="context">The context, which contains all the information about the Windows style switch.</param>
+        /// <returns>Returns a paramter for the switch.</returns>
+        public override IEnumerable<Parameter> VisitWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context)
+        {
+            return new List<Parameter>
+            {
+                new BooleanParameter
+                {
+                    Name = context.WindowsStyleIdentifier().GetText().Replace("/", string.Empty),
+                    Value = true
+                }
+            };
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a UNIX style parameter.
+        /// </summary>
+        /// <param name="context">The context, which contains all the information about the UNIX style parameter.</param>
+        /// <returns>Returns the parsed parameter.</returns>
+        public override IEnumerable<Parameter> VisitUnixStyleParameter([NotNull] CommandLineParser.UnixStyleParameterContext context)
+        {
+            // Parses the value of the parameter
+            IEnumerable<Parameter> parameters = this.Visit(context.value());
+
+            // Sets the value of the parameter
+            foreach (Parameter parameter in parameters)
+                parameter.Name = context.UnixStyleIdentifier().GetText().Replace("-", string.Empty);
+
+            // Returns the parsed parameter
+            return parameters;
+        }
+
+        /// <summary>
+        /// Is called when the visitor reaches a Windows style parameter.
+        /// </summary>
+        /// <param name="context">The context, which contains all the information about the Windows style parameter.</param>
+        /// <returns>Returns the parsed parameter.</returns>
+        public override IEnumerable<Parameter> VisitWindowsStyleParameter([NotNull] CommandLineParser.WindowsStyleParameterContext context)
+        {
+            // Parses the value of the parameter
+            IEnumerable<Parameter> parameters = this.Visit(context.value());
+
+            // Sets the value of the parameter
+            foreach (Parameter parameter in parameters)
+                parameter.Name = context.WindowsStyleIdentifier().GetText().Replace("/", string.Empty);
+
+            // Returns the parsed parameter
+            return parameters;
+        }
+
         #endregion
     }
 }

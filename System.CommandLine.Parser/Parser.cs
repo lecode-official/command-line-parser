@@ -3,6 +3,7 @@
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
 using System.IO;
 
@@ -29,13 +30,13 @@ namespace System.CommandLine.Parser
             CommandLineParser parser = new CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
             IParseTree parseTree = parser.commandLine();
             CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
-            commandLineVisitor.Visit(parseTree);
+            IEnumerable<Parameter> parameters = commandLineVisitor.Visit(parseTree);
 
             // Returns the parsed parameters wrapped in a parameter bag
             return new ParameterBag
             {
                 CommandLineParameters = commandLineParameters,
-                Parameters = commandLineVisitor.Parameters
+                Parameters = parameters
             };
         }
 
