@@ -37,11 +37,12 @@ internal interface ICommandLineVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitCommandLine([NotNull] CommandLineParser.CommandLineContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CommandLineParser.defaultParameter"/>.
+	/// Visit a parse tree produced by the <c>DefaultParameterString</c>
+	/// labeled alternative in <see cref="CommandLineParser.defaultParameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context);
+	Result VisitDefaultParameterString([NotNull] CommandLineParser.DefaultParameterStringContext context);
 	/// <summary>
 	/// Visit a parse tree produced by the <c>WindowsStyleSwitch</c>
 	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.

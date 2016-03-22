@@ -8,8 +8,8 @@ commandLine: defaultParameter* parameter*;
 
 // Default parameters are strings, strings can either be string that is not quoted (but there are several limitations that apply) or a string in
 // quotes, which can pretty much contain any character
-defaultParameter: String
-    | QuotedString
+defaultParameter: String                                    # DefaultParameterString
+    | QuotedString                                          # DefaultParameterString
     ;
 
 // The parameters can be either Windows style (starting with "/") or Unix style (starting with "--"), Unix style flagged switches are also

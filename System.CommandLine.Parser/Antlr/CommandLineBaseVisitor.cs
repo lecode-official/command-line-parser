@@ -43,7 +43,7 @@ internal partial class CommandLineBaseVisitor<Result> : AbstractParseTreeVisitor
 	/// <return>The visitor result.</return>
 	public virtual Result VisitCommandLine([NotNull] CommandLineParser.CommandLineContext context) { return VisitChildren(context); }
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="CommandLineParser.defaultParameter"/>.
+	/// Visit a parse tree produced by <see cref="CommandLineParser.DefaultParameterString"/>.
 	/// <para>
 	/// The default implementation returns the result of calling <see cref="AbstractParseTreeVisitor{Result}.VisitChildren(IRuleNode)"/>
 	/// on <paramref name="context"/>.
@@ -51,7 +51,7 @@ internal partial class CommandLineBaseVisitor<Result> : AbstractParseTreeVisitor
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	public virtual Result VisitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context) { return VisitChildren(context); }
+	public virtual Result VisitDefaultParameterString([NotNull] CommandLineParser.DefaultParameterStringContext context) { return VisitChildren(context); }
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="CommandLineParser.WindowsStyleSwitch"/>.
 	/// <para>
