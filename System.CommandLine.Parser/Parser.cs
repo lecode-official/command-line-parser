@@ -5,7 +5,6 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using System.CommandLine.Parser.Antlr;
 using System.IO;
-using System.Text.RegularExpressions;
 
 #endregion
 
@@ -37,6 +36,7 @@ namespace System.CommandLine.Parser
             return new ParameterBag
             {
                 CommandLineParameters = commandLineParameters,
+                DefaultParameters = commandLineListener.DefaultParameters,
                 Parameters = commandLineListener.Parameters
             };
         }

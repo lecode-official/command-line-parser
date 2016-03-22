@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
 using Antlr4.Runtime.Misc;
+using System.Linq;
 
 #endregion
 
@@ -17,7 +18,12 @@ namespace System.CommandLine.Parser
         #region Public Properties
 
         /// <summary>
-        /// Gets the result of the listener walking the parse tree.
+        /// Gets the default parameters, which are the result of the listener walking the parse tree.
+        /// </summary>
+        public List<string> DefaultParameters { get; } = new List<string>();
+
+        /// <summary>
+        /// Gets the parameters, which are the result of the listener walking the parse tree.
         /// </summary>
         public List<Parameter> Parameters { get; } = new List<Parameter>();
 
@@ -29,29 +35,38 @@ namespace System.CommandLine.Parser
         /// Is called when the tree walker exits the default parameter rule.
         /// </summary>
         /// <param name="context">The default parameter context, which contains all the information about the default parameter being parsed.</param>
-        public override void ExitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context)
-        {
-            base.ExitDefaultParameter(context);
-        }
+        public override void ExitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context) => this.DefaultParameters.Add(context.GetText().Replace("\"", string.Empty));
 
         /// <summary>
-        /// Is called when the tree walker exits the parameter rule.
+        /// Is called when the tree walker exits the Windows style switch rule.
         /// </summary>
-        /// <param name="context">The parameter context, which contains all the information about the parameter being parsed.</param>
-        public override void ExitParameter([NotNull] CommandLineParser.ParameterContext context)
+        /// <param name="context">The Windows style switch context, which contains all the information about the Windows style switch being parsed.</param>
+        public override void ExitWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context) => this.Parameters.Add(new BooleanParameter
         {
-            base.ExitParameter(context);
-        }
+            Name = context.GetText().Replace("/", string.Empty),
+            Value = true
+        });
 
         /// <summary>
-        /// Is called when the tree walker exits the value rule.
+        /// Is called when the tree walker exits the UNIX style switch rule.
         /// </summary>
-        /// <param name="context">The value context, which contains all the information about the value being parsed.</param>
-        public override void ExitValue([NotNull] CommandLineParser.ValueContext context)
+        /// <param name="context">The UNIX style switch context, which contains all the information about the UNIX style switch being parsed.</param>
+        public override void ExitUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context) => this.Parameters.Add(new BooleanParameter
         {
-            base.ExitValue(context);
-        }
+            Name = context.GetText().Replace("-", string.Empty),
+            Value = true
+        });
 
+        /// <summary>
+        /// Is called when the tree walker exits the UNIX style flagged switch rule.
+        /// </summary>
+        /// <param name="context">The UNIX style flagged switch context, which contains all the information about the UNIX style flagged switch being parsed.</param>
+        public override void ExitUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context) => this.Parameters.AddRange(context.GetText().Replace("-", string.Empty).Select(flaggedSwitch => new BooleanParameter
+        {
+            Name = flaggedSwitch.ToString(),
+            Value = true
+        }));
+        
         #endregion
     }
 }
