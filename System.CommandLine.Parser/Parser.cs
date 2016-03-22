@@ -28,16 +28,15 @@ namespace System.CommandLine.Parser
             CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
             CommandLineParser parser = new CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
             IParseTree parseTree = parser.commandLine();
-            ParseTreeWalker parseTreeWalker = new ParseTreeWalker();
-            CommandLineListener commandLineListener = new CommandLineListener();
-            parseTreeWalker.Walk(commandLineListener, parseTree);
+            CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
+            commandLineVisitor.Visit(parseTree);
 
             // Returns the parsed parameters wrapped in a parameter bag
             return new ParameterBag
             {
                 CommandLineParameters = commandLineParameters,
-                DefaultParameters = commandLineListener.DefaultParameters,
-                Parameters = commandLineListener.Parameters
+                DefaultParameters = commandLineVisitor.DefaultParameters,
+                Parameters = commandLineVisitor.Parameters
             };
         }
 
