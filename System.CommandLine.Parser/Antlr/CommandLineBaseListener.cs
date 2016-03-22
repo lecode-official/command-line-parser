@@ -58,29 +58,113 @@ internal partial class CommandLineBaseListener : ICommandLineListener {
 	/// <param name="context">The parse tree.</param>
 	public virtual void ExitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandLineParser.parameter"/>.
+	/// Enter a parse tree produced by <see cref="CommandLineParser.WindowsStyleSwitch"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterParameter([NotNull] CommandLineParser.ParameterContext context) { }
+	public virtual void EnterWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandLineParser.parameter"/>.
+	/// Exit a parse tree produced by <see cref="CommandLineParser.WindowsStyleSwitch"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitParameter([NotNull] CommandLineParser.ParameterContext context) { }
+	public virtual void ExitWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context) { }
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandLineParser.value"/>.
+	/// Enter a parse tree produced by <see cref="CommandLineParser.WindowsStyleParameter"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void EnterValue([NotNull] CommandLineParser.ValueContext context) { }
+	public virtual void EnterWindowsStyleParameter([NotNull] CommandLineParser.WindowsStyleParameterContext context) { }
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandLineParser.value"/>.
+	/// Exit a parse tree produced by <see cref="CommandLineParser.WindowsStyleParameter"/>.
 	/// <para>The default implementation does nothing.</para>
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	public virtual void ExitValue([NotNull] CommandLineParser.ValueContext context) { }
+	public virtual void ExitWindowsStyleParameter([NotNull] CommandLineParser.WindowsStyleParameterContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandLineParser.UnixStyleSwitch"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandLineParser.UnixStyleSwitch"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandLineParser.UnixStyleParameter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUnixStyleParameter([NotNull] CommandLineParser.UnixStyleParameterContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandLineParser.UnixStyleParameter"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUnixStyleParameter([NotNull] CommandLineParser.UnixStyleParameterContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandLineParser.UnixStyleFlaggedSwitch"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandLineParser.UnixStyleFlaggedSwitch"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandLineParser.String"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterString([NotNull] CommandLineParser.StringContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandLineParser.String"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitString([NotNull] CommandLineParser.StringContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandLineParser.Number"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterNumber([NotNull] CommandLineParser.NumberContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandLineParser.Number"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitNumber([NotNull] CommandLineParser.NumberContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandLineParser.Array"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterArray([NotNull] CommandLineParser.ArrayContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandLineParser.Array"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitArray([NotNull] CommandLineParser.ArrayContext context) { }
+	/// <summary>
+	/// Enter a parse tree produced by <see cref="CommandLineParser.Boolean"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void EnterBoolean([NotNull] CommandLineParser.BooleanContext context) { }
+	/// <summary>
+	/// Exit a parse tree produced by <see cref="CommandLineParser.Boolean"/>.
+	/// <para>The default implementation does nothing.</para>
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	public virtual void ExitBoolean([NotNull] CommandLineParser.BooleanContext context) { }
 
 	/// <inheritdoc/>
 	/// <remarks>The default implementation does nothing.</remarks>

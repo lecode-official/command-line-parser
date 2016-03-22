@@ -194,25 +194,83 @@ internal partial class CommandLineParser : Parser {
 	}
 
 	public partial class ParameterContext : ParserRuleContext {
-		public ITerminalNode WindowsStyleIdentifier() { return GetToken(CommandLineParser.WindowsStyleIdentifier, 0); }
-		public ITerminalNode AssignmentOperator() { return GetToken(CommandLineParser.AssignmentOperator, 0); }
-		public ValueContext value() {
-			return GetRuleContext<ValueContext>(0);
-		}
-		public ITerminalNode UnixStyleIdentifier() { return GetToken(CommandLineParser.UnixStyleIdentifier, 0); }
-		public ITerminalNode UnixStyleFlaggedIdentifiers() { return GetToken(CommandLineParser.UnixStyleFlaggedIdentifiers, 0); }
 		public ParameterContext(ParserRuleContext parent, int invokingState)
 			: base(parent, invokingState)
 		{
 		}
 		public override int RuleIndex { get { return RULE_parameter; } }
+	 
+		public ParameterContext() { }
+		public virtual void CopyFrom(ParameterContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class UnixStyleSwitchContext : ParameterContext {
+		public ITerminalNode UnixStyleIdentifier() { return GetToken(CommandLineParser.UnixStyleIdentifier, 0); }
+		public UnixStyleSwitchContext(ParameterContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterParameter(this);
+			if (typedListener != null) typedListener.EnterUnixStyleSwitch(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitParameter(this);
+			if (typedListener != null) typedListener.ExitUnixStyleSwitch(this);
+		}
+	}
+	public partial class WindowsStyleParameterContext : ParameterContext {
+		public ITerminalNode WindowsStyleIdentifier() { return GetToken(CommandLineParser.WindowsStyleIdentifier, 0); }
+		public ITerminalNode AssignmentOperator() { return GetToken(CommandLineParser.AssignmentOperator, 0); }
+		public ValueContext value() {
+			return GetRuleContext<ValueContext>(0);
+		}
+		public WindowsStyleParameterContext(ParameterContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.EnterWindowsStyleParameter(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.ExitWindowsStyleParameter(this);
+		}
+	}
+	public partial class UnixStyleParameterContext : ParameterContext {
+		public ITerminalNode UnixStyleIdentifier() { return GetToken(CommandLineParser.UnixStyleIdentifier, 0); }
+		public ITerminalNode AssignmentOperator() { return GetToken(CommandLineParser.AssignmentOperator, 0); }
+		public ValueContext value() {
+			return GetRuleContext<ValueContext>(0);
+		}
+		public UnixStyleParameterContext(ParameterContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.EnterUnixStyleParameter(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.ExitUnixStyleParameter(this);
+		}
+	}
+	public partial class UnixStyleFlaggedSwitchContext : ParameterContext {
+		public ITerminalNode UnixStyleFlaggedIdentifiers() { return GetToken(CommandLineParser.UnixStyleFlaggedIdentifiers, 0); }
+		public UnixStyleFlaggedSwitchContext(ParameterContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.EnterUnixStyleFlaggedSwitch(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.ExitUnixStyleFlaggedSwitch(this);
+		}
+	}
+	public partial class WindowsStyleSwitchContext : ParameterContext {
+		public ITerminalNode WindowsStyleIdentifier() { return GetToken(CommandLineParser.WindowsStyleIdentifier, 0); }
+		public WindowsStyleSwitchContext(ParameterContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.EnterWindowsStyleSwitch(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.ExitWindowsStyleSwitch(this);
 		}
 	}
 
@@ -224,12 +282,14 @@ internal partial class CommandLineParser : Parser {
 			State = 35;
 			switch ( Interpreter.AdaptivePredict(TokenStream,2,Context) ) {
 			case 1:
+				_localctx = new WindowsStyleSwitchContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 22; Match(WindowsStyleIdentifier);
 				}
 				break;
 			case 2:
+				_localctx = new WindowsStyleParameterContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 23; Match(WindowsStyleIdentifier);
@@ -238,6 +298,7 @@ internal partial class CommandLineParser : Parser {
 				}
 				break;
 			case 3:
+				_localctx = new WindowsStyleParameterContext(_localctx);
 				EnterOuterAlt(_localctx, 3);
 				{
 				State = 26; Match(WindowsStyleIdentifier);
@@ -245,12 +306,14 @@ internal partial class CommandLineParser : Parser {
 				}
 				break;
 			case 4:
+				_localctx = new UnixStyleSwitchContext(_localctx);
 				EnterOuterAlt(_localctx, 4);
 				{
 				State = 28; Match(UnixStyleIdentifier);
 				}
 				break;
 			case 5:
+				_localctx = new UnixStyleParameterContext(_localctx);
 				EnterOuterAlt(_localctx, 5);
 				{
 				State = 29; Match(UnixStyleIdentifier);
@@ -259,6 +322,7 @@ internal partial class CommandLineParser : Parser {
 				}
 				break;
 			case 6:
+				_localctx = new UnixStyleParameterContext(_localctx);
 				EnterOuterAlt(_localctx, 6);
 				{
 				State = 32; Match(UnixStyleIdentifier);
@@ -266,6 +330,7 @@ internal partial class CommandLineParser : Parser {
 				}
 				break;
 			case 7:
+				_localctx = new UnixStyleFlaggedSwitchContext(_localctx);
 				EnterOuterAlt(_localctx, 7);
 				{
 				State = 34; Match(UnixStyleFlaggedIdentifiers);
@@ -285,29 +350,70 @@ internal partial class CommandLineParser : Parser {
 	}
 
 	public partial class ValueContext : ParserRuleContext {
+		public ValueContext(ParserRuleContext parent, int invokingState)
+			: base(parent, invokingState)
+		{
+		}
+		public override int RuleIndex { get { return RULE_value; } }
+	 
+		public ValueContext() { }
+		public virtual void CopyFrom(ValueContext context) {
+			base.CopyFrom(context);
+		}
+	}
+	public partial class NumberContext : ValueContext {
+		public ITerminalNode Number() { return GetToken(CommandLineParser.Number, 0); }
+		public NumberContext(ValueContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.EnterNumber(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.ExitNumber(this);
+		}
+	}
+	public partial class StringContext : ValueContext {
 		public ITerminalNode String() { return GetToken(CommandLineParser.String, 0); }
 		public ITerminalNode QuotedString() { return GetToken(CommandLineParser.QuotedString, 0); }
-		public ITerminalNode Number() { return GetToken(CommandLineParser.Number, 0); }
+		public StringContext(ValueContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.EnterString(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.ExitString(this);
+		}
+	}
+	public partial class ArrayContext : ValueContext {
 		public ValueContext[] value() {
 			return GetRuleContexts<ValueContext>();
 		}
 		public ValueContext value(int i) {
 			return GetRuleContext<ValueContext>(i);
 		}
-		public ITerminalNode True() { return GetToken(CommandLineParser.True, 0); }
-		public ITerminalNode False() { return GetToken(CommandLineParser.False, 0); }
-		public ValueContext(ParserRuleContext parent, int invokingState)
-			: base(parent, invokingState)
-		{
-		}
-		public override int RuleIndex { get { return RULE_value; } }
+		public ArrayContext(ValueContext context) { CopyFrom(context); }
 		public override void EnterRule(IParseTreeListener listener) {
 			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.EnterValue(this);
+			if (typedListener != null) typedListener.EnterArray(this);
 		}
 		public override void ExitRule(IParseTreeListener listener) {
 			ICommandLineListener typedListener = listener as ICommandLineListener;
-			if (typedListener != null) typedListener.ExitValue(this);
+			if (typedListener != null) typedListener.ExitArray(this);
+		}
+	}
+	public partial class BooleanContext : ValueContext {
+		public ITerminalNode True() { return GetToken(CommandLineParser.True, 0); }
+		public ITerminalNode False() { return GetToken(CommandLineParser.False, 0); }
+		public BooleanContext(ValueContext context) { CopyFrom(context); }
+		public override void EnterRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.EnterBoolean(this);
+		}
+		public override void ExitRule(IParseTreeListener listener) {
+			ICommandLineListener typedListener = listener as ICommandLineListener;
+			if (typedListener != null) typedListener.ExitBoolean(this);
 		}
 	}
 
@@ -320,24 +426,28 @@ internal partial class CommandLineParser : Parser {
 			State = 54;
 			switch (TokenStream.La(1)) {
 			case String:
+				_localctx = new StringContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
 				State = 37; Match(String);
 				}
 				break;
 			case QuotedString:
+				_localctx = new StringContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
 				State = 38; Match(QuotedString);
 				}
 				break;
 			case Number:
+				_localctx = new NumberContext(_localctx);
 				EnterOuterAlt(_localctx, 3);
 				{
 				State = 39; Match(Number);
 				}
 				break;
 			case T__0:
+				_localctx = new ArrayContext(_localctx);
 				EnterOuterAlt(_localctx, 4);
 				{
 				State = 40; Match(T__0);
@@ -367,12 +477,14 @@ internal partial class CommandLineParser : Parser {
 				}
 				break;
 			case True:
+				_localctx = new BooleanContext(_localctx);
 				EnterOuterAlt(_localctx, 5);
 				{
 				State = 52; Match(True);
 				}
 				break;
 			case False:
+				_localctx = new BooleanContext(_localctx);
 				EnterOuterAlt(_localctx, 6);
 				{
 				State = 53; Match(False);

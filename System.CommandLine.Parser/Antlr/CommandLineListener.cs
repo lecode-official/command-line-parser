@@ -50,24 +50,112 @@ internal interface ICommandLineListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandLineParser.parameter"/>.
+	/// Enter a parse tree produced by the <c>WindowsStyleSwitch</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterParameter([NotNull] CommandLineParser.ParameterContext context);
+	void EnterWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandLineParser.parameter"/>.
+	/// Exit a parse tree produced by the <c>WindowsStyleSwitch</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitParameter([NotNull] CommandLineParser.ParameterContext context);
+	void ExitWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context);
 	/// <summary>
-	/// Enter a parse tree produced by <see cref="CommandLineParser.value"/>.
+	/// Enter a parse tree produced by the <c>WindowsStyleParameter</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void EnterValue([NotNull] CommandLineParser.ValueContext context);
+	void EnterWindowsStyleParameter([NotNull] CommandLineParser.WindowsStyleParameterContext context);
 	/// <summary>
-	/// Exit a parse tree produced by <see cref="CommandLineParser.value"/>.
+	/// Exit a parse tree produced by the <c>WindowsStyleParameter</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
-	void ExitValue([NotNull] CommandLineParser.ValueContext context);
+	void ExitWindowsStyleParameter([NotNull] CommandLineParser.WindowsStyleParameterContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>UnixStyleSwitch</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>UnixStyleSwitch</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>UnixStyleParameter</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnixStyleParameter([NotNull] CommandLineParser.UnixStyleParameterContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>UnixStyleParameter</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnixStyleParameter([NotNull] CommandLineParser.UnixStyleParameterContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>UnixStyleFlaggedSwitch</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>UnixStyleFlaggedSwitch</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>String</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterString([NotNull] CommandLineParser.StringContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>String</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitString([NotNull] CommandLineParser.StringContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Number</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterNumber([NotNull] CommandLineParser.NumberContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Number</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitNumber([NotNull] CommandLineParser.NumberContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Array</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterArray([NotNull] CommandLineParser.ArrayContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Array</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitArray([NotNull] CommandLineParser.ArrayContext context);
+	/// <summary>
+	/// Enter a parse tree produced by the <c>Boolean</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void EnterBoolean([NotNull] CommandLineParser.BooleanContext context);
+	/// <summary>
+	/// Exit a parse tree produced by the <c>Boolean</c>
+	/// labeled alternative in <see cref="CommandLineParser.value"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	void ExitBoolean([NotNull] CommandLineParser.BooleanContext context);
 }
 } // namespace System.CommandLine.Parser.Antlr
