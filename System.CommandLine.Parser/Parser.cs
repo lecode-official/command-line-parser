@@ -35,7 +35,6 @@ namespace System.CommandLine.Parser
             return new ParameterBag
             {
                 CommandLineParameters = commandLineParameters,
-                DefaultParameters = commandLineVisitor.DefaultParameters,
                 Parameters = commandLineVisitor.Parameters
             };
         }

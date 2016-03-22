@@ -47,6 +47,7 @@
     <Compile Include="ArrayParameter.cs" />
     <Compile Include="BooleanParameter.cs" />
     <Compile Include="CommandLineVisitor.cs" />
+    <Compile Include="DefaultParameter.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="NumberParameter.cs" />
     <Compile Include="Parser.cs" />

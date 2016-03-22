@@ -11,8 +11,13 @@ namespace System.CommandLine.Parser
         /// <summary>
         /// Gets the name of the command line parameter.
         /// </summary>
-        public string Name { get; internal set; }
-        
+        public virtual string Name { get; internal set; }
+
+        /// <summary>
+        /// Gets a value that determines whether this parameter is a default parameter.
+        /// </summary>
+        public virtual bool IsDefaultParameter { get; } = false;
+
         #endregion
     }
 }

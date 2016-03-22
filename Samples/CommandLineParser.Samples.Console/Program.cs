@@ -39,6 +39,9 @@ namespace CommandLineParser.Samples.Console
                 StringParameter stringParameter = parameter as StringParameter;
                 if (stringParameter != null)
                     System.Console.WriteLine($"{stringParameter.Name} (String): {stringParameter.Value}");
+                DefaultParameter defaultParameter = parameter as DefaultParameter;
+                if (defaultParameter != null)
+                    System.Console.WriteLine($"Default parameter: {defaultParameter.Value}");
 
                 // Checks if the parameter is of type array, if so then its contents are printed out recursively
                 ArrayParameter arrayParameter = parameter as ArrayParameter;
@@ -67,15 +70,9 @@ namespace CommandLineParser.Samples.Console
 
             // Parses the command line arguments passed to the application and prints them out
             ParameterBag parameterBag = Parser.Parse();
-            if (parameterBag.DefaultParameters.Any())
-            {
-                System.Console.WriteLine("Default parameters:");
-                foreach (string defaultParameter in parameterBag.DefaultParameters)
-                    System.Console.WriteLine(defaultParameter);
-                System.Console.WriteLine();
-            }
             if (parameterBag.Parameters.Any())
             {
+                System.Console.WriteLine("Parameters:");
                 Program.WriteParameters(parameterBag.Parameters);
                 System.Console.WriteLine();
             }
