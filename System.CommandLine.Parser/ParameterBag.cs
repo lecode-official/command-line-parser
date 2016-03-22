@@ -18,12 +18,7 @@ namespace System.CommandLine.Parser
         /// Gets the original command line parameters from which the properties were parsed.
         /// </summary>
         public string CommandLineParameters { get; internal set; }
-
-        /// <summary>
-        /// Gets a collection of the default parameters that have been parsed.
-        /// </summary>
-        public IEnumerable<string> DefaultParameters { get; internal set; } = new List<string>();
-
+        
         /// <summary>
         /// Gets a collection of the command line parameters that have been parsed.
         /// </summary>
