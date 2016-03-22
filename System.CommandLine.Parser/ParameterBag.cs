@@ -22,7 +22,7 @@ namespace System.CommandLine.Parser
         /// <summary>
         /// Gets a collection of the command line parameters that have been parsed.
         /// </summary>
-        public IEnumerable<CommandLineParameter> Parameters { get; internal set; } = new List<CommandLineParameter>();
+        public IEnumerable<Parameter> Parameters { get; internal set; } = new List<Parameter>();
 
         #endregion
     }

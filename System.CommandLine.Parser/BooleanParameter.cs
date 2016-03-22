@@ -4,7 +4,7 @@ namespace System.CommandLine.Parser
     /// <summary>
     /// Represents a boolean command line parameter.
     /// </summary>
-    public class BooleanCommandLineParameter : CommandLineParameter
+    public class BooleanParameter : Parameter
     {
         #region Public Properties
 
