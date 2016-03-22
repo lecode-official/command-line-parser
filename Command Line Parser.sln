@@ -15,6 +15,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.CommandLine.Parser.UnitTests", "System.CommandLine.Parser.UnitTests\System.CommandLine.Parser.UnitTests.csproj", "{421171E6-9970-4E6B-82DF-BFC1E41C4A81}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{E5145F79-EE92-4CA5-B27A-2A0F778FC2FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineParser.Samples.Console", "Samples\CommandLineParser.Samples.Console\CommandLineParser.Samples.Console.csproj", "{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,8 +33,15 @@ Global
 		{421171E6-9970-4E6B-82DF-BFC1E41C4A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{421171E6-9970-4E6B-82DF-BFC1E41C4A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{421171E6-9970-4E6B-82DF-BFC1E41C4A81}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD} = {E5145F79-EE92-4CA5-B27A-2A0F778FC2FB}
 	EndGlobalSection
 EndGlobal
