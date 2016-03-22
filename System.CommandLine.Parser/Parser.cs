@@ -4,7 +4,7 @@ namespace System.CommandLine.Parser
     /// <summary>
     /// Represents a parser, which is able to parse command line parameters and convert them to strongly-typed .NET data types.
     /// </summary>
-    public static class CommandLineParser
+    public static class Parser
     {
         #region Public Static Methods
 

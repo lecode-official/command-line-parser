@@ -45,7 +45,7 @@
     <Compile Include="Antlr\CommandLineListener.cs" />
     <Compile Include="Antlr\CommandLineParser.cs" />
     <Compile Include="CommandLineParameter.cs" />
-    <Compile Include="CommandLineParser.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParameterBag.cs" />
   </ItemGroup>
