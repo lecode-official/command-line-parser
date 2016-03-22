@@ -623,6 +623,270 @@ namespace System.CommandLine.Parser.UnitTests
 
         #endregion
 
+        #region Assignment Operator Test Methods
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles the colon assignment operator.
+        /// </summary>
+        [TestMethod]
+        public void ColonAssignmentOperatorTest()
+        {
+            // Parses a Windows style parameter with a colon as an assignement operator
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("/Parameter:123"), out parser);
+
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/Parameter"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = ":"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Parses a Windows style parameter with a colon as an assignement operator
+            parseTree = this.ParseTokens(this.LexInput("--Parameter:123"), out parser);
+
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--Parameter"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = ":"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles the equal sign assignment operator.
+        /// </summary>
+        [TestMethod]
+        public void EqualSignAssignmentOperatorTest()
+        {
+            // Parses a Windows style parameter with a equal sign as an assignement operator
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("/Parameter=123"), out parser);
+
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/Parameter"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "="
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Parses a Windows style parameter with a equal sign as an assignement operator
+            parseTree = this.ParseTokens(this.LexInput("--Parameter=123"), out parser);
+
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--Parameter"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "="
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the ANTLR4 parser handles no assignment operator.
+        /// </summary>
+        [TestMethod]
+        public void NoAssignmentOperatorTest()
+        {
+            // Parses a Windows style parameter with no assignement operator
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("/Parameter 123"), out parser);
+
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "/Parameter"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Parses a Windows style parameter with no assignement operator
+            parseTree = this.ParseTokens(this.LexInput("--Parameter 123"), out parser);
+
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "--Parameter"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        #endregion
+
         #region Nested Types
 
         /// <summary>
