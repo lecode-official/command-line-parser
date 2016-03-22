@@ -17,8 +17,10 @@ defaultParameter: String
 // or switches (switches do not require a value, because when they are specified they implicitely have the boolean value true)
 parameter: WindowsStyleIdentifier
     | WindowsStyleIdentifier AssignmentOperator value
+    | WindowsStyleIdentifier value
     | UnixStyleIdentifier
     | UnixStyleIdentifier AssignmentOperator value
+    | UnixStyleIdentifier value
     | UnixStyleFlaggedIdentifiers
     ;
 
