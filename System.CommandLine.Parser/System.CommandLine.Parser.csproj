@@ -40,13 +40,13 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Antlr\CommandLineBaseListener.cs" />
+    <Compile Include="Antlr\CommandLineBaseVisitor.cs" />
     <Compile Include="Antlr\CommandLineLexer.cs" />
-    <Compile Include="Antlr\CommandLineListener.cs" />
     <Compile Include="Antlr\CommandLineParser.cs" />
+    <Compile Include="Antlr\CommandLineVisitor.cs" />
     <Compile Include="ArrayParameter.cs" />
     <Compile Include="BooleanParameter.cs" />
-    <Compile Include="CommandLineListener.cs" />
+    <Compile Include="CommandLineVisitor.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="NumberParameter.cs" />
     <Compile Include="Parser.cs" />
