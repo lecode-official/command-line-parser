@@ -10,14 +10,14 @@ namespace System.CommandLine.Parser
     /// <summary>
     /// Represents an array command line parameter.
     /// </summary>
-    public class ArrayCommandLineParameter : CommandLineParameter
+    public class ArrayParameter : Parameter
     {
         #region Public Properties
 
         /// <summary>
         /// Gets the boolean value of the command line parameter.
         /// </summary>
-        public IEnumerable<CommandLineParameter> Value { get; internal set; }
+        public IEnumerable<Parameter> Value { get; internal set; }
 
         #endregion
     }
