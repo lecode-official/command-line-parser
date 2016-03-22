@@ -17,7 +17,12 @@ namespace System.CommandLine.Parser
         #region Public Properties
 
         /// <summary>
-        /// Gets the result of the listener walking the parse tree.
+        /// Gets the default parameters, which are the result of the listener walking the parse tree.
+        /// </summary>
+        public List<string> DefaultParameters { get; } = new List<string>();
+
+        /// <summary>
+        /// Gets the parameters, which are the result of the listener walking the parse tree.
         /// </summary>
         public List<Parameter> Parameters { get; } = new List<Parameter>();
 
@@ -29,10 +34,7 @@ namespace System.CommandLine.Parser
         /// Is called when the tree walker exits the default parameter rule.
         /// </summary>
         /// <param name="context">The default parameter context, which contains all the information about the default parameter being parsed.</param>
-        public override void ExitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context)
-        {
-            base.ExitDefaultParameter(context);
-        }
+        public override void ExitDefaultParameter([NotNull] CommandLineParser.DefaultParameterContext context) => this.DefaultParameters.Add(context.GetText().Replace("\"", string.Empty));
 
         /// <summary>
         /// Is called when the tree walker exits the parameter rule.
