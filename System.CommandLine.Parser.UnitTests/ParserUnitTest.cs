@@ -68,18 +68,257 @@ namespace System.CommandLine.Parser.UnitTests
         #endregion
 
         #region General Test Methods
-        
+
+        /// <summary>
+        /// Tests how the parser handles empty command line parameters.
+        /// </summary>
+        [TestMethod]
+        public void EmptyCommandLineParametersTest()
+        {
+            // Parses empty command line parameters
+            ParameterBag parameterBag = Parser.Parse(string.Empty);
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>());
+        }
+
         #endregion
 
         #region Default Parameter Test Methods
-        
+
+        /// <summary>
+        /// Tests how the parser handles a single default parameter.
+        /// </summary>
+        [TestMethod]
+        public void SingleDefaultParameterTest()
+        {
+            // Parses a single default command line parameter
+            ParameterBag parameterBag = Parser.Parse("abcXYZ");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new DefaultParameter { Value = "abcXYZ" }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles multiple default parameters.
+        /// </summary>
+        [TestMethod]
+        public void MutlipleDefaultParameterTest()
+        {
+            // Parses multiple default command line parameters
+            ParameterBag parameterBag = Parser.Parse("abc \"123 456\" XYZ \"789 0\"");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new DefaultParameter { Value = "abc" },
+                new DefaultParameter { Value = "123 456" },
+                new DefaultParameter { Value = "XYZ" },
+                new DefaultParameter { Value = "789 0" }
+            });
+        }
+
         #endregion
 
         #region Parameter Test Methods
 
+        /// <summary>
+        /// Tests how the parser handles Windows style switches.
+        /// </summary>
+        [TestMethod]
+        public void WindowsStyleSwitchTest()
+        {
+            // Parses a Windows style switch
+            ParameterBag parameterBag = Parser.Parse("/Switch");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new BooleanParameter
+                {
+                    Name = "Switch",
+                    Value = true
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles Windows style parameters.
+        /// </summary>
+        [TestMethod]
+        public void WindowsStyleParameterTest()
+        {
+            // Parses a Windows style parameter
+            ParameterBag parameterBag = Parser.Parse("/Parameter:123");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "Parameter",
+                    Value = 123.0d
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles UNIX style switches.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleSwitchTest()
+        {
+            // Parses a UNIX style switch
+            ParameterBag parameterBag = Parser.Parse("--Switch");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new BooleanParameter
+                {
+                    Name = "Switch",
+                    Value = true
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles UNIX style parameters.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleParameterTest()
+        {
+            // Parses a UNIX style parameter
+            ParameterBag parameterBag = Parser.Parse("--Parameter=\"abc XYZ\"");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new StringParameter
+                {
+                    Name = "Parameter",
+                    Value = "abc XYZ"
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles UNIX style flagged switches.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleFlaggedSwitchesTest()
+        {
+            // Parses a UNIX style flagged switch
+            ParameterBag parameterBag = Parser.Parse("-sUtZ");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new BooleanParameter
+                {
+                    Name = "s",
+                    Value = true
+                },
+                new BooleanParameter
+                {
+                    Name = "U",
+                    Value = true
+                },
+                new BooleanParameter
+                {
+                    Name = "t",
+                    Value = true
+                },
+                new BooleanParameter
+                {
+                    Name = "Z",
+                    Value = true
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles multiple parameters.
+        /// </summary>
+        [TestMethod]
+        public void MultipleParameterTest()
+        {
+            // Parses a multiple parameter
+            ParameterBag parameterBag = Parser.Parse("/on /key:value --auto --parameter=123 -aFl");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new BooleanParameter
+                {
+                    Name = "on",
+                    Value = true
+                },
+                new StringParameter
+                {
+                    Name = "key",
+                    Value = "value"
+                },
+                new BooleanParameter
+                {
+                    Name = "auto",
+                    Value = true
+                },
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = 123.0d
+                },
+                new BooleanParameter
+                {
+                    Name = "a",
+                    Value = true
+                },
+                new BooleanParameter
+                {
+                    Name = "F",
+                    Value = true
+                },
+                new BooleanParameter
+                {
+                    Name = "l",
+                    Value = true
+                }
+            });
+        }
+
         #endregion
 
-        #region Data Type Test Methods
+        #region Mixed Default Parameter & Parameter Test Methods
+
+        /// <summary>
+        /// Tests how the parser handles mixing of default parameters and parameters.
+        /// </summary>
+        [TestMethod]
+        public void MixedDefaultParameterAndParameterTest()
+        {
+            // Parses multiple parameters
+            ParameterBag parameterBag = Parser.Parse("\"C:\\Users\\name\\Downloads\" /key:value --auto");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new DefaultParameter { Value = "C:\\Users\name\\Downloads" },
+                new StringParameter
+                {
+                    Name = "key",
+                    Value = "value"
+                },
+                new BooleanParameter
+                {
+                    Name = "auto",
+                    Value = true
+                }
+            });
+        }
 
         #endregion
     }
