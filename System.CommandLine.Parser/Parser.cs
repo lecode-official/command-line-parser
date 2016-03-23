@@ -6,6 +6,7 @@ using Antlr4.Runtime.Tree;
 using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
 using System.IO;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -45,6 +46,19 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <returns>Returns the parsed parameters.</returns>
         public static ParameterBag Parse() => Parser.Parse(Environment.CommandLine);
+
+        /// <summary>
+        /// Parses the specified command line parameters asynchronously.
+        /// </summary>
+        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <returns>Returns the parsed parameters.</returns>
+        public static Task<ParameterBag> ParseAsync(string commandLineParameters) => Task.Run(() => Parser.Parse(commandLineParameters));
+
+        /// <summary>
+        /// Parses the command line parameters that have been passed to the program asynchronously.
+        /// </summary>
+        /// <returns>Returns the parsed parameters.</returns>
+        public static Task<ParameterBag> ParseAsync() => Task.Run(() => Parser.Parse());
 
         #endregion
     }

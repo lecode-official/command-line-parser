@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.CommandLine.Parser;
 using System.Linq;
+using System.Threading.Tasks;
 
 #endregion
 
@@ -53,15 +54,10 @@ namespace CommandLineParser.Samples.Console
             }
         }
 
-        #endregion
-
-        #region Public Static Methods
-
         /// <summary>
-        /// The entry point to the command line parser console sample application.
+        /// The asynchronous entry point to the command line parser console application, which allows the execution of asynchronous code.
         /// </summary>
-        /// <param name="args">The command line parameters, which are passed to the application.</param>
-        public static void Main(string[] args)
+        private static async Task MainAsync()
         {
             // Prints out the command line parameters passed to the application
             System.Console.WriteLine("Command line parameters:");
@@ -69,7 +65,7 @@ namespace CommandLineParser.Samples.Console
             System.Console.WriteLine();
 
             // Parses the command line arguments passed to the application and prints them out
-            ParameterBag parameterBag = Parser.Parse();
+            ParameterBag parameterBag = await Parser.ParseAsync();
             if (parameterBag.Parameters.Any())
             {
                 System.Console.WriteLine("Parameters:");
@@ -81,6 +77,16 @@ namespace CommandLineParser.Samples.Console
             System.Console.Write("Press any key to exit...");
             System.Console.ReadKey();
         }
+
+        #endregion
+
+        #region Public Static Methods
+
+        /// <summary>
+        /// The entry point to the command line parser console sample application.
+        /// </summary>
+        /// <param name="args">The command line parameters, which are passed to the application.</param>
+        public static void Main(string[] args) => Program.MainAsync().Wait();
         
         #endregion
     }
