@@ -321,5 +321,245 @@ namespace System.CommandLine.Parser.UnitTests
         }
 
         #endregion
+
+        #region Data Type Test Methods
+
+        /// <summary>
+        /// Tests how the parser handles boolean values.
+        /// </summary>
+        [TestMethod]
+        public void BooleanDataTypeTest()
+        {
+            // Parses a boolean value
+            ParameterBag parameterBag = Parser.Parse("/first:false --second=true");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new BooleanParameter
+                {
+                    Name = "first",
+                    Value = false
+                },
+                new BooleanParameter
+                {
+                    Name = "second",
+                    Value = true
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles numbers.
+        /// </summary>
+        [TestMethod]
+        public void NumberDataTypeTest()
+        {
+            // Parses a positive integer and validates that the parsed parameters are correct
+            ParameterBag parameterBag = Parser.Parse("/parameter=123");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = 123.0d
+                }
+            });
+
+            // Parses a negative integer and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("--parameter:-123");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = -123.0d
+                }
+            });
+
+            // Parses a positive floating point number and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("/parameter 123.456");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = 123.456d
+                }
+            });
+
+            // Parses a negative floating point number and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("--parameter -123.456");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = -123.456d
+                }
+            });
+
+            // Parses a positive floating point number with no digits before the decimal point and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("/parameter .123");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = 0.123d
+                }
+            });
+
+            // Parses a negative floating point number with no digits before the decimal point and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("--parameter:-.123");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = -0.123d
+                }
+            });
+
+            // Parses a positive floating point number with no digits after the decimal point and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("/parameter=123.");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = 123.0d
+                }
+            });
+
+            // Parses a negative floating point number with no digits after the decimal point and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("--parameter=-123.");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new NumberParameter
+                {
+                    Name = "parameter",
+                    Value = -123.0d
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles un-quoted strings.
+        /// </summary>
+        [TestMethod]
+        public void StringDataTypeTest()
+        {
+            // Parses an un-quoted string value
+            ParameterBag parameterBag = Parser.Parse("/first:abc --second=XYZ");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new StringParameter
+                {
+                    Name = "first",
+                    Value = "abc"
+                },
+                new StringParameter
+                {
+                    Name = "second",
+                    Value = "XYZ"
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parsers handles quoted strings.
+        /// </summary>
+        [TestMethod]
+        public void QuotedStringDataTypeTest()
+        {
+            // Parses a quoted string value
+            ParameterBag parameterBag = Parser.Parse("/parameter \"abc XYZ 123 ! § $ % & / ( ) = ? \\\"");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new StringParameter
+                {
+                    Name = "parameter",
+                    Value = "abc XYZ 123 ! § $ % & / ( ) = ? \\"
+                }
+            });
+        }
+
+        /// <summary>
+        /// Tests how the parser handles arrays.
+        /// </summary>
+        [TestMethod]
+        public void ArrayDataTypeTest()
+        {
+            // Parses an empty array and validates that the parsed parameters are correct
+            ParameterBag parameterBag = Parser.Parse("--parameter=[]");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new ArrayParameter
+                {
+                    Name = "parameter",
+                    Value = new List<Parameter>()
+                }
+            });
+
+            // Parses an array with a single element and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("/parameter [123]");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new ArrayParameter
+                {
+                    Name = "parameter",
+                    Value = new List<Parameter>
+                    {
+                        new NumberParameter { Value = 123.0d }
+                    }
+                }
+            });
+
+            // Parses an array with all different kinds of data types and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("--parameter:[false, 123.456, abcXYZ, \"abc XYZ 123\"]");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new ArrayParameter
+                {
+                    Name = "parameter",
+                    Value = new List<Parameter>
+                    {
+                        new BooleanParameter { Value = false },
+                        new NumberParameter { Value = 123.456d },
+                        new StringParameter { Value = "abcXYZ" },
+                        new StringParameter { Value = "abc XYZ 123" }
+                    }
+                }
+            });
+
+            // Parses a jagged array (array of arrays) and validates that the parsed parameters are correct
+            parameterBag = Parser.Parse("/parameter:[123, [abcXYZ, true]]");
+            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            {
+                new ArrayParameter
+                {
+                    Name = "parameter",
+                    Value = new List<Parameter>
+                    {
+                        new NumberParameter { Value = 123.0d },
+                        new ArrayParameter
+                        {
+                            Value = new List<Parameter>
+                            {
+                                new StringParameter { Value = "abcXYZ" },
+                                new BooleanParameter { Value = true }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        #endregion
     }
 }
