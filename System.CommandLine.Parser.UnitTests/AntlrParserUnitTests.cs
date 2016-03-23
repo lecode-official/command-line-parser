@@ -92,7 +92,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// Tests how the ANTLR4 parser handles empty command line parameters.
         /// </summary>
         [TestMethod]
-        public void EmptyCommandLineParamentersTest()
+        public void EmptyCommandLineParametersTest()
         {
             // Lexes the input and checks whether there are no tokens
             CommandLineLexer lexer = this.LexInput(string.Empty);
