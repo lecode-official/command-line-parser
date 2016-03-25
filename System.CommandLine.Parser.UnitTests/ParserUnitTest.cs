@@ -561,5 +561,188 @@ namespace System.CommandLine.Parser.UnitTests
         }
 
         #endregion
+
+        #region Command Line Parameter Injection Test Methods
+
+        /// <summary>
+        /// Tests how the parser handles the command line parameter injection into an empty class.
+        /// </summary>
+        [TestMethod]
+        public void EmptyParameterContainerInjectionTest()
+        {
+            // Parses an empty command line and validates that the object was properly created
+            EmptyParameterContainer emptyParameterContainer = Parser.Parse<EmptyParameterContainer>(string.Empty);
+            Assert.IsNotNull(emptyParameterContainer);
+
+            // Parses several command line parameters and validates that the object was properly created
+            emptyParameterContainer = Parser.Parse<EmptyParameterContainer>("/on /key:value --auto --parameter=123 -aFl");
+            Assert.IsNotNull(emptyParameterContainer);
+        }
+
+        /// <summary>
+        /// Tests how the parser handles the command line parameter injection into a class that has a single non-default constructor.
+        /// </summary>
+        [TestMethod]
+        public void SingleConstructorParameterContainerInjectionTest()
+        {
+            // Parses command line parameters and validates that the object was properly created
+            SingleConstructorParameterContainer singleConstructorParameterContainer = Parser.Parse<SingleConstructorParameterContainer>("/first \"abc XYZ\" --second:-123.456");
+            Assert.IsNotNull(singleConstructorParameterContainer);
+            Assert.AreEqual(singleConstructorParameterContainer.First, "abc XYZ");
+            Assert.AreEqual(singleConstructorParameterContainer.Second, -123);
+        }
+
+        /// <summary>
+        /// Tests how the parser handles the command line parameter injection into a class that has a multiple non-default constructor.
+        /// </summary>
+        [TestMethod]
+        public void MultipleConstructorParameterContainerInjectionTest()
+        {
+            // Parses a single command line parameter and validates that the correct constructor was called
+            MultipleConstructorsParameterContainer multipleConstructorsParameterContainer = Parser.Parse<MultipleConstructorsParameterContainer>("/first true");
+            Assert.AreEqual(multipleConstructorsParameterContainer.ConstructorCalled, 1);
+
+            // Parses two command line parameters and validates that the correct constructor was called
+            multipleConstructorsParameterContainer = Parser.Parse<MultipleConstructorsParameterContainer>("/first true --second=abc");
+            Assert.AreEqual(multipleConstructorsParameterContainer.ConstructorCalled, 2);
+
+            // Parses three command line parameters and validates that the correct constructor was called
+            multipleConstructorsParameterContainer = Parser.Parse<MultipleConstructorsParameterContainer>("/first true --second=abc /third:123");
+            Assert.AreEqual(multipleConstructorsParameterContainer.ConstructorCalled, 3);
+        }
+
+        [TestMethod]
+        public void SimplePropertyParameterContainerInjectionTest()
+        {
+            // Parses command line parameters and validates that the object was properly created
+            SimplePropertyParameterContainer simplePropertyParameterContainer = Parser.Parse<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true");
+            Assert.IsNotNull(simplePropertyParameterContainer);
+            Assert.AreEqual(simplePropertyParameterContainer.String, "abc XYZ");
+            Assert.AreEqual(simplePropertyParameterContainer.Number, 123.456d);
+            Assert.AreEqual(simplePropertyParameterContainer.Boolean, true);
+        }
+
+        #endregion
+
+        #region Nested Types
+
+        /// <summary>
+        /// Represents an empty parameter container, which is used to test injection into an empty class.
+        /// </summary>
+        private class EmptyParameterContainer { }
+        
+        /// <summary>
+        /// Represents a parameter container, which is used to test single constructors.
+        /// </summary>
+        private class SingleConstructorParameterContainer
+        {
+            #region Constructors
+
+            /// <summary>
+            /// Initializes a new <see cref="SingleConstructorParameterContainer"/> instance.
+            /// </summary>
+            /// <param name="first">The first command line parameter.</param>
+            /// <param name="second">The second command line parameter.</param>
+            public SingleConstructorParameterContainer(string first, int second)
+            {
+                this.First = first;
+                this.Second = second;
+            }
+
+            #endregion
+
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the "first" command line parameter.
+            /// </summary>
+            public string First { get; set; }
+
+            /// <summary>
+            /// Gets or sets the "second" command line parameter.
+            /// </summary>
+            public int Second { get; set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Represents a parameter container, which is used to test multiple constructors.
+        /// </summary>
+        private class MultipleConstructorsParameterContainer
+        {
+            #region Constructors
+
+            /// <summary>
+            /// Initializes a new <see cref="MultipleConstructorsParameterContainer"/> instance.
+            /// </summary>
+            /// <param name="first">The first command line parameter.</param>
+            public MultipleConstructorsParameterContainer(bool first)
+            {
+                this.ConstructorCalled = 1;
+            }
+
+            /// <summary>
+            /// Initializes a new <see cref="MultipleConstructorsParameterContainer"/> instance.
+            /// </summary>
+            /// <param name="first">The first command line parameter.</param>
+            /// <param name="second">The second command line parameter.</param>
+            public MultipleConstructorsParameterContainer(bool first, string second)
+            {
+                this.ConstructorCalled = 2;
+            }
+
+            /// <summary>
+            /// Initializes a new <see cref="MultipleConstructorsParameterContainer"/> instance.
+            /// </summary>
+            /// <param name="first">The first command line parameter.</param>
+            /// <param name="second">The second command line parameter.</param>
+            /// <param name="third">The third command line parameter.</param>
+            public MultipleConstructorsParameterContainer(bool first, string second, int third)
+            {
+                this.ConstructorCalled = 3;
+            }
+
+            #endregion
+
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the number of the constructor that has been called, which is used to validate that the correct constructor has been called.
+            /// </summary>
+            public int ConstructorCalled { get; set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Represents a parameter container, which is used to test the injection of simple data types.
+        /// </summary>
+        private class SimplePropertyParameterContainer
+        {
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the "number" command line parameter.
+            /// </summary>
+            [ParameterName("number")]
+            public double Number { get; set; }
+
+            /// <summary>
+            /// Gets or sets the "boolean" command line parameter.
+            /// </summary>
+            [ParameterName("boolean")]
+            public bool Boolean { get; set; }
+
+            /// <summary>
+            /// Gets or sets the "string" command line parameter.
+            /// </summary>
+            [ParameterName("string")]
+            public string String { get; set; }
+
+            #endregion
+        }
+
+        #endregion
     }
 }
