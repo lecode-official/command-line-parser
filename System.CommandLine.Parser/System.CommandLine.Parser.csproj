@@ -50,6 +50,7 @@
     <Compile Include="DefaultParameter.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="NumberParameter.cs" />
+    <Compile Include="ParameterNameAttribute.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParameterBag.cs" />

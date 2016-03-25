@@ -65,6 +65,7 @@ namespace CommandLineParser.Samples.Console
             System.Console.WriteLine();
 
             // Parses the command line arguments passed to the application and prints them out
+            CommandLineParameters commandLineParameters = await Parser.ParseAsync<CommandLineParameters>();
             ParameterBag parameterBag = await Parser.ParseAsync();
             if (parameterBag.Parameters.Any())
             {
@@ -87,7 +88,47 @@ namespace CommandLineParser.Samples.Console
         /// </summary>
         /// <param name="args">The command line parameters, which are passed to the application.</param>
         public static void Main(string[] args) => Program.MainAsync().Wait();
-        
+
+        #endregion
+
+        #region Nested Types
+
+        private class CommandLineParameters
+        {
+            #region Constructors
+
+            public CommandLineParameters([ParameterName("on")] bool isOn)
+            {
+                this.isOn = isOn;
+            }
+
+            #endregion
+
+            #region Private Fields
+
+            private bool isOn;
+
+            #endregion
+
+            #region Public Properties
+
+            [ParameterName("auto")]
+            public bool isAuto { get; set; }
+
+            [ParameterName("key")]
+            public string Key { get; set; }
+
+            [ParameterName("parameter")]
+            public int Parameter { get; set; }
+
+
+            public bool a { get; set; }
+            public bool F { get; set; }
+            public bool l { get; set; }
+
+            #endregion
+        }
+
         #endregion
     }
 }
