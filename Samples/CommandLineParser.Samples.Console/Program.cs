@@ -64,15 +64,23 @@ namespace CommandLineParser.Samples.Console
             System.Console.WriteLine(Environment.CommandLine);
             System.Console.WriteLine();
 
-            // Parses the command line arguments passed to the application and prints them out
-            CommandLineParameters commandLineParameters = await Parser.ParseAsync<CommandLineParameters>();
+            // Parses the command line parameters passed to the application and prints them out
             ParameterBag parameterBag = await Parser.ParseAsync();
             if (parameterBag.Parameters.Any())
             {
-                System.Console.WriteLine("Parameters:");
+                System.Console.WriteLine("Parameter bag content:");
                 Program.WriteParameters(parameterBag.Parameters);
                 System.Console.WriteLine();
             }
+
+            // Parses the command line parameters passed to the application, injects them into a strongly typed object, and prints them out
+            CommandLineParameters commandLineParameters = await Parser.ParseAsync<CommandLineParameters>();
+            System.Console.WriteLine("Parameters:");
+            System.Console.WriteLine($"Method: {commandLineParameters.Method}");
+            System.Console.WriteLine($"Number of bytes: {commandLineParameters.NumberOfBytes}");
+            System.Console.WriteLine($"Output file name: {commandLineParameters.OutputFileName}");
+            System.Console.WriteLine($"Force: {commandLineParameters.Force}");
+            System.Console.WriteLine();
 
             // Waits for the user to press a key before the program is exited
             System.Console.Write("Press any key to exit...");
@@ -93,38 +101,48 @@ namespace CommandLineParser.Samples.Console
 
         #region Nested Types
 
+        /// <summary>
+        /// Represents a class that is used to inject the command line parameters into.
+        /// </summary>
         private class CommandLineParameters
         {
             #region Constructors
 
-            public CommandLineParameters([ParameterName("on")] bool isOn)
+            /// <summary>
+            /// Initializes a new <see cref="CommandLineParameters"/> instance.
+            /// </summary>
+            /// <param name="method">The "method" command line parameter.</param>
+            public CommandLineParameters(string method)
             {
-                this.isOn = isOn;
+                this.Method = method;
             }
 
             #endregion
-
-            #region Private Fields
-
-            private bool isOn;
-
-            #endregion
-
+            
             #region Public Properties
 
-            [ParameterName("auto")]
-            public bool isAuto { get; set; }
+            /// <summary>
+            /// Gets the "method" command line parameter.
+            /// </summary>
+            public string Method { get; private set; }
 
-            [ParameterName("key")]
-            public string Key { get; set; }
+            /// <summary>
+            /// Gets or sets the "numberOfBytes" command line parameter.
+            /// </summary>
+            [ParameterName("numberOfBytes")]
+            public int NumberOfBytes { get; set; }
 
-            [ParameterName("parameter")]
-            public int Parameter { get; set; }
+            /// <summary>
+            /// Gets or sets the "out" command line parameter.
+            /// </summary>
+            [ParameterName("out")]
+            public string OutputFileName { get; set; }
 
-
-            public bool a { get; set; }
-            public bool F { get; set; }
-            public bool l { get; set; }
+            /// <summary>
+            /// Gets or sets the "f" command line parameter.
+            /// </summary>
+            [ParameterName("f")]
+            public bool Force { get; set; }
 
             #endregion
         }
