@@ -611,6 +611,9 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(multipleConstructorsParameterContainer.ConstructorCalled, 3);
         }
 
+        /// <summary>
+        /// Tests how the parser handle the command line parameter injection into a class with some simple-type properties.
+        /// </summary>
         [TestMethod]
         public void SimplePropertyParameterContainerInjectionTest()
         {
