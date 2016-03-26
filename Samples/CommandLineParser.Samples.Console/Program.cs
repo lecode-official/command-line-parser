@@ -22,24 +22,27 @@ namespace CommandLineParser.Samples.Console
         /// Prints out the specified parameters on the console.
         /// </summary>
         /// <param name="parameters">The parameters that are to be printed out.</param>
-        private static void WriteParameters(IEnumerable<Parameter> parameters, int indentLevel = 0)
+        private static void WriteParameters(IDictionary<string, Parameter> parameters, int indentLevel = 0)
         {
             // Cycles over all the parameters and prints them out
-            foreach (Parameter parameter in parameters)
+            foreach (string parameterName in parameters.Keys)
             {
+                // Gets the actual parameter
+                Parameter parameter = parameters[parameterName];
+
                 // Indents the line according to the current indent level
                 System.Console.Write(string.Join(string.Empty, Enumerable.Range(0, 4 * indentLevel).Select(index => ' ')));
 
                 // Checks if the parameter is a simple data type, if so it is printed out
                 BooleanParameter booleanParameter = parameter as BooleanParameter;
                 if (booleanParameter != null)
-                    System.Console.WriteLine($"{booleanParameter.Name} (Boolean): {booleanParameter.Value}");
+                    System.Console.WriteLine($"{parameterName} (Boolean): {booleanParameter.Value}");
                 NumberParameter numberParameter = parameter as NumberParameter;
                 if (numberParameter != null)
-                    System.Console.WriteLine($"{numberParameter.Name} (Number): {numberParameter.Value}");
+                    System.Console.WriteLine($"{parameterName} (Number): {numberParameter.Value}");
                 StringParameter stringParameter = parameter as StringParameter;
                 if (stringParameter != null)
-                    System.Console.WriteLine($"{stringParameter.Name} (String): {stringParameter.Value}");
+                    System.Console.WriteLine($"{parameterName} (String): {stringParameter.Value}");
                 DefaultParameter defaultParameter = parameter as DefaultParameter;
                 if (defaultParameter != null)
                     System.Console.WriteLine($"Default parameter: {defaultParameter.Value}");
@@ -48,8 +51,8 @@ namespace CommandLineParser.Samples.Console
                 ArrayParameter arrayParameter = parameter as ArrayParameter;
                 if (arrayParameter != null)
                 {
-                    System.Console.Write($"{arrayParameter.Name} (Array):");
-                    Program.WriteParameters(arrayParameter.Value, indentLevel + 1);
+                    System.Console.Write($"{parameterName} (Array):");
+                    Program.WriteParameters(Enumerable.Range(0, arrayParameter.Value.Count()).ToDictionary(index => $"[{index}]", index => arrayParameter.Value.ElementAt(index)), indentLevel + 1);
                 }
             }
         }
