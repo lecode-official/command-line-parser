@@ -20,9 +20,14 @@ namespace System.CommandLine.Parser
         public string CommandLineParameters { get; internal set; }
         
         /// <summary>
-        /// Gets a collection of the command line parameters that have been parsed.
+        /// Gets a dictionary of the command line parameters that have been parsed, where the key is the name of the parameter.
         /// </summary>
-        public IEnumerable<Parameter> Parameters { get; internal set; } = new List<Parameter>();
+        public IDictionary<string, Parameter> Parameters { get; internal set; } = new Dictionary<string, Parameter>();
+
+        /// <summary>
+        /// Gets a collection of the default parameters.
+        /// </summary>
+        public IEnumerable<Parameter> DefaultParameters { get; internal set; } = new List<Parameter>();
 
         #endregion
     }

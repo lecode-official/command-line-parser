@@ -261,13 +261,14 @@ namespace System.CommandLine.Parser
             CommandLineParser parser = new CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
             IParseTree parseTree = parser.commandLine();
             CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
-            IEnumerable<Parameter> parameters = commandLineVisitor.Visit(parseTree);
+            commandLineVisitor.Visit(parseTree);
 
             // Returns the parsed parameters wrapped in a parameter bag
             return new ParameterBag
             {
                 CommandLineParameters = commandLineParameters,
-                Parameters = parameters
+                Parameters = commandLineVisitor.Parameters,
+                DefaultParameters = commandLineVisitor.DefaultParameters
             };
         }
 
@@ -339,7 +340,7 @@ namespace System.CommandLine.Parser
                     Type parameterType = chosenConstructorParameterInfos[parameterName];
 
                     // Gets the command line parameter by the name, if no parameter could be found, then the constructor can not be used
-                    Parameter parameter = parameterBag.Parameters.FirstOrDefault(p => p.Name == parameterName);
+                    Parameter parameter = parameterBag.Parameters[parameterName];
                     if (parameter == null)
                     {
                         canConstructorBeUsed = false;
@@ -374,7 +375,7 @@ namespace System.CommandLine.Parser
                 KeyValuePair<string, Type> keyValuePair = chosenConstructorParameterInfos.ElementAt(i);
                 string parameterName = keyValuePair.Key;
                 Type parameterType = keyValuePair.Value;
-                Parameter parameter = parameterBag.Parameters.FirstOrDefault(p => p.Name == parameterName);
+                Parameter parameter = parameterBag.Parameters[parameterName];
 
                 // Sets the constructor parameter
                 constructorParameters[i] = Parser.GetParameterValue(parameterType, parameter);
@@ -398,7 +399,9 @@ namespace System.CommandLine.Parser
                     propertyName = propertyInfo.Name;
 
                 // Gets the command line parameter by the name, if no parameter could be found then the property can not be assigned
-                Parameter parameter = parameterBag.Parameters.FirstOrDefault(p => p.Name == propertyName);
+                if (!parameterBag.Parameters.ContainsKey(propertyName))
+                    continue;
+                Parameter parameter = parameterBag.Parameters[propertyName];
                 if (parameter == null)
                     continue;
 
