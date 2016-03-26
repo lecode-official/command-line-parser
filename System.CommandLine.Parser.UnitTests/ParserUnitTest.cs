@@ -22,31 +22,29 @@ namespace System.CommandLine.Parser.UnitTests
         /// </summary>
         /// <param name="parameters">The parameters, which are the result of the parsing process.</param>
         /// <param name="expectedParameters">The parameters, which are the expected output of the parsing process.</param>
-        private void ValidateParseOutput(IEnumerable<Parameter> parameters, IEnumerable<Parameter> expectedParameters)
+        private void ValidateParseOutput(IDictionary<string, Parameter> parameters, IDictionary<string, Parameter> expectedParameters)
         {
             // Validates that the amount of parameters in the parameter bag and the expected parameter bag are the same
             Assert.AreEqual(parameters.Count(), expectedParameters.Count());
             if (parameters.Count() != expectedParameters.Count())
                 return;
 
+            // Validates that both parameter sets have the same parameter names
+            Assert.IsTrue(parameters.Keys.All(key => expectedParameters.ContainsKey(key)));
+            Assert.IsTrue(expectedParameters.Keys.All(key => parameters.ContainsKey(key)));
+
             // Cycles over all parameters in the parameter bag and validates them against the expected parameters
-            for (int i = 0; i < parameters.Count(); i++)
+            foreach (string parameterName in parameters.Keys)
             {
                 // Gets the two parameter at the current position
-                Parameter parameter = parameters.ElementAt(i);
-                Parameter expectedParameter = expectedParameters.ElementAt(i);
+                Parameter parameter = parameters[parameterName];
+                Parameter expectedParameter = expectedParameters[parameterName];
 
                 // Validates that the parameter has the same type as the expected parameter
                 Assert.IsInstanceOfType(parameter, expectedParameter.GetType());
                 if (parameter.GetType() != expectedParameter.GetType())
                     continue;
-
-                // Validates that the parameter has the same name as the expected parameter
-                Assert.AreEqual(parameter.Name, expectedParameter.Name);
-
-                // Validates whether both the parameter and the expected parameter are default parameters or both are not
-                Assert.AreEqual(parameter.IsDefaultParameter, expectedParameter.IsDefaultParameter);
-
+                
                 // Checks if the parameter is a simple data type, if so its value is validated againts the expected parameter
                 BooleanParameter booleanParameter = parameter as BooleanParameter;
                 if (booleanParameter != null)
@@ -61,7 +59,12 @@ namespace System.CommandLine.Parser.UnitTests
                 // Checks if the parameter is of type array, if so then its contents are validated recursively
                 ArrayParameter arrayParameter = parameter as ArrayParameter;
                 if (arrayParameter != null)
-                    this.ValidateParseOutput(arrayParameter.Value, (expectedParameter as ArrayParameter).Value);
+                {
+                    ArrayParameter expectedArrayParameter = expectedParameter as ArrayParameter;
+                    this.ValidateParseOutput(
+                        Enumerable.Range(0, arrayParameter.Value.Count()).ToDictionary(index => $"[{index}]", index => arrayParameter.Value.ElementAt(index)),
+                        Enumerable.Range(0, expectedArrayParameter.Value.Count()).ToDictionary(index => $"[{index}]", index => expectedArrayParameter.Value.ElementAt(index)));
+                }
             }
         }
 
@@ -79,7 +82,7 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse(string.Empty);
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>());
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>());
         }
 
         #endregion
@@ -96,10 +99,8 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("abcXYZ");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
-            {
-                new DefaultParameter { Value = "abcXYZ" }
-            });
+            Assert.AreEqual(parameterBag.DefaultParameters.Count(), 1);
+            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value, "abcXYZ");
         }
 
         /// <summary>
@@ -112,13 +113,11 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("abc \"123 456\" XYZ \"789 0\"");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
-            {
-                new DefaultParameter { Value = "abc" },
-                new DefaultParameter { Value = "123 456" },
-                new DefaultParameter { Value = "XYZ" },
-                new DefaultParameter { Value = "789 0" }
-            });
+            Assert.AreEqual(parameterBag.DefaultParameters.Count(), 4);
+            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(0).Value, "abc");
+            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(1).Value, "123 456");
+            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(2).Value, "XYZ");
+            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(3).Value, "789 0");
         }
 
         #endregion
@@ -135,13 +134,9 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("/Switch");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new BooleanParameter
-                {
-                    Name = "Switch",
-                    Value = true
-                }
+                ["Switch"] = new BooleanParameter { Value = true }
             });
         }
 
@@ -155,13 +150,9 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("/Parameter:123");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "Parameter",
-                    Value = 123.0d
-                }
+                ["Parameter"] = new NumberParameter { Value = 123.0d }
             });
         }
 
@@ -175,13 +166,9 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("--Switch");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new BooleanParameter
-                {
-                    Name = "Switch",
-                    Value = true
-                }
+                ["Switch"] = new BooleanParameter { Value = true }
             });
         }
 
@@ -195,13 +182,9 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("--Parameter=\"abc XYZ\"");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new StringParameter
-                {
-                    Name = "Parameter",
-                    Value = "abc XYZ"
-                }
+                ["Parameter"] = new StringParameter { Value = "abc XYZ" }
             });
         }
 
@@ -215,28 +198,12 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("-sUtZ");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new BooleanParameter
-                {
-                    Name = "s",
-                    Value = true
-                },
-                new BooleanParameter
-                {
-                    Name = "U",
-                    Value = true
-                },
-                new BooleanParameter
-                {
-                    Name = "t",
-                    Value = true
-                },
-                new BooleanParameter
-                {
-                    Name = "Z",
-                    Value = true
-                }
+                ["s"] = new BooleanParameter { Value = true },
+                ["U"] = new BooleanParameter { Value = true },
+                ["t"] = new BooleanParameter { Value = true },
+                ["Z"] = new BooleanParameter { Value = true }
             });
         }
 
@@ -250,43 +217,15 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("/on /key:value --auto --parameter=123 -aFl");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new BooleanParameter
-                {
-                    Name = "on",
-                    Value = true
-                },
-                new StringParameter
-                {
-                    Name = "key",
-                    Value = "value"
-                },
-                new BooleanParameter
-                {
-                    Name = "auto",
-                    Value = true
-                },
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = 123.0d
-                },
-                new BooleanParameter
-                {
-                    Name = "a",
-                    Value = true
-                },
-                new BooleanParameter
-                {
-                    Name = "F",
-                    Value = true
-                },
-                new BooleanParameter
-                {
-                    Name = "l",
-                    Value = true
-                }
+                ["on"] = new BooleanParameter { Value = true },
+                ["key"] = new StringParameter { Value = "value" },
+                ["auto"] = new BooleanParameter { Value = true },
+                ["parameter"] = new NumberParameter { Value = 123.0d },
+                ["a"] = new BooleanParameter { Value = true },
+                ["F"] = new BooleanParameter { Value = true },
+                ["l"] = new BooleanParameter { Value = true }
             });
         }
 
@@ -304,19 +243,12 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("\"C:\\Users\\name\\Downloads\" /key:value --auto");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            Assert.AreEqual(parameterBag.DefaultParameters.Count(), 1);
+            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value, "C:\\Users\\name\\Downloads");
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new DefaultParameter { Value = "C:\\Users\name\\Downloads" },
-                new StringParameter
-                {
-                    Name = "key",
-                    Value = "value"
-                },
-                new BooleanParameter
-                {
-                    Name = "auto",
-                    Value = true
-                }
+                ["key"] = new StringParameter { Value = "value" },
+                ["auto"] = new BooleanParameter { Value = true }
             });
         }
 
@@ -334,18 +266,10 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("/first:false --second=true");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new BooleanParameter
-                {
-                    Name = "first",
-                    Value = false
-                },
-                new BooleanParameter
-                {
-                    Name = "second",
-                    Value = true
-                }
+                ["first"] = new BooleanParameter { Value = false },
+                ["second"] = new BooleanParameter { Value = true }
             });
         }
 
@@ -357,90 +281,58 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses a positive integer and validates that the parsed parameters are correct
             ParameterBag parameterBag = Parser.Parse("/parameter=123");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = 123.0d
-                }
+                ["parameter"] = new NumberParameter { Value = 123.0d }
             });
 
             // Parses a negative integer and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter:-123");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = -123.0d
-                }
+                ["parameter"] = new NumberParameter { Value = -123.0d }
             });
 
             // Parses a positive floating point number and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter 123.456");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = 123.456d
-                }
+                ["parameter"] = new NumberParameter { Value = 123.456d }
             });
 
             // Parses a negative floating point number and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter -123.456");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = -123.456d
-                }
+                ["parameter"] = new NumberParameter { Value = -123.456d }
             });
 
             // Parses a positive floating point number with no digits before the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter .123");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = 0.123d
-                }
+                ["parameter"] = new NumberParameter { Value = 0.123d }
             });
 
             // Parses a negative floating point number with no digits before the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter:-.123");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = -0.123d
-                }
+                ["parameter"] = new NumberParameter { Value = -0.123d }
             });
 
             // Parses a positive floating point number with no digits after the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter=123.");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = 123.0d
-                }
+                ["parameter"] = new NumberParameter { Value = 123.0d }
             });
 
             // Parses a negative floating point number with no digits after the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter=-123.");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new NumberParameter
-                {
-                    Name = "parameter",
-                    Value = -123.0d
-                }
+                ["parameter"] = new NumberParameter { Value = -123.0d }
             });
         }
 
@@ -454,18 +346,10 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("/first:abc --second=XYZ");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new StringParameter
-                {
-                    Name = "first",
-                    Value = "abc"
-                },
-                new StringParameter
-                {
-                    Name = "second",
-                    Value = "XYZ"
-                }
+                ["first"] = new StringParameter { Value = "abc" },
+                ["second"] = new StringParameter { Value = "XYZ" }
             });
         }
 
@@ -479,13 +363,9 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("/parameter \"abc XYZ 123 ! § $ % & / ( ) = ? \\\"");
 
             // Validates that the parsed parameters are correct
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new StringParameter
-                {
-                    Name = "parameter",
-                    Value = "abc XYZ 123 ! § $ % & / ( ) = ? \\"
-                }
+                ["parameter"] = new StringParameter { Value = "abc XYZ 123 ! § $ % & / ( ) = ? \\" }
             });
         }
 
@@ -497,36 +377,27 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses an empty array and validates that the parsed parameters are correct
             ParameterBag parameterBag = Parser.Parse("--parameter=[]");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new ArrayParameter
-                {
-                    Name = "parameter",
-                    Value = new List<Parameter>()
-                }
+                ["parameter"] = new ArrayParameter { Value = new List<Parameter>() }
             });
 
             // Parses an array with a single element and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter [123]");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new ArrayParameter
+                ["parameter"] = new ArrayParameter
                 {
-                    Name = "parameter",
-                    Value = new List<Parameter>
-                    {
-                        new NumberParameter { Value = 123.0d }
-                    }
+                    Value = new List<Parameter> { new NumberParameter { Value = 123.0d } }
                 }
             });
 
             // Parses an array with all different kinds of data types and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter:[false, 123.456, abcXYZ, \"abc XYZ 123\"]");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new ArrayParameter
+                ["parameter"] = new ArrayParameter
                 {
-                    Name = "parameter",
                     Value = new List<Parameter>
                     {
                         new BooleanParameter { Value = false },
@@ -539,11 +410,10 @@ namespace System.CommandLine.Parser.UnitTests
 
             // Parses a jagged array (array of arrays) and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter:[123, [abcXYZ, true]]");
-            this.ValidateParseOutput(parameterBag.Parameters, new List<Parameter>
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                new ArrayParameter
+                ["parameter"] = new ArrayParameter
                 {
-                    Name = "parameter",
                     Value = new List<Parameter>
                     {
                         new NumberParameter { Value = 123.0d },
