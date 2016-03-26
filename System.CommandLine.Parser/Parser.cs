@@ -340,6 +340,11 @@ namespace System.CommandLine.Parser
                     Type parameterType = chosenConstructorParameterInfos[parameterName];
 
                     // Gets the command line parameter by the name, if no parameter could be found, then the constructor can not be used
+                    if (!parameterBag.Parameters.ContainsKey(parameterName))
+                    {
+                        canConstructorBeUsed = false;
+                        break;
+                    }
                     Parameter parameter = parameterBag.Parameters[parameterName];
                     if (parameter == null)
                     {
