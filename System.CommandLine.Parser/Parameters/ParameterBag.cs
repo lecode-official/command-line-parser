@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace System.CommandLine.Parser
+namespace System.CommandLine.Parser.Parameters
 {
     /// <summary>
     /// Represents a bag, which is able to contain parsed properties.
