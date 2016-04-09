@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 #endregion
 
-namespace System.CommandLine.Parser
+namespace System.CommandLine.Parser.Parameters
 {
     /// <summary>
     /// Represents an array command line parameter.

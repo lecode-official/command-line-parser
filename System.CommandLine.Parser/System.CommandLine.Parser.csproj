@@ -44,17 +44,17 @@
     <Compile Include="Antlr\CommandLineLexer.cs" />
     <Compile Include="Antlr\CommandLineParser.cs" />
     <Compile Include="Antlr\CommandLineVisitor.cs" />
-    <Compile Include="ArrayParameter.cs" />
-    <Compile Include="BooleanParameter.cs" />
+    <Compile Include="Parameters\ArrayParameter.cs" />
+    <Compile Include="Parameters\BooleanParameter.cs" />
     <Compile Include="CommandLineVisitor.cs" />
-    <Compile Include="DefaultParameter.cs" />
-    <Compile Include="Parameter.cs" />
-    <Compile Include="NumberParameter.cs" />
+    <Compile Include="Parameters\DefaultParameter.cs" />
+    <Compile Include="Parameters\Parameter.cs" />
+    <Compile Include="Parameters\NumberParameter.cs" />
     <Compile Include="ParameterNameAttribute.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ParameterBag.cs" />
-    <Compile Include="StringParameter.cs" />
+    <Compile Include="Parameters\ParameterBag.cs" />
+    <Compile Include="Parameters\StringParameter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr\CommandLine.g4" />
