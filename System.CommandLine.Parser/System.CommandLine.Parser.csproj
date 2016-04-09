@@ -56,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parameters\ParameterBag.cs" />
     <Compile Include="Parameters\StringParameter.cs" />
+    <Compile Include="ParameterConverters\IParameterConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr\CommandLine.g4" />
