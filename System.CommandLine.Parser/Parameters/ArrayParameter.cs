@@ -15,6 +15,17 @@ namespace System.CommandLine.Parser.Parameters
         #region Public Properties
 
         /// <summary>
+        /// Gets the kind of the parameter.
+        /// </summary>
+        public override ParameterKind Kind
+        {
+            get
+            {
+                return ParameterKind.Array;
+            }
+        }
+
+        /// <summary>
         /// Gets the boolean value of the command line parameter.
         /// </summary>
         public IEnumerable<Parameter> Value { get; internal set; }
