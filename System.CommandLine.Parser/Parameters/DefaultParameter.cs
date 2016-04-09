@@ -1,15 +1,15 @@
 ﻿
-namespace System.CommandLine.Parser
+namespace System.CommandLine.Parser.Parameters
 {
     /// <summary>
-    /// Represents a string command line parameter.
+    /// Represents a default parameter.
     /// </summary>
-    public class StringParameter : Parameter
+    public class DefaultParameter : Parameter
     {
         #region Public Properties
 
         /// <summary>
-        /// Gets the string value of the command line parameter.
+        /// Gets the value of the default parameter.
         /// </summary>
         public string Value { get; internal set; }
 

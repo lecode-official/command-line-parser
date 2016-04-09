@@ -1,5 +1,5 @@
 ﻿
-namespace System.CommandLine.Parser
+namespace System.CommandLine.Parser.Parameters
 {
     /// <summary>
     /// Represents a boolean command line parameter.
