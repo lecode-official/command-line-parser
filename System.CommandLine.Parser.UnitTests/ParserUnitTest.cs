@@ -153,7 +153,7 @@ namespace System.CommandLine.Parser.UnitTests
             // Validates that the parsed parameters are correct
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["Parameter"] = new NumberParameter { Value = 123.0d }
+                ["Parameter"] = new NumberParameter { Value = 123.0M }
             });
         }
 
@@ -223,7 +223,7 @@ namespace System.CommandLine.Parser.UnitTests
                 ["on"] = new BooleanParameter { Value = true },
                 ["key"] = new StringParameter { Value = "value" },
                 ["auto"] = new BooleanParameter { Value = true },
-                ["parameter"] = new NumberParameter { Value = 123.0d },
+                ["parameter"] = new NumberParameter { Value = 123.0M },
                 ["a"] = new BooleanParameter { Value = true },
                 ["F"] = new BooleanParameter { Value = true },
                 ["l"] = new BooleanParameter { Value = true }
@@ -284,56 +284,56 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = Parser.Parse("/parameter=123");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = 123.0d }
+                ["parameter"] = new NumberParameter { Value = 123.0M }
             });
 
             // Parses a negative integer and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter:-123");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = -123.0d }
+                ["parameter"] = new NumberParameter { Value = -123.0M }
             });
 
             // Parses a positive floating point number and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter 123.456");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = 123.456d }
+                ["parameter"] = new NumberParameter { Value = 123.456M }
             });
 
             // Parses a negative floating point number and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter -123.456");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = -123.456d }
+                ["parameter"] = new NumberParameter { Value = -123.456M }
             });
 
             // Parses a positive floating point number with no digits before the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter .123");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = 0.123d }
+                ["parameter"] = new NumberParameter { Value = 0.123M }
             });
 
             // Parses a negative floating point number with no digits before the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter:-.123");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = -0.123d }
+                ["parameter"] = new NumberParameter { Value = -0.123M }
             });
 
             // Parses a positive floating point number with no digits after the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("/parameter=123.");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = 123.0d }
+                ["parameter"] = new NumberParameter { Value = 123.0M }
             });
 
             // Parses a negative floating point number with no digits after the decimal point and validates that the parsed parameters are correct
             parameterBag = Parser.Parse("--parameter=-123.");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
-                ["parameter"] = new NumberParameter { Value = -123.0d }
+                ["parameter"] = new NumberParameter { Value = -123.0M }
             });
         }
 
@@ -389,7 +389,7 @@ namespace System.CommandLine.Parser.UnitTests
             {
                 ["parameter"] = new ArrayParameter
                 {
-                    Value = new List<Parameter> { new NumberParameter { Value = 123.0d } }
+                    Value = new List<Parameter> { new NumberParameter { Value = 123.0M } }
                 }
             });
 
@@ -402,7 +402,7 @@ namespace System.CommandLine.Parser.UnitTests
                     Value = new List<Parameter>
                     {
                         new BooleanParameter { Value = false },
-                        new NumberParameter { Value = 123.456d },
+                        new NumberParameter { Value = 123.456M },
                         new StringParameter { Value = "abcXYZ" },
                         new StringParameter { Value = "abc XYZ 123" }
                     }
@@ -417,7 +417,7 @@ namespace System.CommandLine.Parser.UnitTests
                 {
                     Value = new List<Parameter>
                     {
-                        new NumberParameter { Value = 123.0d },
+                        new NumberParameter { Value = 123.0M },
                         new ArrayParameter
                         {
                             Value = new List<Parameter>

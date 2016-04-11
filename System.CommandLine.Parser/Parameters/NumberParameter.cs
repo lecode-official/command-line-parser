@@ -22,7 +22,7 @@ namespace System.CommandLine.Parser.Parameters
         /// <summary>
         /// Gets the numeric value of the command line parameter.
         /// </summary>
-        public double Value { get; internal set; }
+        public decimal Value { get; internal set; }
 
         #endregion
     }
