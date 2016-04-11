@@ -5,7 +5,7 @@ using System.CommandLine.Parser.Parameters;
 
 #endregion
 
-namespace System.CommandLine.Parser.ValueConverters
+namespace System.CommandLine.Parser.ParameterConverters
 {
     /// <summary>
     /// Represents the interface that all parameter converters have to implement. Parameter converters are used to convert the parsed parameters into the real values that are
@@ -26,10 +26,10 @@ namespace System.CommandLine.Parser.ValueConverters
         /// <summary>
         /// Converts the specified parameter into the specified type.
         /// </summary>
-        /// <typeparam name="T">The type into which the parameter is to be converted.</typeparam>
+        /// <param name="propertyType">The type of the property into which the parameter is to be converted.</param>
         /// <param name="parameter">The parameter that is to be converted into the specified type.</param>
         /// <returns>Returns the converted parameter value.</returns>
-        T Convert<T>(Parameter parameter);
+        object Convert(Type propertyType, Parameter parameter);
 
         #endregion
     }

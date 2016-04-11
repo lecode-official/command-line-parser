@@ -95,7 +95,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">the context, which contains all information about the number value.</param>
         /// <returns>Returns the parameter with the number value.</returns>
-        public override Parameter VisitNumber([NotNull] CommandLineParser.NumberContext context) => new NumberParameter { Value = double.Parse(context.Number().GetText(), CommandLineVisitor.americanCultureInfo) };
+        public override Parameter VisitNumber([NotNull] CommandLineParser.NumberContext context) => new NumberParameter { Value = decimal.Parse(context.Number().GetText(), CommandLineVisitor.americanCultureInfo) };
 
         /// <summary>
         /// Is called when the visitor reaches a string value.
