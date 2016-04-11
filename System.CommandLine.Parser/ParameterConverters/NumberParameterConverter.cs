@@ -3,7 +3,6 @@
 
 using System.CommandLine.Parser.Parameters;
 using System.Globalization;
-using System;
 
 #endregion
 
@@ -46,7 +45,14 @@ namespace System.CommandLine.Parser.ParameterConverters
             }
 
             // Checks if the type of the parameter is string, if so then the parameter can be converted, if the string contains a valid number
-
+            if (parameter.Kind == ParameterKind.String)
+            {
+                decimal value;
+                if (decimal.TryParse((parameter as StringParameter).Value, NumberStyles.Number, NumberParameterConverter.americanCultureInfo, out value))
+                    return true;
+                else
+                    return false;
+            }
 
             // Checks if the type of the parameter is one of the supported types (numbers and booleans are supported)
             return parameter.Kind == ParameterKind.Number || parameter.Kind == ParameterKind.Boolean;
