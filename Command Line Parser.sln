@@ -19,6 +19,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{E514
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineParser.Samples.Console", "Samples\CommandLineParser.Samples.Console\CommandLineParser.Samples.Console.csproj", "{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{40AC1CCC-8F15-4266-8B22-703B2F5F61E2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{3B85DF69-C598-48A8-8C7D-200B657B2EB6}"
+	ProjectSection(SolutionItems) = preProject
+		Documentation\Images\Banner.png = Documentation\Images\Banner.png
+		Documentation\Images\Logo.fw.png = Documentation\Images\Logo.fw.png
+		Documentation\Images\Logo.ico = Documentation\Images\Logo.ico
+		Documentation\Images\Logo1024x1024.png = Documentation\Images\Logo1024x1024.png
+		Documentation\Images\Logo128x128.png = Documentation\Images\Logo128x128.png
+		Documentation\Images\Logo256x256.png = Documentation\Images\Logo256x256.png
+		Documentation\Images\Logo32x32.png = Documentation\Images\Logo32x32.png
+		Documentation\Images\Logo512x512.png = Documentation\Images\Logo512x512.png
+		Documentation\Images\Logo64x64.png = Documentation\Images\Logo64x64.png
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,5 +58,7 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD} = {E5145F79-EE92-4CA5-B27A-2A0F778FC2FB}
+		{40AC1CCC-8F15-4266-8B22-703B2F5F61E2} = {C609E21A-67B9-4366-B91F-1DD5B045F1E8}
+		{3B85DF69-C598-48A8-8C7D-200B657B2EB6} = {40AC1CCC-8F15-4266-8B22-703B2F5F61E2}
 	EndGlobalSection
 EndGlobal
