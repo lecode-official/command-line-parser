@@ -45,6 +45,7 @@
     <Compile Include="Antlr\CommandLineLexer.cs" />
     <Compile Include="Antlr\CommandLineParser.cs" />
     <Compile Include="Antlr\CommandLineVisitor.cs" />
+    <Compile Include="ParameterConverters\ArrayOfBooleanParameterConverter.cs" />
     <Compile Include="ParameterConverters\BooleanParameterConverter.cs" />
     <Compile Include="ParameterConverters\EnumerationParameterConverter.cs" />
     <Compile Include="ParameterConverters\NumberParameterConverter.cs" />
