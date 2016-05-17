@@ -19,7 +19,7 @@ namespace System.CommandLine.Parser
     /// <summary>
     /// Represents a parser, which is able to parse command line parameters and convert them to strongly-typed .NET data types.
     /// </summary>
-    public class Parser
+    public class CommandLineParameterParser
     {
         #region Private Fields
 
