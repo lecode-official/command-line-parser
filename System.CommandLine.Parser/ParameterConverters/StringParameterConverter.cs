@@ -51,7 +51,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             else if (parameter.Kind == ParameterKind.Number)
                 value = (parameter as NumberParameter).Value.ToString();
             else
-                throw new InvalidOperationException("The parameter could not be converted.");
+                throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is not a value that can be converted to a string.");
 
             // Checks the type of the property, converts the value accordingly, and returns it
             if (propertyType == typeof(string))
@@ -60,7 +60,7 @@ namespace System.CommandLine.Parser.ParameterConverters
                 return new StringBuilder(value);
             
             // Since the value could not be converted, an exception is thrown
-            throw new InvalidOperationException("The parameter could not be converted.");
+            throw new InvalidOperationException("The parameter could not be converted, becaust the property is not assignable from string.");
         }
 
         #endregion
