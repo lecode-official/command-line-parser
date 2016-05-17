@@ -16,5 +16,5 @@ git clone https://github.com/lecode-official/command-line-parser
 
 ## Contributions
 
-Currently we are not accepting any contributors, but if you want to help, we would greatly appreciate feedback and bug reports. To file a bug, please use
-GitHub's issue system. Alternatively, you can clone the repository and send us a pull request.
+Currently I am not accepting any contributors, but if you want to help, I would greatly appreciate feedback and bug reports. To file a bug, please use
+GitHub's issue system. Alternatively, you can clone the repository and send me a pull request.
