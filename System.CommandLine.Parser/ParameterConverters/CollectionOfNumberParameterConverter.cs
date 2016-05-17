@@ -16,12 +16,12 @@ namespace System.CommandLine.Parser.ParameterConverters
     /// <summary>
     /// Represents a parameter converter, which is able to convert array parameters into any type of number collection.
     /// </summary>
-    public class ArrayOfNumberParameterConverter : IParameterConverter
+    public class CollectionOfNumberParameterConverter : IParameterConverter
     {
         #region Private Static Fields
 
         /// <summary>
-        /// Contains a list of all the collection types that are supported by the <see cref="ArrayOfNumberParameterConverter"/> parameter converter.
+        /// Contains a list of all the collection types that are supported by the <see cref="CollectionOfNumberParameterConverter"/> parameter converter.
         /// </summary>
         private static IEnumerable<Type> supportedCollectionTypes = new List<Type>
         {
@@ -41,7 +41,7 @@ namespace System.CommandLine.Parser.ParameterConverters
         };
 
         /// <summary>
-        /// Contains a list of all the CLR number types that are supported by the <see cref="ArrayOfNumberParameterConverter"/> parameter converter.
+        /// Contains a list of all the CLR number types that are supported by the <see cref="CollectionOfNumberParameterConverter"/> parameter converter.
         /// </summary>
         private static IEnumerable<Type> supportedNumberTypes = new List<Type>
         {
@@ -87,13 +87,13 @@ namespace System.CommandLine.Parser.ParameterConverters
         public bool CanConvert(Type propertyType, Parameter parameter)
         {
             // Checks if the property type is of one of the supported collection types, if not, then false is returned
-            if (!propertyType.IsArray && !ArrayOfNumberParameterConverter.supportedCollectionTypes.Any(supportedCollectionType => supportedCollectionType == propertyType.GetGenericTypeDefinition()))
+            if (!propertyType.IsArray && !CollectionOfNumberParameterConverter.supportedCollectionTypes.Any(supportedCollectionType => supportedCollectionType == propertyType.GetGenericTypeDefinition()))
                 return false;
 
             // Checks if the collection or array type is one of the supported number types, if not, then false is returned
-            if (!propertyType.IsArray && !ArrayOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetGenericArguments().First()))
+            if (!propertyType.IsArray && !CollectionOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetGenericArguments().First()))
                 return false;
-            if (propertyType.IsArray && !ArrayOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetElementType()))
+            if (propertyType.IsArray && !CollectionOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetElementType()))
                 return false;
 
             // Checks if the parameter is of type array, if not then the single item must be of type number, string, or boolean, otherwise all items must be of type number, string, or boolean
@@ -182,9 +182,9 @@ namespace System.CommandLine.Parser.ParameterConverters
             }
 
             // Determines the element type of the result collection
-            if (!propertyType.IsArray && !ArrayOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetGenericArguments().First()))
+            if (!propertyType.IsArray && !CollectionOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetGenericArguments().First()))
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
-            if (propertyType.IsArray && !ArrayOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetElementType()))
+            if (propertyType.IsArray && !CollectionOfNumberParameterConverter.supportedNumberTypes.Any(supportedNumberType => supportedNumberType == propertyType.GetElementType()))
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
             Type propertyContentType = propertyType.IsArray ? propertyType.GetElementType() : propertyType.GetGenericArguments().First();
 
@@ -201,9 +201,9 @@ namespace System.CommandLine.Parser.ParameterConverters
                 return array;
 
             // Since the property type is not an array, it collection type is determined
-            if (!ArrayOfNumberParameterConverter.collectionTypeConversionMap.ContainsKey(propertyType.GetGenericTypeDefinition()))
+            if (!CollectionOfNumberParameterConverter.collectionTypeConversionMap.ContainsKey(propertyType.GetGenericTypeDefinition()))
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
-            Type propertyResultType = ArrayOfNumberParameterConverter.collectionTypeConversionMap[propertyType.GetGenericTypeDefinition()].MakeGenericType(propertyContentType);
+            Type propertyResultType = CollectionOfNumberParameterConverter.collectionTypeConversionMap[propertyType.GetGenericTypeDefinition()].MakeGenericType(propertyContentType);
 
             // Instantiates a new result collection from the result type (all the collection types that are supported have a constructor that takes either an IList<> or an IEnumerable<> as a parameter)
             ConstructorInfo propertyTypeConstructorInfo = propertyResultType.GetConstructors().First(constructorInfo => constructorInfo.GetParameters().Count() == 1 && constructorInfo.GetParameters().First().ParameterType.IsAssignableFrom(arrayType));
