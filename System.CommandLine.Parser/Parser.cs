@@ -67,7 +67,7 @@ namespace System.CommandLine.Parser
                 return this.GetParameterValue(parameter);
             
             // Checks if the type of the parameter is numeric and whether it can be converted to the specified type
-            if (parameterType == typeof(double))
+            if (parameterType == typeof(decimal))
             {
                 if (type == typeof(decimal))
                     return Convert.ToDecimal(this.GetParameterValue(parameter));
@@ -155,7 +155,7 @@ namespace System.CommandLine.Parser
                 return typeof(bool);
             NumberParameter numberParameter = parameter as NumberParameter;
             if (numberParameter != null)
-                return typeof(double);
+                return typeof(decimal);
             StringParameter stringParameter = parameter as StringParameter;
             if (stringParameter != null)
                 return typeof(string);
@@ -206,7 +206,7 @@ namespace System.CommandLine.Parser
                 throw new InvalidOperationException();
 
             // Checks if the actual parameter type is a numeric type, in that case the parameter type must be some type of numeric type as well
-            if (actualParameterType == typeof(double))
+            if (actualParameterType == typeof(decimal))
             {
                 return parameterType == typeof(decimal) ||
                     parameterType == typeof(double) ||
@@ -248,7 +248,7 @@ namespace System.CommandLine.Parser
 
         #endregion
 
-        #region Public Static Methods
+        #region Public Methods
 
         /// <summary>
         /// Parses the specified command line parameters.
