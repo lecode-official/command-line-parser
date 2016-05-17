@@ -110,16 +110,13 @@ namespace System.CommandLine.Parser
         /// Parses the specified command line parameters and converts them into the specified type.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
-        /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public T Parse<T>(string commandLineParameters) where T : class
+        public object Parse(string commandLineParameters, Type returnType)
         {
             // Parses the command line parameters
             ParameterBag parameterBag = this.Parse(commandLineParameters);
-
-            // Gets the type information about the type that is to be instantiated
-            Type returnType = typeof(T);
-
+            
             // Determines the constructor, which is to be used for instantiating the specified type, the algorithm is greedy and uses the constructor with the most constructor arguments that can be matched from the parsed command line arguments
             ConstructorInfo chosenConstructorInfo = null;
             Dictionary<string, Type> chosenConstructorParameterInfos = null;
@@ -194,7 +191,7 @@ namespace System.CommandLine.Parser
             }
 
             // Craetes a new instance of the specified type and validates whether it could be instantiated, if not then an exception is thrown
-            T instance = chosenConstructorInfo.Invoke(constructorParameters) as T;
+            object instance = chosenConstructorInfo.Invoke(constructorParameters);
             if (instance == null)
                 throw new InvalidOperationException("No instance of the specified type could be constructed.");
 
@@ -232,11 +229,41 @@ namespace System.CommandLine.Parser
         }
 
         /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type.
+        /// </summary>
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public object Parse(Type returnType) => this.Parse(Environment.CommandLine, returnType);
+
+        /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type.
+        /// </summary>
+        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public T Parse<T>(string commandLineParameters) where T : class => this.Parse(commandLineParameters, typeof(T)) as T;
+
+        /// <summary>
         /// Parses the command line parameters that have been passed to the program and converts them into the specified type.
         /// </summary>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
         public T Parse<T>() where T : class => this.Parse<T>(Environment.CommandLine);
+
+        /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type asynchronously.
+        /// </summary>
+        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public Task<object> ParseAsync(string commandLineParameters, Type returnType) => Task.Run(() => this.Parse(commandLineParameters, returnType));
+
+        /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type asynchronously.
+        /// </summary>
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public Task<object> ParseAsync(Type returnType) => Task.Run(() => this.Parse(Environment.CommandLine, returnType));
 
         /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type asynchronously.
