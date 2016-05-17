@@ -178,7 +178,7 @@ namespace System.CommandLine.Parser
 
             // Checks if a constructor could be found, if not then an exception is thrown
             if (chosenConstructorInfo == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("No valid constructor could be found for the specified type.");
 
             // Prepares the constructor arguments
             object[] constructorParameters = new object[chosenConstructorParameterInfos.Count];
@@ -196,7 +196,7 @@ namespace System.CommandLine.Parser
             // Craetes a new instance of the specified type and validates whether it could be instantiated, if not then an exception is thrown
             T instance = chosenConstructorInfo.Invoke(constructorParameters) as T;
             if (instance == null)
-                throw new InvalidOperationException();
+                throw new InvalidOperationException("No instance of the specified type could be constructed.");
 
             // Matches the public properties of the instance and injects all possible command line parameters into it
             foreach (PropertyInfo propertyInfo in returnType.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(property => property.CanWrite))

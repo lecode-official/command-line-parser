@@ -76,7 +76,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             else if (parameter.Kind == ParameterKind.String)
             {
                 if (decimal.TryParse((parameter as StringParameter).Value, NumberStyles.Number, NumberParameterConverter.americanCultureInfo, out value))
-                    throw new InvalidOperationException("The parameter could not be converted.");
+                    throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is a string, which could not be converted into a number.");
             }
             else if (parameter.Kind == ParameterKind.Boolean)
             {
@@ -84,7 +84,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             }
             else
             {
-                throw new InvalidOperationException("The parameter could not be converted.");
+                throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is not a value that can be converted into a number.");
             }
 
             // Converts the retrieved value into the destination type
@@ -104,7 +104,7 @@ namespace System.CommandLine.Parser.ParameterConverters
                 return System.Convert.ToByte(value);
 
             // Since the value could not be converted, an exception is thrown
-            throw new InvalidOperationException("The parameter could not be converted.");
+            throw new InvalidOperationException("The parameter could not be converted, because the property is not assignable from any of the supported number types.");
         }
 
         #endregion

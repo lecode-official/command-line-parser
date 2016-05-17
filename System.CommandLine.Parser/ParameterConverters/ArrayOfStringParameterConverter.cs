@@ -98,7 +98,7 @@ namespace System.CommandLine.Parser.ParameterConverters
         {
             // Gets the converter for the specified property type, if it does not exist, then an exception is thrown
             if (!ArrayOfStringParameterConverter.conversionMap.ContainsKey(propertyType))
-                throw new InvalidOperationException("The parameter could not be converted.");
+                throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
             Func<IEnumerable<string>, object> converter = ArrayOfStringParameterConverter.conversionMap[propertyType];
 
             // Gets the value of the parameter
@@ -126,12 +126,12 @@ namespace System.CommandLine.Parser.ParameterConverters
                     else if (item.Kind == ParameterKind.Number)
                         parameterValue.Add((item as NumberParameter).Value.ToString());
                     else
-                        throw new InvalidOperationException("The parameter could not be converted.");
+                        throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is an array that contains values that can not be converted into a string.");
                 }
             }
             else
             {
-                throw new InvalidOperationException("The parameter could not be converted.");
+                throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is neither an array of values that can be converted into string nor a value that can be converted into a string.");
             }
 
             // Converts the parameter value into its destination value and returns it
