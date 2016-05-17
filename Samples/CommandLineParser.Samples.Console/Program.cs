@@ -69,7 +69,8 @@ namespace CommandLineParser.Samples.Console
             System.Console.WriteLine();
 
             // Parses the command line parameters passed to the application and prints them out
-            ParameterBag parameterBag = await Parser.ParseAsync();
+            Parser parser = new Parser();
+            ParameterBag parameterBag = await parser.ParseAsync();
             if (parameterBag.Parameters.Any())
             {
                 System.Console.WriteLine("Parameter bag content:");
@@ -78,7 +79,7 @@ namespace CommandLineParser.Samples.Console
             }
 
             // Parses the command line parameters passed to the application, injects them into a strongly typed object, and prints them out
-            CommandLineParameters commandLineParameters = await Parser.ParseAsync<CommandLineParameters>();
+            CommandLineParameters commandLineParameters = await parser.ParseAsync<CommandLineParameters>();
             System.Console.WriteLine("Parameters:");
             System.Console.WriteLine($"Method: {commandLineParameters.Method}");
             System.Console.WriteLine($"Number of bytes: {commandLineParameters.NumberOfBytes}");
