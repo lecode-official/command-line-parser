@@ -13,15 +13,6 @@ namespace System.CommandLine.Parser.ParameterConverters
     /// </summary>
     public class NumberParameterConverter : IParameterConverter
     {
-        #region Private Static Fields
-
-        /// <summary>
-        /// Contains the american culture info, which is used for number parsing.
-        /// </summary>
-        private static CultureInfo americanCultureInfo = new CultureInfo("en-US");
-
-        #endregion
-
         #region IParameterConverter Implementation
 
         /// <summary>
@@ -48,7 +39,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             if (parameter.Kind == ParameterKind.String)
             {
                 decimal value;
-                if (decimal.TryParse((parameter as StringParameter).Value, NumberStyles.Number, NumberParameterConverter.americanCultureInfo, out value))
+                if (decimal.TryParse((parameter as StringParameter).Value, NumberStyles.Number, CultureInfo.InvariantCulture, out value))
                     return true;
                 else
                     return false;
@@ -75,7 +66,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             }
             else if (parameter.Kind == ParameterKind.String)
             {
-                if (decimal.TryParse((parameter as StringParameter).Value, NumberStyles.Number, NumberParameterConverter.americanCultureInfo, out value))
+                if (!decimal.TryParse((parameter as StringParameter).Value, NumberStyles.Number, CultureInfo.InvariantCulture, out value))
                     throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is a string, which could not be converted into a number.");
             }
             else if (parameter.Kind == ParameterKind.Boolean)
@@ -88,20 +79,11 @@ namespace System.CommandLine.Parser.ParameterConverters
             }
 
             // Converts the retrieved value into the destination type
-            if (propertyType == typeof(decimal))
-                return System.Convert.ToDecimal(value);
-            if (propertyType == typeof(double))
-                return System.Convert.ToDouble(value);
-            if (propertyType == typeof(float))
-                return System.Convert.ToSingle(value);
-            if (propertyType == typeof(long))
-                return System.Convert.ToInt64(value);
-            if (propertyType == typeof(int))
-                return System.Convert.ToInt32(value);
-            if (propertyType == typeof(short))
-                return System.Convert.ToInt16(value);
-            if (propertyType == typeof(byte))
-                return System.Convert.ToByte(value);
+            try
+            {
+                return System.Convert.ChangeType(value, propertyType);
+            }
+            catch (Exception) { }
 
             // Since the value could not be converted, an exception is thrown
             throw new InvalidOperationException("The parameter could not be converted, because the property is not assignable from any of the supported number types.");
