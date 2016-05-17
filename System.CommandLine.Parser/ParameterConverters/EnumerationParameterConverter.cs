@@ -46,14 +46,14 @@ namespace System.CommandLine.Parser.ParameterConverters
             if (parameter.Kind == ParameterKind.String && propertyType.IsEnumDefined((parameter as StringParameter).Value))
                 value = Enum.Parse(propertyType, (parameter as StringParameter).Value);
             else
-                throw new InvalidOperationException("The parameter could not be converted.");
+                throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is not a string, or the value is not a valid value for the enumeration.");
 
             // Checks the type of the property, converts the value accordingly, and returns it
             if (propertyType.IsEnum)
                 return value;
 
             // Since the value could not be converted, an exception is thrown
-            throw new InvalidOperationException("The parameter could not be converted.");
+            throw new InvalidOperationException("The parameter could not be converted, because the property is of an enumeration type.");
         }
 
         #endregion
