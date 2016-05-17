@@ -19,16 +19,16 @@ namespace System.CommandLine.Parser
     /// <summary>
     /// Represents a parser, which is able to parse command line parameters and convert them to strongly-typed .NET data types.
     /// </summary>
-    public static class Parser
+    public class Parser
     {
-        #region Private Static Methods
+        #region Private Methods
 
         /// <summary>
         /// Gets the value of the specified parameter.
         /// </summary>
         /// <param name="parameter">The parameter whose value is to be retrieved.</param>
         /// <returns>Returns the value of the parameter. If the type of the parameter could not be determined then <c>null</c> is returned.</returns>
-        private static object GetParameterValue(Parameter parameter)
+        private object GetParameterValue(Parameter parameter)
         {
             // Determines the type of the parameter and returns its value accordingly
             BooleanParameter booleanParameter = parameter as BooleanParameter;
@@ -57,32 +57,32 @@ namespace System.CommandLine.Parser
         /// <param name="type">The type into which the value of the parameter should be casted.</param>
         /// <param name="parameter">The parameter whose value is to be retrieved.</param>
         /// <returns>Returns the value of the specified parameter casted to the specified type.</returns>
-        private static object GetParameterValue(Type type, Parameter parameter)
+        private object GetParameterValue(Type type, Parameter parameter)
         {
             // Gets the type of the command line parameter
-            Type parameterType = Parser.GetParameterType(parameter);
+            Type parameterType = this.GetParameterType(parameter);
 
             // Checks if the parameter can be assigned to the specified type
             if (type.IsAssignableFrom(parameterType))
-                return Parser.GetParameterValue(parameter);
+                return this.GetParameterValue(parameter);
             
             // Checks if the type of the parameter is numeric and whether it can be converted to the specified type
             if (parameterType == typeof(double))
             {
                 if (type == typeof(decimal))
-                    return Convert.ToDecimal(Parser.GetParameterValue(parameter));
+                    return Convert.ToDecimal(this.GetParameterValue(parameter));
                 if (type == typeof(double))
-                    return Convert.ToDouble(Parser.GetParameterValue(parameter));
+                    return Convert.ToDouble(this.GetParameterValue(parameter));
                 if (type == typeof(float))
-                    return Convert.ToSingle(Parser.GetParameterValue(parameter));
+                    return Convert.ToSingle(this.GetParameterValue(parameter));
                 if (type == typeof(long))
-                    return Convert.ToInt64(Parser.GetParameterValue(parameter));
+                    return Convert.ToInt64(this.GetParameterValue(parameter));
                 if (type == typeof(int))
-                    return Convert.ToInt32(Parser.GetParameterValue(parameter));
+                    return Convert.ToInt32(this.GetParameterValue(parameter));
                 if (type == typeof(short))
-                    return Convert.ToInt16(Parser.GetParameterValue(parameter));
+                    return Convert.ToInt16(this.GetParameterValue(parameter));
                 if (type == typeof(byte))
-                    return Convert.ToByte(Parser.GetParameterValue(parameter));
+                    return Convert.ToByte(this.GetParameterValue(parameter));
             }
 
             // Checks if the type of the parameter is an empty array, if so then it is tried to create the destination type if it is a collection type
@@ -117,7 +117,7 @@ namespace System.CommandLine.Parser
                         {
                             IList list = defaultConstructorInfo.Invoke(new object[0]) as IList;
                             foreach (Parameter arrayContentParameter in (parameter as ArrayParameter).Value)
-                                list.Add(Parser.GetParameterValue(typeof(object), arrayContentParameter));
+                                list.Add(this.GetParameterValue(typeof(object), arrayContentParameter));
                         }
                     }
 
@@ -132,7 +132,7 @@ namespace System.CommandLine.Parser
                             MethodInfo addMethod = collectionType.GetMethod("Add");
                             object list = defaultConstructorInfo.Invoke(new object[0]);
                             foreach (Parameter arrayContentParameter in (parameter as ArrayParameter).Value)
-                                addMethod.Invoke(list, new object[] { Parser.GetParameterValue(genericCollectionParameterType, arrayContentParameter) });
+                                addMethod.Invoke(list, new object[] { this.GetParameterValue(genericCollectionParameterType, arrayContentParameter) });
                         }
                     }
                 }
@@ -147,7 +147,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="parameter">The parameter whose type is to be retrieved.</param>
         /// <returns>Returns the type of the parameter. If the type of the parameter can not be determined then <c>null</c> is returned.</returns>
-        private static Type GetParameterType(Parameter parameter)
+        private Type GetParameterType(Parameter parameter)
         {
             // Checks if the parameter is a simple data type, if so then its simple type is returned
             BooleanParameter booleanParameter = parameter as BooleanParameter;
@@ -172,7 +172,7 @@ namespace System.CommandLine.Parser
                     return typeof(IEnumerable<>);
 
                 // Gets the types of the items of the array
-                IEnumerable<Type> arrayContentTypes = arrayParameter.Value.Select(value => Parser.GetParameterType(value));
+                IEnumerable<Type> arrayContentTypes = arrayParameter.Value.Select(value => this.GetParameterType(value));
 
                 // Checks if all types of the contents are the same, in that case the type is returned
                 if (arrayContentTypes.GroupBy(type => type.FullName).Count() == 1)
@@ -198,10 +198,10 @@ namespace System.CommandLine.Parser
         /// <param name="parameterType">The type for which is to be checked whether the value of the parameter can be assigned.</param>
         /// <param name="parameter">The parameter for which is to be checked whether it is assignable to the specified type.</param>
         /// <returns>Returns <c>true</c> if the value of the parameter can be assigned to the specified type and <c>false</c> otherwise.</returns>
-        private static bool IsParameterAssignable(Type parameterType, Parameter parameter)
+        private bool IsParameterAssignable(Type parameterType, Parameter parameter)
         {
             // Gets the type of the specified parameter and checks if the type could be determined, if not then an excpetion is thrown
-            Type actualParameterType = Parser.GetParameterType(parameter);
+            Type actualParameterType = this.GetParameterType(parameter);
             if (actualParameterType == null)
                 throw new InvalidOperationException();
 
@@ -255,7 +255,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <returns>Returns the parsed parameters.</returns>
-        public static ParameterBag Parse(string commandLineParameters)
+        public ParameterBag Parse(string commandLineParameters)
         {
             // Parses the command line parameters using the ANTRL4 generated parsers
             CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
@@ -277,20 +277,20 @@ namespace System.CommandLine.Parser
         /// Parses the command line parameters that have been passed to the program.
         /// </summary>
         /// <returns>Returns the parsed parameters.</returns>
-        public static ParameterBag Parse() => Parser.Parse(Environment.CommandLine);
+        public ParameterBag Parse() => this.Parse(Environment.CommandLine);
 
         /// <summary>
         /// Parses the specified command line parameters asynchronously.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <returns>Returns the parsed parameters.</returns>
-        public static Task<ParameterBag> ParseAsync(string commandLineParameters) => Task.Run(() => Parser.Parse(commandLineParameters));
+        public Task<ParameterBag> ParseAsync(string commandLineParameters) => Task.Run(() => this.Parse(commandLineParameters));
 
         /// <summary>
         /// Parses the command line parameters that have been passed to the program asynchronously.
         /// </summary>
         /// <returns>Returns the parsed parameters.</returns>
-        public static Task<ParameterBag> ParseAsync() => Task.Run(() => Parser.Parse());
+        public Task<ParameterBag> ParseAsync() => Task.Run(() => this.Parse());
 
         /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type.
@@ -298,10 +298,10 @@ namespace System.CommandLine.Parser
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public static T Parse<T>(string commandLineParameters) where T : class
+        public T Parse<T>(string commandLineParameters) where T : class
         {
             // Parses the command line parameters
-            ParameterBag parameterBag = Parser.Parse(commandLineParameters);
+            ParameterBag parameterBag = this.Parse(commandLineParameters);
 
             // Gets the type information about the type that is to be instantiated
             Type returnType = typeof(T);
@@ -354,7 +354,7 @@ namespace System.CommandLine.Parser
                     }
 
                     // Checks if the type of the commmand line parameter assignable to the constructor argument
-                    if (!Parser.IsParameterAssignable(parameterType, parameter))
+                    if (!this.IsParameterAssignable(parameterType, parameter))
                     {
                         canConstructorBeUsed = false;
                         break;
@@ -384,7 +384,7 @@ namespace System.CommandLine.Parser
                 Parameter parameter = parameterBag.Parameters[parameterName];
 
                 // Sets the constructor parameter
-                constructorParameters[i] = Parser.GetParameterValue(parameterType, parameter);
+                constructorParameters[i] = this.GetParameterValue(parameterType, parameter);
             }
 
             // Craetes a new instance of the specified type and validates whether it could be instantiated, if not then an exception is thrown
@@ -412,13 +412,13 @@ namespace System.CommandLine.Parser
                     continue;
 
                 // Checks if the type of the commmand line parameter assignable to the property
-                if (!Parser.IsParameterAssignable(propertyInfo.PropertyType, parameter))
+                if (!this.IsParameterAssignable(propertyInfo.PropertyType, parameter))
                     continue;
 
                 // Assigns the command line parameter value to the property
                 try
                 {
-                    propertyInfo.SetMethod.Invoke(instance, new object[] { Parser.GetParameterValue(propertyInfo.PropertyType, parameter) });
+                    propertyInfo.SetMethod.Invoke(instance, new object[] { this.GetParameterValue(propertyInfo.PropertyType, parameter) });
                 }
                 catch (InvalidOperationException) { }
             }
@@ -432,7 +432,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public static T Parse<T>() where T : class => Parser.Parse<T>(Environment.CommandLine);
+        public T Parse<T>() where T : class => this.Parse<T>(Environment.CommandLine);
 
         /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type asynchronously.
@@ -440,14 +440,14 @@ namespace System.CommandLine.Parser
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public static Task<T> ParseAsync<T>(string commandLineParameters) where T : class => Task.Run(() => Parser.Parse<T>(commandLineParameters));
+        public Task<T> ParseAsync<T>(string commandLineParameters) where T : class => Task.Run(() => this.Parse<T>(commandLineParameters));
 
         /// <summary>
         /// Parses the command line parameters that have been passed to the program and converts them into the specified type asynchronously.
         /// </summary>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public static Task<T> ParseAsync<T>() where T : class => Task.Run(() => Parser.Parse<T>());
+        public Task<T> ParseAsync<T>() where T : class => Task.Run(() => this.Parse<T>());
 
         #endregion
     }
