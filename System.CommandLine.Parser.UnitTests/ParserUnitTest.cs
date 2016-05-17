@@ -501,7 +501,7 @@ namespace System.CommandLine.Parser.UnitTests
         }
 
         /// <summary>
-        /// Tests how the parser handle the command line parameter injection into a class with some simple-type properties.
+        /// Tests how the parser handles the command line parameter injection into a class with some simple-type properties.
         /// </summary>
         [TestMethod]
         public void SimplePropertyParameterContainerInjectionTest()
@@ -516,13 +516,16 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(simplePropertyParameterContainer.Enumeration, DayOfWeek.Monday);
         }
 
+        /// <summary>
+        /// Tests how the parser handles the command line parameter injection into a class with array-type properties.
+        /// </summary>
         [TestMethod]
         public void ArrayPropertyParameterContainerInjectionTest()
         {
             // Parses command line parameters that contain an array of boolean values and validates that the object was properly created
             Parser parser = new Parser();
             ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/BooleanArray [true, 1, false, 0]");
-            Assert.IsNotNull(arrayPropertyParameterContainer);
+            Assert.IsNotNull(arrayPropertyParameterContainer.BooleanArray);
             Assert.IsTrue(arrayPropertyParameterContainer.BooleanArray.ElementAt(0));
             Assert.IsTrue(arrayPropertyParameterContainer.BooleanArray.ElementAt(1));
             Assert.IsFalse(arrayPropertyParameterContainer.BooleanArray.ElementAt(2));
@@ -530,12 +533,20 @@ namespace System.CommandLine.Parser.UnitTests
 
             // Parses command line parameters that contain an array of string values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/StringArray [abc, 123, \"abc XYZ\", 123.456, true]");
-            Assert.IsNotNull(arrayPropertyParameterContainer);
+            Assert.IsNotNull(arrayPropertyParameterContainer.StringArray);
             Assert.AreEqual(arrayPropertyParameterContainer.StringArray[0], "abc");
             Assert.AreEqual(arrayPropertyParameterContainer.StringArray[1], "123");
             Assert.AreEqual(arrayPropertyParameterContainer.StringArray[2], "abc XYZ");
             Assert.AreEqual(arrayPropertyParameterContainer.StringArray[3], "123.456");
             Assert.AreEqual(arrayPropertyParameterContainer.StringArray[4], "True");
+
+            // Parses command line parameters that contain an array of number values and validates that the object was properly created
+            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("--NumberArray:[123.456, 123, true, \"456\"]");
+            Assert.IsNotNull(arrayPropertyParameterContainer.NumberArray);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(0), 1.0d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(1), 123.0d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(2), 123.456d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(3), 456.0d);
         }
 
         #endregion
@@ -681,6 +692,11 @@ namespace System.CommandLine.Parser.UnitTests
             /// Gets or sets the "StringArray" command line parameter.
             /// </summary>
             public List<string> StringArray { get; set; }
+
+            /// <summary>
+            /// Gets or sets the "NumberArray" command line parameter.
+            /// </summary>
+            public SortedSet<double> NumberArray { get; set; }
 
             #endregion
         }
