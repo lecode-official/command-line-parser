@@ -28,7 +28,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             [typeof(IList<string>)] = array => array.ToList(),
             [typeof(IEnumerable<string>)] = array => array.ToList(),
             [typeof(ICollection<string>)] = array => new Collection<string>(array.ToList()),
-            [typeof(ISet<string>)] = array => new SortedSet<string>(array),
+            [typeof(ISet<string>)] = array => new HashSet<string>(array),
             [typeof(IReadOnlyCollection<string>)] = array => new ReadOnlyCollection<string>(array.ToList()),
             [typeof(IReadOnlyList<string>)] = array => new ReadOnlyCollection<string>(array.ToList()),
             [typeof(List<string>)] = array => array.ToList(),
@@ -36,13 +36,14 @@ namespace System.CommandLine.Parser.ParameterConverters
             [typeof(LinkedList<string>)] = array => new LinkedList<string>(array),
             [typeof(Queue<string>)] = array => new Queue<string>(array),
             [typeof(SortedSet<string>)] = array => new SortedSet<string>(array),
+            [typeof(HashSet<string>)] = array => new HashSet<string>(array),
             [typeof(Stack<string>)] = array => new Stack<string>(array),
 
             [typeof(StringBuilder[])] = array => array.Select(item => new StringBuilder(item)).ToArray(),
             [typeof(IList<StringBuilder>)] = array => array.Select(item => new StringBuilder(item)).ToList(),
             [typeof(IEnumerable<StringBuilder>)] = array => array.Select(item => new StringBuilder(item)).ToList(),
             [typeof(ICollection<StringBuilder>)] = array => new Collection<StringBuilder>(array.Select(item => new StringBuilder(item)).ToList()),
-            [typeof(ISet<StringBuilder>)] = array => new SortedSet<StringBuilder>(array.Select(item => new StringBuilder(item))),
+            [typeof(ISet<StringBuilder>)] = array => new HashSet<StringBuilder>(array.Select(item => new StringBuilder(item))),
             [typeof(IReadOnlyCollection<StringBuilder>)] = array => new ReadOnlyCollection<StringBuilder>(array.Select(item => new StringBuilder(item)).ToList()),
             [typeof(IReadOnlyList<StringBuilder>)] = array => new ReadOnlyCollection<StringBuilder>(array.Select(item => new StringBuilder(item)).ToList()),
             [typeof(List<StringBuilder>)] = array => array.Select(item => new StringBuilder(item)).ToList(),
@@ -50,6 +51,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             [typeof(LinkedList<StringBuilder>)] = array => new LinkedList<StringBuilder>(array.Select(item => new StringBuilder(item))),
             [typeof(Queue<StringBuilder>)] = array => new Queue<StringBuilder>(array.Select(item => new StringBuilder(item))),
             [typeof(SortedSet<StringBuilder>)] = array => new SortedSet<StringBuilder>(array.Select(item => new StringBuilder(item))),
+            [typeof(HashSet<StringBuilder>)] = array => new HashSet<StringBuilder>(array.Select(item => new StringBuilder(item))),
             [typeof(Stack<StringBuilder>)] = array => new Stack<StringBuilder>(array.Select(item => new StringBuilder(item)))
         };
 
