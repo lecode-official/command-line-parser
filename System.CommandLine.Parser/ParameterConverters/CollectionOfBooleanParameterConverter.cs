@@ -13,7 +13,7 @@ namespace System.CommandLine.Parser.ParameterConverters
     /// <summary>
     /// Represents a parameter converter, which is able to convert array parameters into any type of boolean collection.
     /// </summary>
-    public class ArrayOfBooleanParameterConverter : IParameterConverter
+    public class CollectionOfBooleanParameterConverter : IParameterConverter
     {
         #region Private Static Fields
 
@@ -51,7 +51,7 @@ namespace System.CommandLine.Parser.ParameterConverters
         public bool CanConvert(Type propertyType, Parameter parameter)
         {
             // Checks if the property is of one of the supported types
-            if (!ArrayOfBooleanParameterConverter.conversionMap.ContainsKey(propertyType))
+            if (!CollectionOfBooleanParameterConverter.conversionMap.ContainsKey(propertyType))
                 return false;
 
             // Checks if the parameter is of type array, if not then the single item must be of type boolean or number, otherwise all items must be of type boolean or number
@@ -83,9 +83,9 @@ namespace System.CommandLine.Parser.ParameterConverters
         public object Convert(Type propertyType, Parameter parameter)
         {
             // Gets the converter for the specified property type, if it does not exist, then an exception is thrown
-            if (!ArrayOfBooleanParameterConverter.conversionMap.ContainsKey(propertyType))
+            if (!CollectionOfBooleanParameterConverter.conversionMap.ContainsKey(propertyType))
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
-            Func<IEnumerable<bool>, object> converter = ArrayOfBooleanParameterConverter.conversionMap[propertyType];
+            Func<IEnumerable<bool>, object> converter = CollectionOfBooleanParameterConverter.conversionMap[propertyType];
 
             // Gets the value of the parameter
             List<bool> parameterValue = new List<bool>();
