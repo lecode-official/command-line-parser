@@ -15,7 +15,7 @@ namespace System.CommandLine.Parser.ParameterConverters
     /// <summary>
     /// Represents a parameter converter, which is able to convert array parameters into any type of string collection.
     /// </summary>
-    public class ArrayOfStringParameterConverter : IParameterConverter
+    public class CollectionOfStringParameterConverter : IParameterConverter
     {
         #region Private Static Fields
 
@@ -68,7 +68,7 @@ namespace System.CommandLine.Parser.ParameterConverters
         public bool CanConvert(Type propertyType, Parameter parameter)
         {
             // Checks if the property is of one of the supported types
-            if (!ArrayOfStringParameterConverter.conversionMap.ContainsKey(propertyType))
+            if (!CollectionOfStringParameterConverter.conversionMap.ContainsKey(propertyType))
                 return false;
 
             // Checks if the parameter is of type array, if not then the single item must be of type string, boolean, or number, otherwise all items must be of type string, boolean, or number
@@ -100,9 +100,9 @@ namespace System.CommandLine.Parser.ParameterConverters
         public object Convert(Type propertyType, Parameter parameter)
         {
             // Gets the converter for the specified property type, if it does not exist, then an exception is thrown
-            if (!ArrayOfStringParameterConverter.conversionMap.ContainsKey(propertyType))
+            if (!CollectionOfStringParameterConverter.conversionMap.ContainsKey(propertyType))
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
-            Func<IEnumerable<string>, object> converter = ArrayOfStringParameterConverter.conversionMap[propertyType];
+            Func<IEnumerable<string>, object> converter = CollectionOfStringParameterConverter.conversionMap[propertyType];
 
             // Gets the value of the parameter
             List<string> parameterValue = new List<string>();
