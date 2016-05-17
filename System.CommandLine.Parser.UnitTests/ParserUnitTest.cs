@@ -508,11 +508,12 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses command line parameters and validates that the object was properly created
             Parser parser = new Parser();
-            SimplePropertyParameterContainer simplePropertyParameterContainer = parser.Parse<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true");
+            SimplePropertyParameterContainer simplePropertyParameterContainer = parser.Parse<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true /enum:Monday");
             Assert.IsNotNull(simplePropertyParameterContainer);
             Assert.AreEqual(simplePropertyParameterContainer.String, "abc XYZ");
             Assert.AreEqual(simplePropertyParameterContainer.Number, 123.456d);
             Assert.AreEqual(simplePropertyParameterContainer.Boolean, true);
+            Assert.AreEqual(simplePropertyParameterContainer.Enumeration, DayOfWeek.Monday);
         }
 
         [TestMethod]
@@ -654,6 +655,12 @@ namespace System.CommandLine.Parser.UnitTests
             /// </summary>
             [ParameterName("string")]
             public string String { get; set; }
+
+            /// <summary>
+            /// Gets or sets the "enum" command line parameter.
+            /// </summary>
+            [ParameterName("enum")]
+            public DayOfWeek Enumeration { get; set; }
 
             #endregion
         }
