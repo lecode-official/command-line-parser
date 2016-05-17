@@ -2,6 +2,7 @@
 #region Using Directives
 
 using System.CommandLine.Parser.Parameters;
+using System.Globalization;
 using System.Text;
 
 #endregion
@@ -49,7 +50,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             else if (parameter.Kind == ParameterKind.Boolean)
                 value = (parameter as BooleanParameter).Value.ToString();
             else if (parameter.Kind == ParameterKind.Number)
-                value = (parameter as NumberParameter).Value.ToString();
+                value = (parameter as NumberParameter).Value.ToString(CultureInfo.InvariantCulture);
             else
                 throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is not a value that can be converted to a string.");
 

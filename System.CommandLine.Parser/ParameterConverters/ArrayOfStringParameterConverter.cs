@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.CommandLine.Parser.Parameters;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -113,7 +114,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             }
             else if (parameter.Kind == ParameterKind.Number)
             {
-                parameterValue.Add((parameter as NumberParameter).Value.ToString());
+                parameterValue.Add((parameter as NumberParameter).Value.ToString(CultureInfo.InvariantCulture));
             }
             else if (parameter.Kind == ParameterKind.Array)
             {
@@ -124,7 +125,7 @@ namespace System.CommandLine.Parser.ParameterConverters
                     else if (item.Kind == ParameterKind.Boolean)
                         parameterValue.Add((item as BooleanParameter).Value.ToString());
                     else if (item.Kind == ParameterKind.Number)
-                        parameterValue.Add((item as NumberParameter).Value.ToString());
+                        parameterValue.Add((item as NumberParameter).Value.ToString(CultureInfo.InvariantCulture));
                     else
                         throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is an array that contains values that can not be converted into a string.");
                 }
