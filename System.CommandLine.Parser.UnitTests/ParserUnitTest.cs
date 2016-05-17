@@ -515,6 +515,28 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(simplePropertyParameterContainer.Boolean, true);
         }
 
+        [TestMethod]
+        public void ArrayPropertyParameterContainerInjectionTest()
+        {
+            // Parses command line parameters that contain an array of boolean values and validates that the object was properly created
+            Parser parser = new Parser();
+            ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/BooleanArray [true, 1, false, 0]");
+            Assert.IsNotNull(arrayPropertyParameterContainer);
+            Assert.IsTrue(arrayPropertyParameterContainer.BooleanArray.ElementAt(0));
+            Assert.IsTrue(arrayPropertyParameterContainer.BooleanArray.ElementAt(1));
+            Assert.IsFalse(arrayPropertyParameterContainer.BooleanArray.ElementAt(2));
+            Assert.IsFalse(arrayPropertyParameterContainer.BooleanArray.ElementAt(3));
+
+            // Parses command line parameters that contain an array of string values and validates that the object was properly created
+            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/StringArray [abc, 123, \"abc XYZ\", 123.456, true]");
+            Assert.IsNotNull(arrayPropertyParameterContainer);
+            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[0], "abc");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[1], "123");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[2], "abc XYZ");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[3], "123.456");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[4], "True");
+        }
+
         #endregion
 
         #region Nested Types
@@ -632,6 +654,26 @@ namespace System.CommandLine.Parser.UnitTests
             /// </summary>
             [ParameterName("string")]
             public string String { get; set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Represents a parameter container, which is used to test the injection of array data types.
+        /// </summary>
+        private class ArrayPropertyParameterContainer
+        {
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the "BooleanArray" command line parameter.
+            /// </summary>
+            public IEnumerable<bool> BooleanArray { get; set; }
+
+            /// <summary>
+            /// Gets or sets the "StringArray" command line parameter.
+            /// </summary>
+            public List<string> StringArray { get; set; }
 
             #endregion
         }
