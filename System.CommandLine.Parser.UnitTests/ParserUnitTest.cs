@@ -543,9 +543,9 @@ namespace System.CommandLine.Parser.UnitTests
             // Parses command line parameters that contain an array of number values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("--NumberArray:[123.456, 123, true, \"456\"]");
             Assert.IsNotNull(arrayPropertyParameterContainer.NumberArray);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(0), 1.0d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(0), 123.456d);
             Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(1), 123.0d);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(2), 123.456d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(2), 1.0d);
             Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(3), 456.0d);
         }
 
@@ -696,7 +696,7 @@ namespace System.CommandLine.Parser.UnitTests
             /// <summary>
             /// Gets or sets the "NumberArray" command line parameter.
             /// </summary>
-            public SortedSet<double> NumberArray { get; set; }
+            public HashSet<double> NumberArray { get; set; }
 
             #endregion
         }

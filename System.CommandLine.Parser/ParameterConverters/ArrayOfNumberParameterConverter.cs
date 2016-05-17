@@ -36,6 +36,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             typeof(LinkedList<>),
             typeof(Queue<>),
             typeof(SortedSet<>),
+            typeof(HashSet<>),
             typeof(Stack<>)
         };
 
@@ -61,7 +62,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             [typeof(IList<>)] = typeof(List<>),
             [typeof(IEnumerable<>)] = typeof(List<>),
             [typeof(ICollection<>)] = typeof(Collection<>),
-            [typeof(ISet<>)] = typeof(SortedSet<>),
+            [typeof(ISet<>)] = typeof(HashSet<>),
             [typeof(IReadOnlyCollection<>)] = typeof(ReadOnlyCollection<>),
             [typeof(IReadOnlyList<>)] = typeof(ReadOnlyCollection<>),
             [typeof(List<>)] = typeof(List<>),
@@ -69,6 +70,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             [typeof(LinkedList<>)] = typeof(LinkedList<>),
             [typeof(Queue<>)] = typeof(Queue<>),
             [typeof(SortedSet<>)] = typeof(SortedSet<>),
+            [typeof(HashSet<>)] = typeof(HashSet<>),
             [typeof(Stack<>)] = typeof(Stack<>)
         };
 

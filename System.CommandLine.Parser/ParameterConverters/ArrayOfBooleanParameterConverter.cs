@@ -26,7 +26,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             [typeof(IList<bool>)] = array => array.ToList(),
             [typeof(IEnumerable<bool>)] = array => array.ToList(),
             [typeof(ICollection<bool>)] = array => new Collection<bool>(array.ToList()),
-            [typeof(ISet<bool>)] = array => new SortedSet<bool>(array),
+            [typeof(ISet<bool>)] = array => new HashSet<bool>(array),
             [typeof(IReadOnlyCollection<bool>)] = array => new ReadOnlyCollection<bool>(array.ToList()),
             [typeof(IReadOnlyList<bool>)] = array => new ReadOnlyCollection<bool>(array.ToList()),
             [typeof(List<bool>)] = array => array.ToList(),
@@ -34,6 +34,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             [typeof(LinkedList<bool>)] = array => new LinkedList<bool>(array),
             [typeof(Queue<bool>)] = array => new Queue<bool>(array),
             [typeof(SortedSet<bool>)] = array => new SortedSet<bool>(array),
+            [typeof(HashSet<bool>)] = array => new HashSet<bool>(array),
             [typeof(Stack<bool>)] = array => new Stack<bool>(array)
         };
 
