@@ -32,8 +32,9 @@ namespace System.CommandLine.Parser
             new BooleanParameterConverter(),
             new EnumerationParameterConverter(),
             new StringParameterConverter(),
-            new ArrayOfStringParameterConverter(),
-            new ArrayOfBooleanParameterConverter()
+            new ArrayOfNumberParameterConverter(),
+            new ArrayOfBooleanParameterConverter(),
+            new ArrayOfStringParameterConverter()
         };
 
         #endregion
