@@ -34,6 +34,7 @@ namespace System.CommandLine.Parser
             new StringParameterConverter(),
             new CollectionOfNumberParameterConverter(),
             new CollectionOfBooleanParameterConverter(),
+            new CollectionOfEnumerationParameterConverter(),
             new CollectionOfStringParameterConverter()
         };
 
