@@ -174,6 +174,10 @@ namespace System.CommandLine.Parser.ParameterConverters
                     {
                         parameterValue.Add((item as BooleanParameter).Value ? 1 : 0);
                     }
+                    else
+                    {
+                        throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is an array that contains values that can not be converted into a number.");
+                    }
                 }
             }
             else
