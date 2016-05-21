@@ -204,7 +204,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             if (propertyType.IsArray)
                 return array;
 
-            // Since the property type is not an array, it collection type is determined
+            // Since the property type is not an array, its collection type is determined
             if (!CollectionOfNumberParameterConverter.collectionTypeConversionMap.ContainsKey(propertyType.GetGenericTypeDefinition()))
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
             Type propertyResultType = CollectionOfNumberParameterConverter.collectionTypeConversionMap[propertyType.GetGenericTypeDefinition()].MakeGenericType(propertyContentType);
