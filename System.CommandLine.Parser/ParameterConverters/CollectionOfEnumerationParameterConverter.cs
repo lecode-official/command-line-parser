@@ -86,7 +86,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             {
                 foreach (Parameter item in (parameter as ArrayParameter).Value)
                 {
-                    if (parameter.Kind != ParameterKind.String && !propertyType.IsEnumDefined((item as StringParameter).Value))
+                    if (item.Kind != ParameterKind.String && !propertyType.IsEnumDefined((item as StringParameter).Value))
                         return false;
                 }
             }
