@@ -524,29 +524,40 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses command line parameters that contain an array of boolean values and validates that the object was properly created
             CommandLineParameterParser parser = new CommandLineParameterParser();
-            ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/BooleanArray [true, 1, false, 0]");
-            Assert.IsNotNull(arrayPropertyParameterContainer.BooleanArray);
-            Assert.IsTrue(arrayPropertyParameterContainer.BooleanArray.ElementAt(0));
-            Assert.IsTrue(arrayPropertyParameterContainer.BooleanArray.ElementAt(1));
-            Assert.IsFalse(arrayPropertyParameterContainer.BooleanArray.ElementAt(2));
-            Assert.IsFalse(arrayPropertyParameterContainer.BooleanArray.ElementAt(3));
+            ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/BooleanCollection [true, 1, false, 0]");
+            Assert.IsNotNull(arrayPropertyParameterContainer.BooleanCollection);
+            Assert.IsTrue(arrayPropertyParameterContainer.BooleanCollection.ElementAt(0));
+            Assert.IsTrue(arrayPropertyParameterContainer.BooleanCollection.ElementAt(1));
+            Assert.IsFalse(arrayPropertyParameterContainer.BooleanCollection.ElementAt(2));
+            Assert.IsFalse(arrayPropertyParameterContainer.BooleanCollection.ElementAt(3));
 
             // Parses command line parameters that contain an array of string values and validates that the object was properly created
-            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/StringArray [abc, 123, \"abc XYZ\", 123.456, true]");
-            Assert.IsNotNull(arrayPropertyParameterContainer.StringArray);
-            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[0], "abc");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[1], "123");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[2], "abc XYZ");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[3], "123.456");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringArray[4], "True");
+            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/StringCollection [abc, 123, \"abc XYZ\", 123.456, true]");
+            Assert.IsNotNull(arrayPropertyParameterContainer.StringCollection);
+            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[0], "abc");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[1], "123");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[2], "abc XYZ");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[3], "123.456");
+            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[4], "True");
 
             // Parses command line parameters that contain an array of number values and validates that the object was properly created
-            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("--NumberArray:[123.456, 123, true, \"456\"]");
-            Assert.IsNotNull(arrayPropertyParameterContainer.NumberArray);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(0), 123.456d);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(1), 123.0d);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(2), 1.0d);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberArray.ElementAt(3), 456.0d);
+            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("--NumberCollection:[123.456, 123, true, \"456\"]");
+            Assert.IsNotNull(arrayPropertyParameterContainer.NumberCollection);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(0), 123.456d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(1), 123.0d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(2), 1.0d);
+            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(3), 456.0d);
+
+            // Parses command line parameters that contain an array of enumeration values and validates that the object was properly created
+            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/EnumerationCollection [Monday, \"Tuesday\", Wednesday, \"Thursday\", Friday, \"Saturday\", Sunday]");
+            Assert.IsNotNull(arrayPropertyParameterContainer.EnumerationCollection);
+            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[0], DayOfWeek.Monday);
+            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[1], DayOfWeek.Tuesday);
+            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[2], DayOfWeek.Wednesday);
+            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[3], DayOfWeek.Thursday);
+            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[4], DayOfWeek.Friday);
+            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[5], DayOfWeek.Saturday);
+            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[6], DayOfWeek.Sunday);
         }
 
         #endregion
@@ -684,19 +695,24 @@ namespace System.CommandLine.Parser.UnitTests
             #region Public Properties
 
             /// <summary>
-            /// Gets or sets the "BooleanArray" command line parameter.
+            /// Gets or sets the "BooleanCollection" command line parameter.
             /// </summary>
-            public IEnumerable<bool> BooleanArray { get; set; }
+            public IEnumerable<bool> BooleanCollection { get; set; }
 
             /// <summary>
-            /// Gets or sets the "StringArray" command line parameter.
+            /// Gets or sets the "StringCollection" command line parameter.
             /// </summary>
-            public List<string> StringArray { get; set; }
+            public List<string> StringCollection { get; set; }
 
             /// <summary>
-            /// Gets or sets the "NumberArray" command line parameter.
+            /// Gets or sets the "NumberCollection" command line parameter.
             /// </summary>
-            public HashSet<double> NumberArray { get; set; }
+            public HashSet<double> NumberCollection { get; set; }
+
+            /// <summary>
+            /// Gets or sets the "EnumerationCollection" command line parameter.
+            /// </summary>
+            public IList<DayOfWeek> EnumerationCollection { get; set; }
 
             #endregion
         }
