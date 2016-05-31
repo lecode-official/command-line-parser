@@ -67,15 +67,15 @@ namespace System.CommandLine.Parser.UnitTests
             if (typedParseTree != null)
             {
                 if (expectedParseTree.RuleName != null)
-                    Assert.AreEqual(parser.RuleNames[typedParseTree.RuleIndex], expectedParseTree.RuleName);
+                    Assert.AreEqual(expectedParseTree.RuleName, parser.RuleNames[typedParseTree.RuleIndex]);
                 if (expectedParseTree.Content != null)
-                    Assert.AreEqual(typedParseTree.GetText(), expectedParseTree.Content);
+                    Assert.AreEqual(expectedParseTree.Content, typedParseTree.GetText());
             }
             if (expectedParseTree.IsTerminalNode)
                 Assert.IsInstanceOfType(parseTree, typeof(TerminalNodeImpl));
 
             // Checks if the amount of child nodes are the same in the parser generated parse tree and the expected parse tree
-            Assert.AreEqual(parseTree.ChildCount, expectedParseTree.Children.Count());
+            Assert.AreEqual(expectedParseTree.Children.Count(), parseTree.ChildCount);
             if (parseTree.ChildCount != expectedParseTree.Children.Count())
                 return;
 
@@ -96,12 +96,12 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Lexes the input and checks whether there are no tokens
             CommandLineLexer lexer = this.LexInput(string.Empty);
-            Assert.AreEqual(lexer.NextToken().Type, TokenConstants.Eof);
+            Assert.AreEqual(TokenConstants.Eof, lexer.NextToken().Type);
 
             // Parses the tokens and checks whether the resulting tree is empty
             CommandLineParser parser;
             IParseTree parseTree = this.ParseTokens(lexer, out parser);
-            Assert.AreEqual(parseTree.ChildCount, 0);
+            Assert.AreEqual(0, parseTree.ChildCount);
         }
 
         #endregion
