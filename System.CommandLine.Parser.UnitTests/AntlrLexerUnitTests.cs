@@ -66,9 +66,9 @@ namespace System.CommandLine.Parser.UnitTests
         private void ValidateMatchedToken(CommandLineLexer lexer, string expectedToken, string expectedTokenType)
         {
             IToken token = lexer.NextToken();
-            Assert.AreEqual(token.Text, expectedToken);
+            Assert.AreEqual(expectedToken, token.Text);
             string tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(tokenType, expectedTokenType);
+            Assert.AreEqual(expectedTokenType, tokenType);
         }
 
         #endregion
@@ -223,7 +223,7 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void WindowsStyleParameterTest()
         {
-            // Lexes a Windows style flagged parameter with one flag and checks if the correct token was recognized
+            // Lexes a Windows style parameter and checks if the correct token was recognized
             CommandLineLexer lexer = this.LexInput("/Parameter");
             this.ValidateMatchedToken(lexer, "/Parameter", "WindowsStyleIdentifier");
         }
@@ -234,7 +234,7 @@ namespace System.CommandLine.Parser.UnitTests
         [TestMethod]
         public void UnixStyleParameterTest()
         {
-            // Lexes a UNIX style flagged parameter with one flag and checks if the correct token was recognized
+            // Lexes a UNIX style parameter and checks if the correct token was recognized
             CommandLineLexer lexer = this.LexInput("--Parameter");
             this.ValidateMatchedToken(lexer, "--Parameter", "UnixStyleIdentifier");
         }

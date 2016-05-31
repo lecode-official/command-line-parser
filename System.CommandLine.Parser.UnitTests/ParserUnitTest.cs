@@ -26,7 +26,7 @@ namespace System.CommandLine.Parser.UnitTests
         private void ValidateParseOutput(IDictionary<string, Parameter> parameters, IDictionary<string, Parameter> expectedParameters)
         {
             // Validates that the amount of parameters in the parameter bag and the expected parameter bag are the same
-            Assert.AreEqual(parameters.Count(), expectedParameters.Count());
+            Assert.AreEqual(expectedParameters.Count(), parameters.Count());
             if (parameters.Count() != expectedParameters.Count())
                 return;
 
@@ -49,13 +49,13 @@ namespace System.CommandLine.Parser.UnitTests
                 // Checks if the parameter is a simple data type, if so its value is validated againts the expected parameter
                 BooleanParameter booleanParameter = parameter as BooleanParameter;
                 if (booleanParameter != null)
-                    Assert.AreEqual(booleanParameter.Value, (expectedParameter as BooleanParameter).Value);
+                    Assert.AreEqual((expectedParameter as BooleanParameter).Value, booleanParameter.Value);
                 NumberParameter numberParameter = parameter as NumberParameter;
                 if (numberParameter != null)
-                    Assert.AreEqual(numberParameter.Value, (expectedParameter as NumberParameter).Value);
+                    Assert.AreEqual((expectedParameter as NumberParameter).Value, numberParameter.Value);
                 StringParameter stringParameter = parameter as StringParameter;
                 if (stringParameter != null)
-                    Assert.AreEqual(stringParameter.Value, (expectedParameter as StringParameter).Value);
+                    Assert.AreEqual((expectedParameter as StringParameter).Value, stringParameter.Value);
 
                 // Checks if the parameter is of type array, if so then its contents are validated recursively
                 ArrayParameter arrayParameter = parameter as ArrayParameter;
@@ -102,8 +102,8 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = parser.Parse("abcXYZ");
 
             // Validates that the parsed parameters are correct
-            Assert.AreEqual(parameterBag.DefaultParameters.Count(), 1);
-            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value, "abcXYZ");
+            Assert.AreEqual(1, parameterBag.DefaultParameters.Count());
+            Assert.AreEqual("abcXYZ", parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value);
         }
 
         /// <summary>
@@ -117,11 +117,11 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = parser.Parse("abc \"123 456\" XYZ \"789 0\"");
 
             // Validates that the parsed parameters are correct
-            Assert.AreEqual(parameterBag.DefaultParameters.Count(), 4);
-            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(0).Value, "abc");
-            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(1).Value, "123 456");
-            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(2).Value, "XYZ");
-            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(3).Value, "789 0");
+            Assert.AreEqual(4, parameterBag.DefaultParameters.Count());
+            Assert.AreEqual("abc", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(0).Value);
+            Assert.AreEqual("123 456", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(1).Value);
+            Assert.AreEqual("XYZ", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(2).Value);
+            Assert.AreEqual("789 0", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(3).Value);
         }
 
         #endregion
@@ -254,8 +254,8 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = parser.Parse("\"C:\\Users\\name\\Downloads\" /key:value --auto");
 
             // Validates that the parsed parameters are correct
-            Assert.AreEqual(parameterBag.DefaultParameters.Count(), 1);
-            Assert.AreEqual(parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value, "C:\\Users\\name\\Downloads");
+            Assert.AreEqual(1, parameterBag.DefaultParameters.Count());
+            Assert.AreEqual("C:\\Users\\name\\Downloads", parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value);
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
                 ["key"] = new StringParameter { Value = "value" },
@@ -476,8 +476,8 @@ namespace System.CommandLine.Parser.UnitTests
             CommandLineParameterParser parser = new CommandLineParameterParser();
             SingleConstructorParameterContainer singleConstructorParameterContainer = parser.Parse<SingleConstructorParameterContainer>("/first \"abc XYZ\" --second:-123.456");
             Assert.IsNotNull(singleConstructorParameterContainer);
-            Assert.AreEqual(singleConstructorParameterContainer.First, "abc XYZ");
-            Assert.AreEqual(singleConstructorParameterContainer.Second, -123);
+            Assert.AreEqual("abc XYZ", singleConstructorParameterContainer.First);
+            Assert.AreEqual(-123, singleConstructorParameterContainer.Second);
         }
 
         /// <summary>
@@ -489,15 +489,15 @@ namespace System.CommandLine.Parser.UnitTests
             // Parses a single command line parameter and validates that the correct constructor was called
             CommandLineParameterParser parser = new CommandLineParameterParser();
             MultipleConstructorsParameterContainer multipleConstructorsParameterContainer = parser.Parse<MultipleConstructorsParameterContainer>("/first true");
-            Assert.AreEqual(multipleConstructorsParameterContainer.ConstructorCalled, 1);
+            Assert.AreEqual(1, multipleConstructorsParameterContainer.ConstructorCalled);
 
             // Parses two command line parameters and validates that the correct constructor was called
             multipleConstructorsParameterContainer = parser.Parse<MultipleConstructorsParameterContainer>("/first true --second=abc");
-            Assert.AreEqual(multipleConstructorsParameterContainer.ConstructorCalled, 2);
+            Assert.AreEqual(2, multipleConstructorsParameterContainer.ConstructorCalled);
 
             // Parses three command line parameters and validates that the correct constructor was called
             multipleConstructorsParameterContainer = parser.Parse<MultipleConstructorsParameterContainer>("/first true --second=abc /third:123");
-            Assert.AreEqual(multipleConstructorsParameterContainer.ConstructorCalled, 3);
+            Assert.AreEqual(3, multipleConstructorsParameterContainer.ConstructorCalled);
         }
 
         /// <summary>
@@ -510,10 +510,10 @@ namespace System.CommandLine.Parser.UnitTests
             CommandLineParameterParser parser = new CommandLineParameterParser();
             SimplePropertyParameterContainer simplePropertyParameterContainer = parser.Parse<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true /enum:Monday");
             Assert.IsNotNull(simplePropertyParameterContainer);
-            Assert.AreEqual(simplePropertyParameterContainer.String, "abc XYZ");
-            Assert.AreEqual(simplePropertyParameterContainer.Number, 123.456d);
-            Assert.AreEqual(simplePropertyParameterContainer.Boolean, true);
-            Assert.AreEqual(simplePropertyParameterContainer.Enumeration, DayOfWeek.Monday);
+            Assert.AreEqual("abc XYZ", simplePropertyParameterContainer.String);
+            Assert.AreEqual(123.456d, simplePropertyParameterContainer.Number);
+            Assert.AreEqual(true, simplePropertyParameterContainer.Boolean);
+            Assert.AreEqual(DayOfWeek.Monday, simplePropertyParameterContainer.Enumeration);
         }
 
         /// <summary>
@@ -534,30 +534,30 @@ namespace System.CommandLine.Parser.UnitTests
             // Parses command line parameters that contain an array of string values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/StringCollection [abc, 123, \"abc XYZ\", 123.456, true]");
             Assert.IsNotNull(arrayPropertyParameterContainer.StringCollection);
-            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[0], "abc");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[1], "123");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[2], "abc XYZ");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[3], "123.456");
-            Assert.AreEqual(arrayPropertyParameterContainer.StringCollection[4], "True");
+            Assert.AreEqual("abc", arrayPropertyParameterContainer.StringCollection[0]);
+            Assert.AreEqual("123", arrayPropertyParameterContainer.StringCollection[1]);
+            Assert.AreEqual("abc XYZ", arrayPropertyParameterContainer.StringCollection[2]);
+            Assert.AreEqual("123.456", arrayPropertyParameterContainer.StringCollection[3]);
+            Assert.AreEqual("True", arrayPropertyParameterContainer.StringCollection[4]);
 
             // Parses command line parameters that contain an array of number values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("--NumberCollection:[123.456, 123, true, \"456\"]");
             Assert.IsNotNull(arrayPropertyParameterContainer.NumberCollection);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(0), 123.456d);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(1), 123.0d);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(2), 1.0d);
-            Assert.AreEqual(arrayPropertyParameterContainer.NumberCollection.ElementAt(3), 456.0d);
+            Assert.AreEqual(123.456d, arrayPropertyParameterContainer.NumberCollection.ElementAt(0));
+            Assert.AreEqual(123.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(1));
+            Assert.AreEqual(1.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(2));
+            Assert.AreEqual(456.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(3));
 
             // Parses command line parameters that contain an array of enumeration values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/EnumerationCollection [Monday, \"Tuesday\", Wednesday, \"Thursday\", Friday, \"Saturday\", Sunday]");
             Assert.IsNotNull(arrayPropertyParameterContainer.EnumerationCollection);
-            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[0], DayOfWeek.Monday);
-            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[1], DayOfWeek.Tuesday);
-            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[2], DayOfWeek.Wednesday);
-            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[3], DayOfWeek.Thursday);
-            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[4], DayOfWeek.Friday);
-            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[5], DayOfWeek.Saturday);
-            Assert.AreEqual(arrayPropertyParameterContainer.EnumerationCollection[6], DayOfWeek.Sunday);
+            Assert.AreEqual(DayOfWeek.Monday, arrayPropertyParameterContainer.EnumerationCollection[0]);
+            Assert.AreEqual(DayOfWeek.Tuesday, arrayPropertyParameterContainer.EnumerationCollection[1]);
+            Assert.AreEqual(DayOfWeek.Wednesday, arrayPropertyParameterContainer.EnumerationCollection[2]);
+            Assert.AreEqual(DayOfWeek.Thursday, arrayPropertyParameterContainer.EnumerationCollection[3]);
+            Assert.AreEqual(DayOfWeek.Friday, arrayPropertyParameterContainer.EnumerationCollection[4]);
+            Assert.AreEqual(DayOfWeek.Saturday, arrayPropertyParameterContainer.EnumerationCollection[5]);
+            Assert.AreEqual(DayOfWeek.Sunday, arrayPropertyParameterContainer.EnumerationCollection[6]);
         }
 
         #endregion
