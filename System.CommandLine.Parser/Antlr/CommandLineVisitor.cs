@@ -72,6 +72,13 @@ internal interface ICommandLineVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitUnixStyleParameter([NotNull] CommandLineParser.UnixStyleParameterContext context);
 	/// <summary>
+	/// Visit a parse tree produced by the <c>UnixStyleAliasParameter</c>
+	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitUnixStyleAliasParameter([NotNull] CommandLineParser.UnixStyleAliasParameterContext context);
+	/// <summary>
 	/// Visit a parse tree produced by the <c>UnixStyleFlaggedSwitch</c>
 	/// labeled alternative in <see cref="CommandLineParser.parameter"/>.
 	/// </summary>

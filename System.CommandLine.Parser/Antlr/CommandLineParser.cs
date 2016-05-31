@@ -32,9 +32,9 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 [System.CLSCompliant(false)]
 internal partial class CommandLineParser : Parser {
 	public const int
-		T__0=1, T__1=2, T__2=3, UnixStyleFlaggedIdentifiers=4, WindowsStyleIdentifier=5, 
-		UnixStyleIdentifier=6, AssignmentOperator=7, True=8, False=9, Number=10, 
-		Digit=11, String=12, QuotedString=13, WhiteSpaces=14;
+		T__0=1, T__1=2, T__2=3, UnixStyleFlaggedIdentifiers=4, UnixStyleAliasIdentifier=5, 
+		WindowsStyleIdentifier=6, UnixStyleIdentifier=7, AssignmentOperator=8, 
+		True=9, False=10, Number=11, Digit=12, String=13, QuotedString=14, WhiteSpaces=15;
 	public const int
 		RULE_commandLine = 0, RULE_defaultParameter = 1, RULE_parameter = 2, RULE_value = 3;
 	public static readonly string[] ruleNames = {
@@ -42,12 +42,12 @@ internal partial class CommandLineParser : Parser {
 	};
 
 	private static readonly string[] _LiteralNames = {
-		null, "'['", "','", "']'", null, null, null, null, "'true'", "'false'"
+		null, "'['", "','", "']'", null, null, null, null, null, "'true'", "'false'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, null, null, "UnixStyleFlaggedIdentifiers", "WindowsStyleIdentifier", 
-		"UnixStyleIdentifier", "AssignmentOperator", "True", "False", "Number", 
-		"Digit", "String", "QuotedString", "WhiteSpaces"
+		null, null, null, null, "UnixStyleFlaggedIdentifiers", "UnixStyleAliasIdentifier", 
+		"WindowsStyleIdentifier", "UnixStyleIdentifier", "AssignmentOperator", 
+		"True", "False", "Number", "Digit", "String", "QuotedString", "WhiteSpaces"
 	};
 	public static readonly IVocabulary DefaultVocabulary = new Vocabulary(_LiteralNames, _SymbolicNames);
 
@@ -120,7 +120,7 @@ internal partial class CommandLineParser : Parser {
 			State = 17;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << UnixStyleFlaggedIdentifiers) | (1L << WindowsStyleIdentifier) | (1L << UnixStyleIdentifier))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << UnixStyleFlaggedIdentifiers) | (1L << UnixStyleAliasIdentifier) | (1L << WindowsStyleIdentifier) | (1L << UnixStyleIdentifier))) != 0)) {
 				{
 				{
 				State = 14; parameter();
@@ -223,6 +223,19 @@ internal partial class CommandLineParser : Parser {
 			else return visitor.VisitChildren(this);
 		}
 	}
+	public partial class UnixStyleAliasParameterContext : ParameterContext {
+		public ITerminalNode UnixStyleAliasIdentifier() { return GetToken(CommandLineParser.UnixStyleAliasIdentifier, 0); }
+		public ITerminalNode AssignmentOperator() { return GetToken(CommandLineParser.AssignmentOperator, 0); }
+		public ValueContext value() {
+			return GetRuleContext<ValueContext>(0);
+		}
+		public UnixStyleAliasParameterContext(ParameterContext context) { CopyFrom(context); }
+		public override TResult Accept<TResult>(IParseTreeVisitor<TResult> visitor) {
+			ICommandLineVisitor<TResult> typedVisitor = visitor as ICommandLineVisitor<TResult>;
+			if (typedVisitor != null) return typedVisitor.VisitUnixStyleAliasParameter(this);
+			else return visitor.VisitChildren(this);
+		}
+	}
 	public partial class WindowsStyleParameterContext : ParameterContext {
 		public ITerminalNode WindowsStyleIdentifier() { return GetToken(CommandLineParser.WindowsStyleIdentifier, 0); }
 		public ITerminalNode AssignmentOperator() { return GetToken(CommandLineParser.AssignmentOperator, 0); }
@@ -273,7 +286,7 @@ internal partial class CommandLineParser : Parser {
 		ParameterContext _localctx = new ParameterContext(Context, State);
 		EnterRule(_localctx, 4, RULE_parameter);
 		try {
-			State = 37;
+			State = 42;
 			switch ( Interpreter.AdaptivePredict(TokenStream,3,Context) ) {
 			case 1:
 				_localctx = new WindowsStyleSwitchContext(_localctx);
@@ -324,10 +337,27 @@ internal partial class CommandLineParser : Parser {
 				}
 				break;
 			case 7:
-				_localctx = new UnixStyleFlaggedSwitchContext(_localctx);
+				_localctx = new UnixStyleAliasParameterContext(_localctx);
 				EnterOuterAlt(_localctx, 7);
 				{
-				State = 36; Match(UnixStyleFlaggedIdentifiers);
+				State = 36; Match(UnixStyleAliasIdentifier);
+				State = 37; Match(AssignmentOperator);
+				State = 38; value();
+				}
+				break;
+			case 8:
+				_localctx = new UnixStyleAliasParameterContext(_localctx);
+				EnterOuterAlt(_localctx, 8);
+				{
+				State = 39; Match(UnixStyleAliasIdentifier);
+				State = 40; value();
+				}
+				break;
+			case 9:
+				_localctx = new UnixStyleFlaggedSwitchContext(_localctx);
+				EnterOuterAlt(_localctx, 9);
+				{
+				State = 41; Match(UnixStyleFlaggedIdentifiers);
 				}
 				break;
 			}
@@ -405,71 +435,71 @@ internal partial class CommandLineParser : Parser {
 		EnterRule(_localctx, 6, RULE_value);
 		int _la;
 		try {
-			State = 56;
+			State = 61;
 			switch (TokenStream.La(1)) {
 			case String:
 				_localctx = new StringContext(_localctx);
 				EnterOuterAlt(_localctx, 1);
 				{
-				State = 39; Match(String);
+				State = 44; Match(String);
 				}
 				break;
 			case QuotedString:
 				_localctx = new StringContext(_localctx);
 				EnterOuterAlt(_localctx, 2);
 				{
-				State = 40; Match(QuotedString);
+				State = 45; Match(QuotedString);
 				}
 				break;
 			case Number:
 				_localctx = new NumberContext(_localctx);
 				EnterOuterAlt(_localctx, 3);
 				{
-				State = 41; Match(Number);
+				State = 46; Match(Number);
 				}
 				break;
 			case T__0:
 				_localctx = new ArrayContext(_localctx);
 				EnterOuterAlt(_localctx, 4);
 				{
-				State = 42; Match(T__0);
-				State = 51;
+				State = 47; Match(T__0);
+				State = 56;
 				_la = TokenStream.La(1);
 				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << True) | (1L << False) | (1L << Number) | (1L << String) | (1L << QuotedString))) != 0)) {
 					{
-					State = 43; value();
-					State = 48;
+					State = 48; value();
+					State = 53;
 					ErrorHandler.Sync(this);
 					_la = TokenStream.La(1);
 					while (_la==T__1) {
 						{
 						{
-						State = 44; Match(T__1);
-						State = 45; value();
+						State = 49; Match(T__1);
+						State = 50; value();
 						}
 						}
-						State = 50;
+						State = 55;
 						ErrorHandler.Sync(this);
 						_la = TokenStream.La(1);
 					}
 					}
 				}
 
-				State = 53; Match(T__2);
+				State = 58; Match(T__2);
 				}
 				break;
 			case True:
 				_localctx = new BooleanContext(_localctx);
 				EnterOuterAlt(_localctx, 5);
 				{
-				State = 54; Match(True);
+				State = 59; Match(True);
 				}
 				break;
 			case False:
 				_localctx = new BooleanContext(_localctx);
 				EnterOuterAlt(_localctx, 6);
 				{
-				State = 55; Match(False);
+				State = 60; Match(False);
 				}
 				break;
 			default:
@@ -488,30 +518,31 @@ internal partial class CommandLineParser : Parser {
 	}
 
 	public static readonly string _serializedATN =
-		"\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3\x10=\x4\x2\t\x2"+
-		"\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x3\x2\a\x2\f\n\x2\f\x2\xE\x2\xF\v\x2"+
-		"\x3\x2\a\x2\x12\n\x2\f\x2\xE\x2\x15\v\x2\x3\x3\x3\x3\x5\x3\x19\n\x3\x3"+
-		"\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4"+
-		"\x3\x4\x5\x4(\n\x4\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\x3\x5\a\x5\x31"+
-		"\n\x5\f\x5\xE\x5\x34\v\x5\x5\x5\x36\n\x5\x3\x5\x3\x5\x3\x5\x5\x5;\n\x5"+
-		"\x3\x5\x2\x2\x6\x2\x4\x6\b\x2\x2H\x2\r\x3\x2\x2\x2\x4\x18\x3\x2\x2\x2"+
-		"\x6\'\x3\x2\x2\x2\b:\x3\x2\x2\x2\n\f\x5\x4\x3\x2\v\n\x3\x2\x2\x2\f\xF"+
-		"\x3\x2\x2\x2\r\v\x3\x2\x2\x2\r\xE\x3\x2\x2\x2\xE\x13\x3\x2\x2\x2\xF\r"+
-		"\x3\x2\x2\x2\x10\x12\x5\x6\x4\x2\x11\x10\x3\x2\x2\x2\x12\x15\x3\x2\x2"+
-		"\x2\x13\x11\x3\x2\x2\x2\x13\x14\x3\x2\x2\x2\x14\x3\x3\x2\x2\x2\x15\x13"+
-		"\x3\x2\x2\x2\x16\x19\a\xE\x2\x2\x17\x19\a\xF\x2\x2\x18\x16\x3\x2\x2\x2"+
-		"\x18\x17\x3\x2\x2\x2\x19\x5\x3\x2\x2\x2\x1A(\a\a\x2\x2\x1B\x1C\a\a\x2"+
-		"\x2\x1C\x1D\a\t\x2\x2\x1D(\x5\b\x5\x2\x1E\x1F\a\a\x2\x2\x1F(\x5\b\x5\x2"+
-		" (\a\b\x2\x2!\"\a\b\x2\x2\"#\a\t\x2\x2#(\x5\b\x5\x2$%\a\b\x2\x2%(\x5\b"+
-		"\x5\x2&(\a\x6\x2\x2\'\x1A\x3\x2\x2\x2\'\x1B\x3\x2\x2\x2\'\x1E\x3\x2\x2"+
-		"\x2\' \x3\x2\x2\x2\'!\x3\x2\x2\x2\'$\x3\x2\x2\x2\'&\x3\x2\x2\x2(\a\x3"+
-		"\x2\x2\x2);\a\xE\x2\x2*;\a\xF\x2\x2+;\a\f\x2\x2,\x35\a\x3\x2\x2-\x32\x5"+
-		"\b\x5\x2./\a\x4\x2\x2/\x31\x5\b\x5\x2\x30.\x3\x2\x2\x2\x31\x34\x3\x2\x2"+
-		"\x2\x32\x30\x3\x2\x2\x2\x32\x33\x3\x2\x2\x2\x33\x36\x3\x2\x2\x2\x34\x32"+
-		"\x3\x2\x2\x2\x35-\x3\x2\x2\x2\x35\x36\x3\x2\x2\x2\x36\x37\x3\x2\x2\x2"+
-		"\x37;\a\x5\x2\x2\x38;\a\n\x2\x2\x39;\a\v\x2\x2:)\x3\x2\x2\x2:*\x3\x2\x2"+
-		"\x2:+\x3\x2\x2\x2:,\x3\x2\x2\x2:\x38\x3\x2\x2\x2:\x39\x3\x2\x2\x2;\t\x3"+
-		"\x2\x2\x2\t\r\x13\x18\'\x32\x35:";
+		"\x3\x430\xD6D1\x8206\xAD2D\x4417\xAEF1\x8D80\xAADD\x3\x11\x42\x4\x2\t"+
+		"\x2\x4\x3\t\x3\x4\x4\t\x4\x4\x5\t\x5\x3\x2\a\x2\f\n\x2\f\x2\xE\x2\xF\v"+
+		"\x2\x3\x2\a\x2\x12\n\x2\f\x2\xE\x2\x15\v\x2\x3\x3\x3\x3\x5\x3\x19\n\x3"+
+		"\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3"+
+		"\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x3\x4\x5\x4-\n\x4\x3\x5\x3\x5\x3\x5"+
+		"\x3\x5\x3\x5\x3\x5\x3\x5\a\x5\x36\n\x5\f\x5\xE\x5\x39\v\x5\x5\x5;\n\x5"+
+		"\x3\x5\x3\x5\x3\x5\x5\x5@\n\x5\x3\x5\x2\x2\x6\x2\x4\x6\b\x2\x2O\x2\r\x3"+
+		"\x2\x2\x2\x4\x18\x3\x2\x2\x2\x6,\x3\x2\x2\x2\b?\x3\x2\x2\x2\n\f\x5\x4"+
+		"\x3\x2\v\n\x3\x2\x2\x2\f\xF\x3\x2\x2\x2\r\v\x3\x2\x2\x2\r\xE\x3\x2\x2"+
+		"\x2\xE\x13\x3\x2\x2\x2\xF\r\x3\x2\x2\x2\x10\x12\x5\x6\x4\x2\x11\x10\x3"+
+		"\x2\x2\x2\x12\x15\x3\x2\x2\x2\x13\x11\x3\x2\x2\x2\x13\x14\x3\x2\x2\x2"+
+		"\x14\x3\x3\x2\x2\x2\x15\x13\x3\x2\x2\x2\x16\x19\a\xF\x2\x2\x17\x19\a\x10"+
+		"\x2\x2\x18\x16\x3\x2\x2\x2\x18\x17\x3\x2\x2\x2\x19\x5\x3\x2\x2\x2\x1A"+
+		"-\a\b\x2\x2\x1B\x1C\a\b\x2\x2\x1C\x1D\a\n\x2\x2\x1D-\x5\b\x5\x2\x1E\x1F"+
+		"\a\b\x2\x2\x1F-\x5\b\x5\x2 -\a\t\x2\x2!\"\a\t\x2\x2\"#\a\n\x2\x2#-\x5"+
+		"\b\x5\x2$%\a\t\x2\x2%-\x5\b\x5\x2&\'\a\a\x2\x2\'(\a\n\x2\x2(-\x5\b\x5"+
+		"\x2)*\a\a\x2\x2*-\x5\b\x5\x2+-\a\x6\x2\x2,\x1A\x3\x2\x2\x2,\x1B\x3\x2"+
+		"\x2\x2,\x1E\x3\x2\x2\x2, \x3\x2\x2\x2,!\x3\x2\x2\x2,$\x3\x2\x2\x2,&\x3"+
+		"\x2\x2\x2,)\x3\x2\x2\x2,+\x3\x2\x2\x2-\a\x3\x2\x2\x2.@\a\xF\x2\x2/@\a"+
+		"\x10\x2\x2\x30@\a\r\x2\x2\x31:\a\x3\x2\x2\x32\x37\x5\b\x5\x2\x33\x34\a"+
+		"\x4\x2\x2\x34\x36\x5\b\x5\x2\x35\x33\x3\x2\x2\x2\x36\x39\x3\x2\x2\x2\x37"+
+		"\x35\x3\x2\x2\x2\x37\x38\x3\x2\x2\x2\x38;\x3\x2\x2\x2\x39\x37\x3\x2\x2"+
+		"\x2:\x32\x3\x2\x2\x2:;\x3\x2\x2\x2;<\x3\x2\x2\x2<@\a\x5\x2\x2=@\a\v\x2"+
+		"\x2>@\a\f\x2\x2?.\x3\x2\x2\x2?/\x3\x2\x2\x2?\x30\x3\x2\x2\x2?\x31\x3\x2"+
+		"\x2\x2?=\x3\x2\x2\x2?>\x3\x2\x2\x2@\t\x3\x2\x2\x2\t\r\x13\x18,\x37:?";
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }
