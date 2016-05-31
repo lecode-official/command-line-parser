@@ -32,7 +32,7 @@ using DFA = Antlr4.Runtime.Dfa.DFA;
 [System.CLSCompliant(false)]
 internal partial class CommandLineParser : Parser {
 	public const int
-		T__0=1, T__1=2, T__2=3, UnixStyleFlaggedIdentifiers=4, UnixStyleAliasIdentifier=5, 
+		T__0=1, T__1=2, T__2=3, UnixStyleAliasIdentifier=4, UnixStyleFlaggedIdentifiers=5, 
 		WindowsStyleIdentifier=6, UnixStyleIdentifier=7, AssignmentOperator=8, 
 		True=9, False=10, Number=11, Digit=12, String=13, QuotedString=14, WhiteSpaces=15;
 	public const int
@@ -45,7 +45,7 @@ internal partial class CommandLineParser : Parser {
 		null, "'['", "','", "']'", null, null, null, null, null, "'true'", "'false'"
 	};
 	private static readonly string[] _SymbolicNames = {
-		null, null, null, null, "UnixStyleFlaggedIdentifiers", "UnixStyleAliasIdentifier", 
+		null, null, null, null, "UnixStyleAliasIdentifier", "UnixStyleFlaggedIdentifiers", 
 		"WindowsStyleIdentifier", "UnixStyleIdentifier", "AssignmentOperator", 
 		"True", "False", "Number", "Digit", "String", "QuotedString", "WhiteSpaces"
 	};
@@ -120,7 +120,7 @@ internal partial class CommandLineParser : Parser {
 			State = 17;
 			ErrorHandler.Sync(this);
 			_la = TokenStream.La(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << UnixStyleFlaggedIdentifiers) | (1L << UnixStyleAliasIdentifier) | (1L << WindowsStyleIdentifier) | (1L << UnixStyleIdentifier))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << UnixStyleAliasIdentifier) | (1L << UnixStyleFlaggedIdentifiers) | (1L << WindowsStyleIdentifier) | (1L << UnixStyleIdentifier))) != 0)) {
 				{
 				{
 				State = 14; parameter();
@@ -533,8 +533,8 @@ internal partial class CommandLineParser : Parser {
 		"\x2\x2\x18\x16\x3\x2\x2\x2\x18\x17\x3\x2\x2\x2\x19\x5\x3\x2\x2\x2\x1A"+
 		"-\a\b\x2\x2\x1B\x1C\a\b\x2\x2\x1C\x1D\a\n\x2\x2\x1D-\x5\b\x5\x2\x1E\x1F"+
 		"\a\b\x2\x2\x1F-\x5\b\x5\x2 -\a\t\x2\x2!\"\a\t\x2\x2\"#\a\n\x2\x2#-\x5"+
-		"\b\x5\x2$%\a\t\x2\x2%-\x5\b\x5\x2&\'\a\a\x2\x2\'(\a\n\x2\x2(-\x5\b\x5"+
-		"\x2)*\a\a\x2\x2*-\x5\b\x5\x2+-\a\x6\x2\x2,\x1A\x3\x2\x2\x2,\x1B\x3\x2"+
+		"\b\x5\x2$%\a\t\x2\x2%-\x5\b\x5\x2&\'\a\x6\x2\x2\'(\a\n\x2\x2(-\x5\b\x5"+
+		"\x2)*\a\x6\x2\x2*-\x5\b\x5\x2+-\a\a\x2\x2,\x1A\x3\x2\x2\x2,\x1B\x3\x2"+
 		"\x2\x2,\x1E\x3\x2\x2\x2, \x3\x2\x2\x2,!\x3\x2\x2\x2,$\x3\x2\x2\x2,&\x3"+
 		"\x2\x2\x2,)\x3\x2\x2\x2,+\x3\x2\x2\x2-\a\x3\x2\x2\x2.@\a\xF\x2\x2/@\a"+
 		"\x10\x2\x2\x30@\a\r\x2\x2\x31:\a\x3\x2\x2\x32\x37\x5\b\x5\x2\x33\x34\a"+
