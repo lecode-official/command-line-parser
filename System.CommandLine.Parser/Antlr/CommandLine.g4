@@ -35,11 +35,11 @@ value: String                                               # String
     | False                                                 # Boolean
     ;
 
-// The Unix style flagged identifier starts with a "-" followed by one or more switches, each represented by a single character
-UnixStyleFlaggedIdentifiers: '-' [a-zA-Z]+;
-
 // The Unix style alias identifier starts with a "-" followed by a single character
 UnixStyleAliasIdentifier: '-' [a-zA-Z];
+
+// The Unix style flagged identifier starts with a "-" followed by one or more switches, each represented by a single character
+UnixStyleFlaggedIdentifiers: '-' [a-zA-Z]+;
 
 // Windows style identifiers starts with a "/" followed by one or more valid identifier characters
 WindowsStyleIdentifier: '/' [a-zA-Z] ([a-zA-Z] | [0-9] | '-' | '_')+;
