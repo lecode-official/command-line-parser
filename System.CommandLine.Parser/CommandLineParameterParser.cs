@@ -121,43 +121,41 @@ namespace System.CommandLine.Parser
             
             // Determines the constructor, which is to be used for instantiating the specified type, the algorithm is greedy and uses the constructor with the most constructor arguments that can be matched from the parsed command line arguments
             ConstructorInfo chosenConstructorInfo = null;
-            Dictionary<string, Type> chosenConstructorParameterInfos = null;
+            Dictionary<ParameterNameAttribute, Type> chosenConstructorParameterInfos = null;
             foreach (ConstructorInfo constructorInfo in returnType.GetConstructors()
                 .Where(constructor => constructor.IsPublic && !constructor.IsStatic)
                 .OrderByDescending(constructor => constructor.GetParameters().Count()))
             {
                 // Creates a dictionary which can hold information about the parameters of the constructor and their types
-                chosenConstructorParameterInfos = new Dictionary<string, Type>();
+                chosenConstructorParameterInfos = new Dictionary<ParameterNameAttribute, Type>();
 
                 // Cycles over all the parameters of the constructor and gather information about them
                 foreach (ParameterInfo constructorParameterInfo in constructorInfo.GetParameters())
                 {
                     // Gets the name of the command line parameter with which the constructor parameter is to be matched (which is either retrieved from the parameter name attribute or the name of the constructor parameter
-                    string parameterName;
                     ParameterNameAttribute parameterNameAttribute = constructorParameterInfo.GetCustomAttribute<ParameterNameAttribute>();
                     if (parameterNameAttribute != null)
-                        parameterName = parameterNameAttribute.ParameterName;
+                        chosenConstructorParameterInfos.Add(parameterNameAttribute, constructorParameterInfo.ParameterType);
                     else
-                        parameterName = constructorParameterInfo.Name;
-
-                    // Adds the constructor parameter information to the parameter infos
-                    chosenConstructorParameterInfos.Add(parameterName, constructorParameterInfo.ParameterType);
+                        chosenConstructorParameterInfos.Add(new ParameterNameAttribute(constructorParameterInfo.Name), constructorParameterInfo.ParameterType);
                 }
 
                 // Checks if the constructor can be used, which is when all constructor parameters can be matched with command line parameters
                 bool canConstructorBeUsed = true;
-                foreach (string parameterName in chosenConstructorParameterInfos.Keys)
+                foreach (ParameterNameAttribute parameterNameAttribute in chosenConstructorParameterInfos.Keys)
                 {
                     // Gets the type of the constructor parameter, which is to be used to match it to command line parameters
-                    Type parameterType = chosenConstructorParameterInfos[parameterName];
+                    Type parameterType = chosenConstructorParameterInfos[parameterNameAttribute];
 
                     // Gets the command line parameter by the name, if no parameter could be found, then the constructor can not be used
-                    if (!parameterBag.Parameters.ContainsKey(parameterName))
+                    if (!parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterName) && (string.IsNullOrWhiteSpace(parameterNameAttribute.ParameterAlias) || !parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterAlias)))
                     {
                         canConstructorBeUsed = false;
                         break;
                     }
-                    Parameter parameter = parameterBag.Parameters[parameterName];
+                    Parameter parameter = parameterBag.Parameters[parameterNameAttribute.ParameterName];
+                    if (parameter == null)
+                        parameter = parameterBag.Parameters[parameterNameAttribute.ParameterAlias];
 
                     // Checks if there is a parameter converter that is able to convert the parameter into the type of the constructor parameter
                     if (this.FindBestMatchingParameterConverter(parameterType, parameter) == null)
@@ -182,11 +180,13 @@ namespace System.CommandLine.Parser
             // Prepares the constructor arguments
             object[] constructorParameters = new object[chosenConstructorParameterInfos.Count];
             int index = 0;
-            foreach (string constructorParameterName in chosenConstructorParameterInfos.Keys)
+            foreach (ParameterNameAttribute parameterNameAttribute in chosenConstructorParameterInfos.Keys)
             {
                 // Gets the matched command line parameter
-                Type constructorParameterType = chosenConstructorParameterInfos[constructorParameterName];
-                Parameter parameter = parameterBag.Parameters[constructorParameterName];
+                Type constructorParameterType = chosenConstructorParameterInfos[parameterNameAttribute];
+                Parameter parameter = parameterBag.Parameters[parameterNameAttribute.ParameterName];
+                if (parameter == null)
+                    parameter = parameterBag.Parameters[parameterNameAttribute.ParameterAlias];
 
                 // Sets the constructor parameter
                 constructorParameters[index++] = this.FindBestMatchingParameterConverter(constructorParameterType, parameter).Convert(constructorParameterType, parameter);
@@ -201,17 +201,16 @@ namespace System.CommandLine.Parser
             foreach (PropertyInfo propertyInfo in returnType.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(property => property.CanWrite))
             {
                 // Gets the name of the command line parameter with which the property is to be matched (which is either retrieved from the parameter name attribute or the name of the constructor parameter
-                string propertyName;
                 ParameterNameAttribute parameterNameAttribute = propertyInfo.GetCustomAttribute<ParameterNameAttribute>();
-                if (parameterNameAttribute != null)
-                    propertyName = parameterNameAttribute.ParameterName;
-                else
-                    propertyName = propertyInfo.Name;
+                if (parameterNameAttribute == null)
+                    parameterNameAttribute = new ParameterNameAttribute(propertyInfo.Name);
 
                 // Gets the command line parameter by the name, if no parameter could be found then the property can not be assigned
-                if (!parameterBag.Parameters.ContainsKey(propertyName))
+                if (!parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterName) && (string.IsNullOrWhiteSpace(parameterNameAttribute.ParameterAlias) || !parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterAlias)))
                     continue;
-                Parameter parameter = parameterBag.Parameters[propertyName];
+                Parameter parameter = parameterBag.Parameters[parameterNameAttribute.ParameterName];
+                if (parameter == null)
+                    parameter = parameterBag.Parameters[parameterNameAttribute.ParameterName];
 
                 // Checks if there is a parameter converter, that is able to convert the parameter value to the type of the property
                 IParameterConverter parameterConverter = this.FindBestMatchingParameterConverter(propertyInfo.PropertyType, parameter);
