@@ -18,11 +18,11 @@ defaultParameter: String                                    # DefaultParameterSt
 parameter: WindowsStyleIdentifier                           # WindowsStyleSwitch
     | WindowsStyleIdentifier AssignmentOperator value       # WindowsStyleParameter
     | WindowsStyleIdentifier value                          # WindowsStyleParameter
-    | UnixStyleIdentifier                                   # UnixStyleSwitch
     | UnixStyleIdentifier AssignmentOperator value          # UnixStyleParameter
     | UnixStyleIdentifier value                             # UnixStyleParameter
-    | UnixStyleAliasIdentifier AssignmentOperator value     # UnixStyleAliasParameter
-    | UnixStyleAliasIdentifier value                        # UnixStyleAliasParameter
+    | UnixStyleIdentifier                                   # UnixStyleSwitch
+    | UnixStyleFlaggedIdentifiers AssignmentOperator value  # UnixStyleAliasParameter
+    | UnixStyleFlaggedIdentifiers value                     # UnixStyleAliasParameter
     | UnixStyleFlaggedIdentifiers                           # UnixStyleFlaggedSwitch
     ;
 
@@ -34,9 +34,6 @@ value: String                                               # String
     | True                                                  # Boolean
     | False                                                 # Boolean
     ;
-
-// The Unix style alias identifier starts with a "-" followed by a single character
-UnixStyleAliasIdentifier: '-' [a-zA-Z];
 
 // The Unix style flagged identifier starts with a "-" followed by one or more switches, each represented by a single character
 UnixStyleFlaggedIdentifiers: '-' [a-zA-Z]+;
