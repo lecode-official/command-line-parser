@@ -223,8 +223,7 @@ namespace System.CommandLine.Parser
             // Parses the value of the parameter
             Parameter parameter = this.Visit(context.value());
 
-            // Adds the parameter to the result set
-            // Adds all the flags to the result set
+            // Adds the parameters to the result set
             foreach (char flag in context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty).ToList())
             {
                 string parameterName = flag.ToString();
