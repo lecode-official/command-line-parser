@@ -239,6 +239,17 @@ namespace System.CommandLine.Parser.UnitTests
             this.ValidateMatchedToken(lexer, "--Parameter", "UnixStyleIdentifier");
         }
 
+        /// <summary>
+        /// Tests how the ANTLR4 lexer handles the lexing of UNIX alias style parameters.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleAliasParameterTest()
+        {
+            // Lexes a UNIX style alias parameter and checks if the correct token was recognized
+            CommandLineLexer lexer = this.LexInput("-p");
+            this.ValidateMatchedToken(lexer, "-p", "UnixStyleFlaggedIdentifiers");
+        }
+
         #endregion
     }
 }
