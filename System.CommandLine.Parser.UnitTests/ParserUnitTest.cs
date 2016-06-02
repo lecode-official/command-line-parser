@@ -217,6 +217,23 @@ namespace System.CommandLine.Parser.UnitTests
         }
 
         /// <summary>
+        /// Tests how the parser handles UNIX style alias parameters.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleAliasParameterTest()
+        {
+            // Parses a UNIX style alias parameters
+            CommandLineParameterParser parser = new CommandLineParameterParser();
+            ParameterBag parameterBag = parser.Parse("-s=123.456");
+
+            // Validates that the parsed parameters are correct
+            this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
+            {
+                ["s"] = new NumberParameter { Value = 123.456M }
+            });
+        }
+
+        /// <summary>
         /// Tests how the parser handles multiple parameters.
         /// </summary>
         [TestMethod]
@@ -224,7 +241,7 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses a multiple parameter
             CommandLineParameterParser parser = new CommandLineParameterParser();
-            ParameterBag parameterBag = parser.Parse("/on /key:value --auto --parameter=123 -aFl");
+            ParameterBag parameterBag = parser.Parse("/on /key:value --auto --parameter=123 -aFl -h false");
 
             // Validates that the parsed parameters are correct
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
@@ -235,7 +252,8 @@ namespace System.CommandLine.Parser.UnitTests
                 ["parameter"] = new NumberParameter { Value = 123.0M },
                 ["a"] = new BooleanParameter { Value = true },
                 ["F"] = new BooleanParameter { Value = true },
-                ["l"] = new BooleanParameter { Value = true }
+                ["l"] = new BooleanParameter { Value = true },
+                ["h"] = new BooleanParameter { Value = false }
             });
         }
 
