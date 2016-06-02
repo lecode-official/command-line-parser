@@ -224,11 +224,15 @@ namespace System.CommandLine.Parser
             Parameter parameter = this.Visit(context.value());
 
             // Adds the parameter to the result set
-            string parameterName = context.UnixStyleAliasIdentifier().GetText().Replace("-", string.Empty);
-            if (this.Parameters.ContainsKey(parameterName))
-                this.Parameters[parameterName] = parameter;
-            else
-                this.Parameters.Add(parameterName, parameter);
+            // Adds all the flags to the result set
+            foreach (char flag in context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty).ToList())
+            {
+                string parameterName = flag.ToString();
+                if (this.Parameters.ContainsKey(parameterName))
+                    this.Parameters[parameterName] = parameter;
+                else
+                    this.Parameters.Add(parameterName, parameter);
+            }
 
             // Nothings needs to be returned, because the switch are directly added to the result set
             return null;
