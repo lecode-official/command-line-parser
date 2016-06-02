@@ -431,6 +431,55 @@ namespace System.CommandLine.Parser.UnitTests
         }
 
         /// <summary>
+        /// Tests how the ANTLR4 parser handles UNIX style alias parameters.
+        /// </summary>
+        [TestMethod]
+        public void UnixStyleAliasParameterTest()
+        {
+            // Parses UNIX style alias parameter
+            CommandLineParser parser;
+            IParseTree parseTree = this.ParseTokens(this.LexInput("-f:\"abc XYZ\""), out parser);
+
+            // Validates the correctnes of the generated parse tree
+            this.ValidateParseTree(parser, parseTree, new TreeNode
+            {
+                RuleName = "commandLine",
+                Children = new List<TreeNode>
+                {
+                    new TreeNode
+                    {
+                        RuleName = "parameter",
+                        Children = new List<TreeNode>
+                        {
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = "-f"
+                            },
+                            new TreeNode
+                            {
+                                IsTerminalNode = true,
+                                Content = ":"
+                            },
+                            new TreeNode
+                            {
+                                RuleName = "value",
+                                Children = new List<TreeNode>
+                                {
+                                    new TreeNode
+                                    {
+                                        IsTerminalNode = true,
+                                        Content = "\"abc XYZ\""
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        /// <summary>
         /// Tests how the ANTLR4 parser handles multiple parameters.
         /// </summary>
         [TestMethod]
