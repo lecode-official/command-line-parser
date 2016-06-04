@@ -80,7 +80,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void EmptyCommandLineParametersTest()
         {
             // Parses empty command line parameters
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse(string.Empty);
 
             // Validates that the parsed parameters are correct
@@ -98,7 +98,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void SingleDefaultParameterTest()
         {
             // Parses a single default command line parameter
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("abcXYZ");
 
             // Validates that the parsed parameters are correct
@@ -113,7 +113,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void MutlipleDefaultParameterTest()
         {
             // Parses multiple default command line parameters
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("abc \"123 456\" XYZ \"789 0\"");
 
             // Validates that the parsed parameters are correct
@@ -135,7 +135,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void WindowsStyleSwitchTest()
         {
             // Parses a Windows style switch
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("/Switch");
 
             // Validates that the parsed parameters are correct
@@ -152,7 +152,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void WindowsStyleParameterTest()
         {
             // Parses a Windows style parameter
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("/Parameter:123");
 
             // Validates that the parsed parameters are correct
@@ -169,7 +169,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void UnixStyleSwitchTest()
         {
             // Parses a UNIX style switch
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("--Switch");
 
             // Validates that the parsed parameters are correct
@@ -186,7 +186,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void UnixStyleParameterTest()
         {
             // Parses a UNIX style parameter
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("--Parameter=\"abc XYZ\"");
 
             // Validates that the parsed parameters are correct
@@ -203,7 +203,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void UnixStyleFlaggedSwitchesTest()
         {
             // Parses a UNIX style flagged switch
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("-sUtZ");
 
             // Validates that the parsed parameters are correct
@@ -223,7 +223,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void UnixStyleAliasParameterTest()
         {
             // Parses a UNIX style alias parameters
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("-s=123.456");
 
             // Validates that the parsed parameters are correct
@@ -240,7 +240,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void MultipleParameterTest()
         {
             // Parses a multiple parameter
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("/on /key:value --auto --parameter=123 -aFl -h false");
 
             // Validates that the parsed parameters are correct
@@ -268,7 +268,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void MixedDefaultParameterAndParameterTest()
         {
             // Parses multiple parameters
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("\"C:\\Users\\name\\Downloads\" /key:value --auto");
 
             // Validates that the parsed parameters are correct
@@ -292,7 +292,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void BooleanDataTypeTest()
         {
             // Parses a boolean value
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("/first:false --second=true");
 
             // Validates that the parsed parameters are correct
@@ -310,7 +310,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void NumberDataTypeTest()
         {
             // Parses a positive integer and validates that the parsed parameters are correct
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("/parameter=123");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
@@ -374,7 +374,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void StringDataTypeTest()
         {
             // Parses an un-quoted string value
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("/first:abc --second=XYZ");
 
             // Validates that the parsed parameters are correct
@@ -392,7 +392,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void QuotedStringDataTypeTest()
         {
             // Parses a quoted string value
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("/parameter \"abc XYZ 123 ! § $ % & / ( ) = ? \\\"");
 
             // Validates that the parsed parameters are correct
@@ -409,7 +409,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void ArrayDataTypeTest()
         {
             // Parses an empty array and validates that the parsed parameters are correct
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ParameterBag parameterBag = parser.Parse("--parameter=[]");
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
@@ -475,7 +475,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void EmptyParameterContainerInjectionTest()
         {
             // Parses an empty command line and validates that the object was properly created
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             EmptyParameterContainer emptyParameterContainer = parser.Parse<EmptyParameterContainer>(string.Empty);
             Assert.IsNotNull(emptyParameterContainer);
 
@@ -491,7 +491,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void SingleConstructorParameterContainerInjectionTest()
         {
             // Parses command line parameters and validates that the object was properly created
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             SingleConstructorParameterContainer singleConstructorParameterContainer = parser.Parse<SingleConstructorParameterContainer>("/first \"abc XYZ\" --second:-123.456");
             Assert.IsNotNull(singleConstructorParameterContainer);
             Assert.AreEqual("abc XYZ", singleConstructorParameterContainer.First);
@@ -505,7 +505,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void MultipleConstructorParameterContainerInjectionTest()
         {
             // Parses a single command line parameter and validates that the correct constructor was called
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             MultipleConstructorsParameterContainer multipleConstructorsParameterContainer = parser.Parse<MultipleConstructorsParameterContainer>("/first true");
             Assert.AreEqual(1, multipleConstructorsParameterContainer.ConstructorCalled);
 
@@ -525,7 +525,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void SimplePropertyParameterContainerInjectionTest()
         {
             // Parses command line parameters and validates that the object was properly created
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             SimplePropertyParameterContainer simplePropertyParameterContainer = parser.Parse<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true /enum:Monday");
             Assert.IsNotNull(simplePropertyParameterContainer);
             Assert.AreEqual("abc XYZ", simplePropertyParameterContainer.String);
@@ -541,7 +541,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void ArrayPropertyParameterContainerInjectionTest()
         {
             // Parses command line parameters that contain an array of boolean values and validates that the object was properly created
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/BooleanCollection [true, 1, false, 0]");
             Assert.IsNotNull(arrayPropertyParameterContainer.BooleanCollection);
             Assert.IsTrue(arrayPropertyParameterContainer.BooleanCollection.ElementAt(0));
@@ -585,7 +585,7 @@ namespace System.CommandLine.Parser.UnitTests
         public void AliasParameterContainerInjectionTest()
         {
             // Parses command line parameters and validates that the object was properly created
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            CommandLineParser parser = new CommandLineParser();
             AliasParameterContainer aliasParameterContainer = parser.Parse<AliasParameterContainer>("/s \"abc XYZ\" -n:123.456");
             Assert.IsNotNull(aliasParameterContainer);
             Assert.AreEqual(123.456M, aliasParameterContainer.Number);

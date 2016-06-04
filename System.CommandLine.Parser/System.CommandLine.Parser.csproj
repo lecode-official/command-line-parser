@@ -62,7 +62,7 @@
     <Compile Include="Parameters\NumberParameter.cs" />
     <Compile Include="ParameterNameAttribute.cs" />
     <Compile Include="Parameters\ParameterKind.cs" />
-    <Compile Include="CommandLineParameterParser.cs" />
+    <Compile Include="CommandLineParser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Parameters\ParameterBag.cs" />
     <Compile Include="Parameters\StringParameter.cs" />
