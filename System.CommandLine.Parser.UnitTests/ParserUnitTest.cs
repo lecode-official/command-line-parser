@@ -586,7 +586,7 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses command line parameters and validates that the object was properly created
             CommandLineParameterParser parser = new CommandLineParameterParser();
-            AliasParameterContainer aliasParameterContainer = parser.Parse<AliasParameterContainer>("-s \"abc XYZ\" -n:123.456");
+            AliasParameterContainer aliasParameterContainer = parser.Parse<AliasParameterContainer>("/s \"abc XYZ\" -n:123.456");
             Assert.IsNotNull(aliasParameterContainer);
             Assert.AreEqual(123.456M, aliasParameterContainer.Number);
             Assert.AreEqual("abc XYZ", aliasParameterContainer.String);
