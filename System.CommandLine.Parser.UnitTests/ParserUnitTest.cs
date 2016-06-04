@@ -578,6 +578,20 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(DayOfWeek.Sunday, arrayPropertyParameterContainer.EnumerationCollection[6]);
         }
 
+        /// <summary>
+        /// Tests how the parser handles the command line parameter injection into a class that has properties with parameter name aliases.
+        /// </summary>
+        [TestMethod]
+        public void AliasParameterContainerInjectionTest()
+        {
+            // Parses command line parameters and validates that the object was properly created
+            CommandLineParameterParser parser = new CommandLineParameterParser();
+            AliasParameterContainer aliasParameterContainer = parser.Parse<AliasParameterContainer>("-s \"abc XYZ\" -n:123.456");
+            Assert.IsNotNull(aliasParameterContainer);
+            Assert.AreEqual(123.456M, aliasParameterContainer.Number);
+            Assert.AreEqual("abc XYZ", aliasParameterContainer.String);
+        }
+
         #endregion
 
         #region Nested Types
@@ -731,6 +745,28 @@ namespace System.CommandLine.Parser.UnitTests
             /// Gets or sets the "EnumerationCollection" command line parameter.
             /// </summary>
             public IList<DayOfWeek> EnumerationCollection { get; set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Represents a parameter container, which is used to test the injection of alias parameters.
+        /// </summary>
+        private class AliasParameterContainer
+        {
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the command line parameter with the name "number" and the alias "n".
+            /// </summary>
+            [ParameterName("number", "n")]
+            public decimal Number { get; set; }
+
+            /// <summary>
+            /// Gets or sets the command line parameter with the name "string" and the alias "s".
+            /// </summary>
+            [ParameterName("string", "s")]
+            public string String { get; set; }
 
             #endregion
         }
