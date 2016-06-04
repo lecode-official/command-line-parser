@@ -39,10 +39,10 @@ value: String                                               # String
 UnixStyleFlaggedIdentifiers: '-' [a-zA-Z]+;
 
 // Windows style identifiers starts with a "/" followed by one or more valid identifier characters
-WindowsStyleIdentifier: '/' [a-zA-Z] ([a-zA-Z] | [0-9] | '-' | '_')+;
+WindowsStyleIdentifier: '/' [a-zA-Z] ([a-zA-Z] | [0-9] | '-' | '_')*;
 
 // Unix style identifiers starts with "--" followed by one or more valid identifier characters
-UnixStyleIdentifier: '--' [a-zA-Z] ([a-zA-Z] | [0-9] | '-' | '_')+;
+UnixStyleIdentifier: '--' [a-zA-Z] ([a-zA-Z] | [0-9] | '-' | '_')*;
 
 // "=" and ":" are valid assignment operators (in the Windows world "=" is preferred, while in the Unix world ":" is preferred)
 AssignmentOperator: '='
