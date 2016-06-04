@@ -2,7 +2,7 @@
 namespace System.CommandLine.Parser
 {
     /// <summary>
-    /// Represents an attribute, which can be used to specify the name of the command line parameter with which the property marked by this attribute is to be matched.
+    /// Represents an attribute, which can be used to specify the name of the command line parameter with which the property or the constructor parameter marked by this attribute is to be matched.
     /// </summary>
     [AttributeUsage(AttributeTargets.Property | AttributeTargets.Parameter, AllowMultiple = false)]
     public class ParameterNameAttribute : Attribute
