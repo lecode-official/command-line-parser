@@ -184,7 +184,8 @@ namespace System.CommandLine.Parser
             {
                 // Gets the matched command line parameter
                 Type constructorParameterType = chosenConstructorParameterInfos[parameterNameAttribute];
-                Parameter parameter = parameterBag.Parameters[parameterNameAttribute.ParameterName];
+                Parameter parameter = null;
+                parameterBag.Parameters.TryGetValue(parameterNameAttribute.ParameterName, out parameter);
                 if (parameter == null)
                     parameter = parameterBag.Parameters[parameterNameAttribute.ParameterAlias];
 
@@ -208,9 +209,10 @@ namespace System.CommandLine.Parser
                 // Gets the command line parameter by the name, if no parameter could be found then the property can not be assigned
                 if (!parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterName) && (string.IsNullOrWhiteSpace(parameterNameAttribute.ParameterAlias) || !parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterAlias)))
                     continue;
-                Parameter parameter = parameterBag.Parameters[parameterNameAttribute.ParameterName];
+                Parameter parameter = null;
+                parameterBag.Parameters.TryGetValue(parameterNameAttribute.ParameterName, out parameter);
                 if (parameter == null)
-                    parameter = parameterBag.Parameters[parameterNameAttribute.ParameterName];
+                    parameter = parameterBag.Parameters[parameterNameAttribute.ParameterAlias];
 
                 // Checks if there is a parameter converter, that is able to convert the parameter value to the type of the property
                 IParameterConverter parameterConverter = this.FindBestMatchingParameterConverter(propertyInfo.PropertyType, parameter);
