@@ -69,7 +69,7 @@ namespace CommandLineParser.Samples.Console
             System.Console.WriteLine();
 
             // Parses the command line parameters passed to the application and prints them out
-            CommandLineParameterParser parser = new CommandLineParameterParser();
+            System.CommandLine.Parser.CommandLineParser parser = new System.CommandLine.Parser.CommandLineParser();
             ParameterBag parameterBag = await parser.ParseAsync();
             if (parameterBag.Parameters.Any())
             {

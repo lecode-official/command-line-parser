@@ -19,7 +19,7 @@ namespace System.CommandLine.Parser
     /// <summary>
     /// Represents a parser, which is able to parse command line parameters and convert them to strongly-typed .NET data types.
     /// </summary>
-    public class CommandLineParameterParser
+    public class CommandLineParser
     {
         #region Private Fields
 
@@ -227,7 +227,7 @@ namespace System.CommandLine.Parser
         {
             // Parses the command line parameters using the ANTRL4 generated parsers
             CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
-            CommandLineParser parser = new CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
+            Antlr.CommandLineParser parser = new Antlr.CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
             IParseTree parseTree = parser.commandLine();
             CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
             commandLineVisitor.Visit(parseTree);

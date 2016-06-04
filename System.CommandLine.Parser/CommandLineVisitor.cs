@@ -47,18 +47,18 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all information about the start rule of the grammar</param>
         /// <returns>Returns <c>null</c>, because nothing needs to be returned.</returns>
-        public override Parameter VisitCommandLine([NotNull] CommandLineParser.CommandLineContext context)
+        public override Parameter VisitCommandLine([NotNull] Antlr.CommandLineParser.CommandLineContext context)
         {
             // Creates the result sets
             this.Parameters = new Dictionary<string, Parameter>();
             this.DefaultParameters = new List<Parameter>();
 
             // Visits the default parameters
-            foreach (CommandLineParser.DefaultParameterContext defaultParameterContext in context.defaultParameter())
+            foreach (Antlr.CommandLineParser.DefaultParameterContext defaultParameterContext in context.defaultParameter())
                 this.DefaultParameters.Add(this.Visit(defaultParameterContext));
 
             // Visits the parameters
-            foreach (CommandLineParser.ParameterContext parameterContext in context.parameter())
+            foreach (Antlr.CommandLineParser.ParameterContext parameterContext in context.parameter())
                 this.Visit(parameterContext);
 
             // Nothing needs to be returned
@@ -70,7 +70,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all information about the default parameter that is being visited.</param>
         /// <returns>Returns the default parameter that was being visited.</returns>
-        public override Parameter VisitDefaultParameterString([NotNull] CommandLineParser.DefaultParameterStringContext context)
+        public override Parameter VisitDefaultParameterString([NotNull] Antlr.CommandLineParser.DefaultParameterStringContext context)
         {
             // Checks if the default parameter is a string or a quoted string
             string defaultParameterValue = null;
@@ -88,21 +88,21 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">the context, which contains all information about the boolean value.</param>
         /// <returns>Returns the parameter with the boolean value.</returns>
-        public override Parameter VisitBoolean([NotNull] CommandLineParser.BooleanContext context) => new BooleanParameter { Value = context.True() != null ? true : false };
+        public override Parameter VisitBoolean([NotNull] Antlr.CommandLineParser.BooleanContext context) => new BooleanParameter { Value = context.True() != null ? true : false };
 
         /// <summary>
         /// Is called when the visitor reaches a number value.
         /// </summary>
         /// <param name="context">the context, which contains all information about the number value.</param>
         /// <returns>Returns the parameter with the number value.</returns>
-        public override Parameter VisitNumber([NotNull] CommandLineParser.NumberContext context) => new NumberParameter { Value = decimal.Parse(context.Number().GetText(), CommandLineVisitor.americanCultureInfo) };
+        public override Parameter VisitNumber([NotNull] Antlr.CommandLineParser.NumberContext context) => new NumberParameter { Value = decimal.Parse(context.Number().GetText(), CommandLineVisitor.americanCultureInfo) };
 
         /// <summary>
         /// Is called when the visitor reaches a string value.
         /// </summary>
         /// <param name="context">the context, which contains all information about the string value.</param>
         /// <returns>Returns the parameter with the string value.</returns>
-        public override Parameter VisitString([NotNull] CommandLineParser.StringContext context)
+        public override Parameter VisitString([NotNull] Antlr.CommandLineParser.StringContext context)
         {
             // Checks if the string parameter is a string or a quoted string
             string parameterValue = null;
@@ -120,7 +120,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">the context, which contains all information about the array value.</param>
         /// <returns>Returns the parameter with the array value.</returns>
-        public override Parameter VisitArray([NotNull] CommandLineParser.ArrayContext context)
+        public override Parameter VisitArray([NotNull] Antlr.CommandLineParser.ArrayContext context)
         {
             // Parses the content of the array
             List<Parameter> arrayContent = new List<Parameter>();
@@ -140,7 +140,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all the information about the UNIX style flagged switch.</param>
         /// <returns>Returns <c>null</c> because the flags are directly added to the result set.</returns>
-        public override Parameter VisitUnixStyleFlaggedSwitch([NotNull] CommandLineParser.UnixStyleFlaggedSwitchContext context)
+        public override Parameter VisitUnixStyleFlaggedSwitch([NotNull] Antlr.CommandLineParser.UnixStyleFlaggedSwitchContext context)
         {
             // Adds all the flags to the result set
             foreach (char flag in context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty).ToList())
@@ -161,7 +161,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all the information about the UNIX style switch.</param>
         /// <returns>Returns <c>null</c> because the switch is directly added to the result set.</returns>
-        public override Parameter VisitUnixStyleSwitch([NotNull] CommandLineParser.UnixStyleSwitchContext context)
+        public override Parameter VisitUnixStyleSwitch([NotNull] Antlr.CommandLineParser.UnixStyleSwitchContext context)
         {
             // Adds the switch to the result set
             string parameterName = context.UnixStyleIdentifier().GetText().Replace("-", string.Empty);
@@ -179,7 +179,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all the information about the Windows style switch.</param>
         /// <returns>Returns <c>null</c> because the switch is directly added to the result set.</returns>
-        public override Parameter VisitWindowsStyleSwitch([NotNull] CommandLineParser.WindowsStyleSwitchContext context)
+        public override Parameter VisitWindowsStyleSwitch([NotNull] Antlr.CommandLineParser.WindowsStyleSwitchContext context)
         {
             // Adds the switch to the result set
             string parameterName = context.WindowsStyleIdentifier().GetText().Replace("/", string.Empty);
@@ -197,7 +197,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all the information about the UNIX style parameter.</param>
         /// <returns>Returns <c>null</c> because the parameter is directly added to the result set.</returns>
-        public override Parameter VisitUnixStyleParameter([NotNull] CommandLineParser.UnixStyleParameterContext context)
+        public override Parameter VisitUnixStyleParameter([NotNull] Antlr.CommandLineParser.UnixStyleParameterContext context)
         {
             // Parses the value of the parameter
             Parameter parameter = this.Visit(context.value());
@@ -218,7 +218,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all the information about the UNIX style alias parameter.</param>
         /// <returns>Returns <c>null</c> because the parameter is directly added to the result set.</returns>
-        public override Parameter VisitUnixStyleAliasParameter([NotNull] CommandLineParser.UnixStyleAliasParameterContext context)
+        public override Parameter VisitUnixStyleAliasParameter([NotNull] Antlr.CommandLineParser.UnixStyleAliasParameterContext context)
         {
             // Parses the value of the parameter
             Parameter parameter = this.Visit(context.value());
@@ -242,7 +242,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="context">The context, which contains all the information about the Windows style parameter.</param>
         /// <returns>Returns <c>null</c> because the parameter is directly added to the result set.</returns>
-        public override Parameter VisitWindowsStyleParameter([NotNull] CommandLineParser.WindowsStyleParameterContext context)
+        public override Parameter VisitWindowsStyleParameter([NotNull] Antlr.CommandLineParser.WindowsStyleParameterContext context)
         {
             // Parses the value of the parameter
             Parameter parameter = this.Visit(context.value());
