@@ -17,18 +17,14 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace System.CommandLine.Parser.Antlr {
-using System;
-using System.Text;
-using System.Diagnostics;
-using System.Collections.Generic;
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using DFA = Antlr4.Runtime.Dfa.DFA;
+namespace System.CommandLine.Parser.Antlr
+{
+    using Antlr4.Runtime;
+    using Antlr4.Runtime.Atn;
+    using Antlr4.Runtime.Misc;
+    using Antlr4.Runtime.Tree;
 
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
+    [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
 [System.CLSCompliant(false)]
 internal partial class CommandLineParser : Parser {
 	public const int

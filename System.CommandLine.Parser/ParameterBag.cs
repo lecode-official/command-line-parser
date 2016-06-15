@@ -2,10 +2,11 @@
 #region Using Directives
 
 using System.Collections.Generic;
+using System.CommandLine.Parser.Parameters;
 
 #endregion
 
-namespace System.CommandLine.Parser.Parameters
+namespace System.CommandLine.Parser
 {
     /// <summary>
     /// Represents a bag, which is able to contain parsed properties.
