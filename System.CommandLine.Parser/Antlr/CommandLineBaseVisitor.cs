@@ -17,19 +17,18 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace System.CommandLine.Parser.Antlr {
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
-using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
+namespace System.CommandLine.Parser.Antlr
+{
+    using Antlr4.Runtime.Misc;
+    using Antlr4.Runtime.Tree;
 
-/// <summary>
-/// This class provides an empty implementation of <see cref="ICommandLineVisitor{Result}"/>,
-/// which can be extended to create a visitor which only needs to handle a subset
-/// of the available methods.
-/// </summary>
-/// <typeparam name="Result">The return type of the visit operation.</typeparam>
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
+    /// <summary>
+    /// This class provides an empty implementation of <see cref="ICommandLineVisitor{Result}"/>,
+    /// which can be extended to create a visitor which only needs to handle a subset
+    /// of the available methods.
+    /// </summary>
+    /// <typeparam name="Result">The return type of the visit operation.</typeparam>
+    [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
 [System.CLSCompliant(false)]
 internal partial class CommandLineBaseVisitor<Result> : AbstractParseTreeVisitor<Result>, ICommandLineVisitor<Result> {
 	/// <summary>
