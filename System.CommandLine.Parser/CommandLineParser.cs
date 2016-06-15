@@ -4,12 +4,14 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.CommandLine.Parser.Antlr;
 using System.CommandLine.Parser.ParameterConverters;
 using System.CommandLine.Parser.Parameters;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 
 #endregion
@@ -21,6 +23,49 @@ namespace System.CommandLine.Parser
     /// </summary>
     public class CommandLineParser
     {
+        #region Private Static Fields
+
+        /// <summary>
+        /// Contains a map of all types supported for default parameters, that maps the type to a conversion method, which converts the original values into the specified collection type.
+        /// </summary>
+        private static IDictionary<Type, Func<IEnumerable<string>, object>> defaultParameterCollectionConversionMap = new Dictionary<Type, Func<IEnumerable<string>, object>>
+        {
+            [typeof(string)] = array => string.Join(" ", array),
+            [typeof(StringBuilder)] = array => new StringBuilder(string.Join(" ", array)),
+
+            [typeof(string[])] = array => array.ToArray(),
+            [typeof(IList<string>)] = array => array.ToList(),
+            [typeof(IEnumerable<string>)] = array => array.ToList(),
+            [typeof(ICollection<string>)] = array => new Collection<string>(array.ToList()),
+            [typeof(ISet<string>)] = array => new HashSet<string>(array),
+            [typeof(IReadOnlyCollection<string>)] = array => new ReadOnlyCollection<string>(array.ToList()),
+            [typeof(IReadOnlyList<string>)] = array => new ReadOnlyCollection<string>(array.ToList()),
+            [typeof(List<string>)] = array => array.ToList(),
+            [typeof(Collection<string>)] = array => new Collection<string>(array.ToList()),
+            [typeof(LinkedList<string>)] = array => new LinkedList<string>(array),
+            [typeof(Queue<string>)] = array => new Queue<string>(array),
+            [typeof(SortedSet<string>)] = array => new SortedSet<string>(array),
+            [typeof(HashSet<string>)] = array => new HashSet<string>(array),
+            [typeof(Stack<string>)] = array => new Stack<string>(array),
+
+            [typeof(StringBuilder[])] = array => array.Select(item => new StringBuilder(item)).ToArray(),
+            [typeof(IList<StringBuilder>)] = array => array.Select(item => new StringBuilder(item)).ToList(),
+            [typeof(IEnumerable<StringBuilder>)] = array => array.Select(item => new StringBuilder(item)).ToList(),
+            [typeof(ICollection<StringBuilder>)] = array => new Collection<StringBuilder>(array.Select(item => new StringBuilder(item)).ToList()),
+            [typeof(ISet<StringBuilder>)] = array => new HashSet<StringBuilder>(array.Select(item => new StringBuilder(item))),
+            [typeof(IReadOnlyCollection<StringBuilder>)] = array => new ReadOnlyCollection<StringBuilder>(array.Select(item => new StringBuilder(item)).ToList()),
+            [typeof(IReadOnlyList<StringBuilder>)] = array => new ReadOnlyCollection<StringBuilder>(array.Select(item => new StringBuilder(item)).ToList()),
+            [typeof(List<StringBuilder>)] = array => array.Select(item => new StringBuilder(item)).ToList(),
+            [typeof(Collection<StringBuilder>)] = array => new Collection<StringBuilder>(array.Select(item => new StringBuilder(item)).ToList()),
+            [typeof(LinkedList<StringBuilder>)] = array => new LinkedList<StringBuilder>(array.Select(item => new StringBuilder(item))),
+            [typeof(Queue<StringBuilder>)] = array => new Queue<StringBuilder>(array.Select(item => new StringBuilder(item))),
+            [typeof(SortedSet<StringBuilder>)] = array => new SortedSet<StringBuilder>(array.Select(item => new StringBuilder(item))),
+            [typeof(HashSet<StringBuilder>)] = array => new HashSet<StringBuilder>(array.Select(item => new StringBuilder(item))),
+            [typeof(Stack<StringBuilder>)] = array => new Stack<StringBuilder>(array.Select(item => new StringBuilder(item)))
+        };
+
+        #endregion
+
         #region Private Fields
 
         /// <summary>
@@ -115,17 +160,25 @@ namespace System.CommandLine.Parser
         {
             // Determines the constructor, which is to be used for instantiating the specified type, the algorithm is greedy and uses the constructor with the most constructor arguments that can be matched from the parsed command line arguments
             ConstructorInfo chosenConstructorInfo = null;
-            Dictionary<ParameterNameAttribute, Type> chosenConstructorParameterInfos = null;
+            Dictionary<Attribute, Type> chosenConstructorParameterInfos = null;
             foreach (ConstructorInfo constructorInfo in returnType.GetConstructors()
                 .Where(constructor => constructor.IsPublic && !constructor.IsStatic)
                 .OrderByDescending(constructor => constructor.GetParameters().Count()))
             {
                 // Creates a dictionary which can hold information about the parameters of the constructor and their types
-                chosenConstructorParameterInfos = new Dictionary<ParameterNameAttribute, Type>();
+                chosenConstructorParameterInfos = new Dictionary<Attribute, Type>();
 
                 // Cycles over all the parameters of the constructor and gather information about them
                 foreach (ParameterInfo constructorParameterInfo in constructorInfo.GetParameters())
                 {
+                    // Gets the default parameter attribute of the constructor parameter, if it has one, then it is matched with the default parameters
+                    DefaultParameterAttribute defaultParameterAttribute = constructorParameterInfo.GetCustomAttribute<DefaultParameterAttribute>();
+                    if (defaultParameterAttribute != null)
+                    {
+                        chosenConstructorParameterInfos.Add(defaultParameterAttribute, constructorParameterInfo.ParameterType);
+                        continue;
+                    }
+
                     // Gets the name of the command line parameter with which the constructor parameter is to be matched (which is either retrieved from the parameter name attribute or the name of the constructor parameter
                     ParameterNameAttribute parameterNameAttribute = constructorParameterInfo.GetCustomAttribute<ParameterNameAttribute>();
                     if (parameterNameAttribute != null)
@@ -136,12 +189,28 @@ namespace System.CommandLine.Parser
 
                 // Checks if the constructor can be used, which is when all constructor parameters can be matched with command line parameters
                 bool canConstructorBeUsed = true;
-                foreach (ParameterNameAttribute parameterNameAttribute in chosenConstructorParameterInfos.Keys)
+                foreach (Attribute attribute in chosenConstructorParameterInfos.Keys)
                 {
                     // Gets the type of the constructor parameter, which is to be used to match it to command line parameters
-                    Type parameterType = chosenConstructorParameterInfos[parameterNameAttribute];
+                    Type parameterType = chosenConstructorParameterInfos[attribute];
+
+                    // Checks if the constructor parameter is to be matched with the default parameters
+                    DefaultParameterAttribute defaultParameterAttribute = attribute as DefaultParameterAttribute;
+                    if (defaultParameterAttribute != null)
+                    {
+                        // Only strings, string builders, or collection types are supported for default parameters
+                        if (!CommandLineParser.defaultParameterCollectionConversionMap.ContainsKey(parameterType))
+                        {
+                            canConstructorBeUsed = false;
+                            break;
+                        }
+
+                        // Since the constructor parameter has a valid type, the next constructor parameter can be tested
+                        continue;
+                    }
 
                     // Gets the command line parameter by the name, if no parameter could be found, then the constructor can not be used
+                    ParameterNameAttribute parameterNameAttribute = attribute as ParameterNameAttribute;
                     if (!parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterName) && (string.IsNullOrWhiteSpace(parameterNameAttribute.ParameterAlias) || !parameterBag.Parameters.ContainsKey(parameterNameAttribute.ParameterAlias)))
                     {
                         canConstructorBeUsed = false;
@@ -174,10 +243,25 @@ namespace System.CommandLine.Parser
             // Prepares the constructor arguments
             object[] constructorParameters = new object[chosenConstructorParameterInfos.Count];
             int index = 0;
-            foreach (ParameterNameAttribute parameterNameAttribute in chosenConstructorParameterInfos.Keys)
+            foreach (Attribute attribute in chosenConstructorParameterInfos.Keys)
             {
+                // Gets the type of the constructor parameter, which is to be used to match it to command line parameters
+                Type constructorParameterType = chosenConstructorParameterInfos[attribute];
+
+                // Checks if the constructor parameter is to be matched with a default parameter
+                DefaultParameterAttribute defaultParameterAttribute = attribute as DefaultParameterAttribute;
+                if (defaultParameterAttribute != null)
+                {
+                    // Converts the default 
+                    IEnumerable<string> defaultParameters = parameterBag.DefaultParameters.OfType<DefaultParameter>().Select(defaultParameter => defaultParameter.Value);
+                    constructorParameters[index++] = CommandLineParser.defaultParameterCollectionConversionMap[constructorParameterType](defaultParameters);
+
+                    // Since the constructor parameter has already been found, the next constructor parameter can be processed
+                    continue;
+                }
+
                 // Gets the matched command line parameter
-                Type constructorParameterType = chosenConstructorParameterInfos[parameterNameAttribute];
+                ParameterNameAttribute parameterNameAttribute = attribute as ParameterNameAttribute;
                 Parameter parameter = null;
                 parameterBag.Parameters.TryGetValue(parameterNameAttribute.ParameterName, out parameter);
                 if (parameter == null)
