@@ -252,7 +252,7 @@ namespace System.CommandLine.Parser
                 DefaultParameterAttribute defaultParameterAttribute = attribute as DefaultParameterAttribute;
                 if (defaultParameterAttribute != null)
                 {
-                    // Converts the default 
+                    // Converts the default parameters and sets them as the constructor parameter
                     IEnumerable<string> defaultParameters = parameterBag.DefaultParameters.OfType<DefaultParameter>().Select(defaultParameter => defaultParameter.Value);
                     constructorParameters[index++] = CommandLineParser.defaultParameterCollectionConversionMap[constructorParameterType](defaultParameters);
 
@@ -321,6 +321,29 @@ namespace System.CommandLine.Parser
             // Matches the public properties of the instance and injects all possible command line parameters into it
             foreach (PropertyInfo propertyInfo in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(property => property.CanWrite))
             {
+                // Gets the default parameter attribute of the property, which means that the property is to be matched with the default parameters
+                DefaultParameterAttribute defaultParameterAttribute = propertyInfo.GetCustomAttribute<DefaultParameterAttribute>();
+                if (defaultParameterAttribute != null)
+                {
+                    // Checks if the property has one of the types supported for defaut parameters, if not then the next property is processed
+                    if (!CommandLineParser.defaultParameterCollectionConversionMap.ContainsKey(propertyInfo.PropertyType))
+                        continue;
+
+                    // Gets the default parameters and converts the to the type of the property
+                    IEnumerable<string> defaultParameters = parameterBag.DefaultParameters.OfType<DefaultParameter>().Select(defaultParameter => defaultParameter.Value);
+                    object convertedDefaultParameters = CommandLineParser.defaultParameterCollectionConversionMap[propertyInfo.PropertyType](defaultParameters);
+
+                    // Injects the default parameters into the property
+                    try
+                    {
+                        propertyInfo.SetMethod.Invoke(instance, new object[] { convertedDefaultParameters });
+                    }
+                    catch (InvalidOperationException) { }
+
+                    // Since the propery has already been matched with the default parameters, the next property of the object can be processed
+                    continue;
+                }
+
                 // Gets the name of the command line parameter with which the property is to be matched (which is either retrieved from the parameter name attribute or the name of the constructor parameter
                 ParameterNameAttribute parameterNameAttribute = propertyInfo.GetCustomAttribute<ParameterNameAttribute>();
                 if (parameterNameAttribute == null)
