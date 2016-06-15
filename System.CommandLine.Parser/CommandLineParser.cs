@@ -68,15 +68,50 @@ namespace System.CommandLine.Parser
 
         #endregion
 
-        #region Public Injection Methods
+        #region Public Parsing Methods
 
         /// <summary>
-        /// Instantiates a new object from the specified type and injects the command line parameters from the parameter bag into it.
+        /// Parses the specified command line parameters.
         /// </summary>
-        /// <param name="parameterBag">The parameter bag, which contains the command line parameters that are to be injected into an instance of the specified type.</param>
-        /// <param name="returnType">The type of object that is to be instantiated and injected into.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the parameter bag.</returns>
-        public object Inject(ParameterBag parameterBag, Type returnType)
+        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <returns>Returns the parsed parameters.</returns>
+        public ParameterBag Parse(string commandLineParameters)
+        {
+            // Parses the command line parameters using the ANTRL4 generated parsers
+            CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
+            Antlr.CommandLineParser parser = new Antlr.CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
+            IParseTree parseTree = parser.commandLine();
+            CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
+            commandLineVisitor.Visit(parseTree);
+
+            // Returns the parsed parameters wrapped in a parameter bag
+            return new ParameterBag
+            {
+                CommandLineParameters = commandLineParameters,
+                Parameters = commandLineVisitor.Parameters,
+                DefaultParameters = commandLineVisitor.DefaultParameters
+            };
+        }
+        
+        /// <summary>
+        /// Parses the specified command line parameters asynchronously.
+        /// </summary>
+        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <returns>Returns the parsed parameters.</returns>
+        public Task<ParameterBag> ParseAsync(string commandLineParameters) => Task.Run(() => this.Parse(commandLineParameters));
+        
+        #endregion
+
+        #region Public Instantiation Methods
+
+        /// <summary>
+        /// Instantiates a new object. The constructor parameters are taken from the specified bag of parameters.
+        /// </summary>
+        /// <param name="parameterBag">The parameter bag from which the constructor parameters abre being taken.</param>
+        /// <param name="returnType">The type of object that is to be instantiated.</param>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns the created instance of the specified type.</returns>
+        public object Instantiate(ParameterBag parameterBag, Type returnType)
         {
             // Determines the constructor, which is to be used for instantiating the specified type, the algorithm is greedy and uses the constructor with the most constructor arguments that can be matched from the parsed command line arguments
             ConstructorInfo chosenConstructorInfo = null;
@@ -157,8 +192,50 @@ namespace System.CommandLine.Parser
             if (instance == null)
                 throw new InvalidOperationException("No instance of the specified type could be constructed.");
 
+            // Returns the created instance
+            return instance;
+        }
+
+        /// <summary>
+        /// Instantiates a new object asynchronously. The constructor parameters are taken from the specified bag of parameters.
+        /// </summary>
+        /// <param name="parameterBag">The parameter bag from which the constructor parameters abre being taken.</param>
+        /// <param name="returnType">The type of object that is to be instantiated.</param>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns the created instance of the specified type.</returns>
+        public Task<object> InstantiateAsync(ParameterBag parameterBag, Type returnType) => Task.Run(() => this.Instantiate(parameterBag, returnType));
+
+        /// <summary>
+        /// Instantiates a new object. The constructor parameters are taken from the specified bag of parameters.
+        /// </summary>
+        /// <typeparam name="T">The type of object that is to be instantiated.</typeparam>
+        /// <param name="parameterBag">The parameter bag from which the constructor parameters abre being taken.</param>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns the created instance of the specified type.</returns>
+        public T Instantiate<T>(ParameterBag parameterBag) where T : class => this.Instantiate(parameterBag, typeof(T)) as T;
+
+        /// <summary>
+        /// Instantiates a new object asynchronously. The constructor parameters are taken from the specified bag of parameters.
+        /// </summary>
+        /// <typeparam name="T">The type of object that is to be instantiated.</typeparam>
+        /// <param name="parameterBag">The parameter bag from which the constructor parameters abre being taken.</param>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns the created instance of the specified type.</returns>
+        public Task<T> InstantiateAsync<T>(ParameterBag parameterBag) where T : class => Task.Run(() => this.Instantiate<T>(parameterBag));
+
+        #endregion
+
+        #region Public Injection Methods
+
+        /// <summary>
+        /// Injects the command line parameters from the parameter bag into the specified object instance.
+        /// </summary>
+        /// <param name="parameterBag">The parameter bag, which contains the command line parameters that are to be injected into an instance of the specified type.</param>
+        /// <param name="instance">The object instance into which the command line parameters are to be injected.</param>
+        public void Inject(ParameterBag parameterBag, object instance)
+        {
             // Matches the public properties of the instance and injects all possible command line parameters into it
-            foreach (PropertyInfo propertyInfo in returnType.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(property => property.CanWrite))
+            foreach (PropertyInfo propertyInfo in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(property => property.CanWrite))
             {
                 // Gets the name of the command line parameter with which the property is to be matched (which is either retrieved from the parameter name attribute or the name of the constructor parameter
                 ParameterNameAttribute parameterNameAttribute = propertyInfo.GetCustomAttribute<ParameterNameAttribute>();
@@ -185,141 +262,77 @@ namespace System.CommandLine.Parser
                 }
                 catch (InvalidOperationException) { }
             }
+        }
 
-            // Returns the created instance of the specified type
+        /// <summary>
+        /// Injects the command line parameters from the parameter bag into the specified object instance asynchronously.
+        /// </summary>
+        /// <param name="parameterBag">The parameter bag, which contains the command line parameters that are to be injected into an instance of the specified type.</param>
+        /// <param name="instance">The object instance into which the command line parameters are to be injected.</param>
+        public Task InjectAsync(ParameterBag parameterBag, object instance) => Task.Run(() => this.Inject(parameterBag, instance));
+
+        #endregion
+
+        #region Public Utility Methods
+
+        /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type.
+        /// </summary>
+        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public object Bind(string commandLineParameters, Type returnType)
+        {
+            // Parses the command line parameters
+            ParameterBag parameterBag = this.Parse(commandLineParameters);
+
+            // Instantiates a new object using the command line parameters and injects the command line parameters into it
+            object instance = this.Instantiate(parameterBag, returnType);
+            this.Inject(parameterBag, instance);
+
+            // Returns the instantiated object
             return instance;
         }
 
         /// <summary>
-        /// Instantiates a new object from the specified type and injects the command line parameters from the parameter bag into it.
-        /// </summary>
-        /// <param name="parameterBag">The parameter bag, which contains the command line parameters that are to be injected into an instance of the specified type.</param>
-        /// <param name="returnType">The type of object that is to be instantiated and injected into.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the parameter bag.</returns>
-        public Task<object> InjectAsync(ParameterBag parameterBag, Type returnType) => Task.Run(() => this.Inject(parameterBag, returnType));
-
-        /// <summary>
-        /// Instantiates a new object from the specified type and injects the command line parameters from the parameter bag into it.
-        /// </summary>
-        /// <typeparam name="T">The type of object that is to be instantiated and injected into.</typeparam>
-        /// <param name="parameterBag">The parameter bag, which contains the command line parameters that are to be injected into an instance of the specified type.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the parameter bag.</returns>
-        public T Inject<T>(ParameterBag parameterBag) where T : class => this.Inject(parameterBag, typeof(T)) as T;
-
-        /// <summary>
-        /// Instantiates a new object from the specified type and injects the command line parameters from the parameter bag into it.
-        /// </summary>
-        /// <typeparam name="T">The type of object that is to be instantiated and injected into.</typeparam>
-        /// <param name="parameterBag">The parameter bag, which contains the command line parameters that are to be injected into an instance of the specified type.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the parameter bag.</returns>
-        public Task<T> InjectAsync<T>(ParameterBag parameterBag) where T : class => Task.Run(() => this.Inject<T>(parameterBag));
-
-        #endregion
-
-        #region Public Parsing Methods
-
-        /// <summary>
-        /// Parses the specified command line parameters.
+        /// Parses the specified command line parameters and converts them into the specified type asynchronously.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
-        /// <returns>Returns the parsed parameters.</returns>
-        public ParameterBag Parse(string commandLineParameters)
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public async Task<object> BindAsync(string commandLineParameters, Type returnType)
         {
-            // Parses the command line parameters using the ANTRL4 generated parsers
-            CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
-            Antlr.CommandLineParser parser = new Antlr.CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
-            IParseTree parseTree = parser.commandLine();
-            CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
-            commandLineVisitor.Visit(parseTree);
+            // Parses the command line parameters
+            ParameterBag parameterBag = await this.ParseAsync(commandLineParameters);
 
-            // Returns the parsed parameters wrapped in a parameter bag
-            return new ParameterBag
-            {
-                CommandLineParameters = commandLineParameters,
-                Parameters = commandLineVisitor.Parameters,
-                DefaultParameters = commandLineVisitor.DefaultParameters
-            };
+            // Instantiates a new object using the command line parameters and injects the command line parameters into it
+            object instance = await this.InstantiateAsync(parameterBag, returnType);
+            await this.InjectAsync(parameterBag, instance);
+
+            // Returns the instantiated object
+            return instance;
         }
 
         /// <summary>
-        /// Parses the command line parameters that have been passed to the program.
-        /// </summary>
-        /// <returns>Returns the parsed parameters.</returns>
-        public ParameterBag Parse() => this.Parse(Environment.CommandLine);
-
-        /// <summary>
-        /// Parses the specified command line parameters asynchronously.
-        /// </summary>
-        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
-        /// <returns>Returns the parsed parameters.</returns>
-        public Task<ParameterBag> ParseAsync(string commandLineParameters) => Task.Run(() => this.Parse(commandLineParameters));
-
-        /// <summary>
-        /// Parses the command line parameters that have been passed to the program asynchronously.
-        /// </summary>
-        /// <returns>Returns the parsed parameters.</returns>
-        public Task<ParameterBag> ParseAsync() => Task.Run(() => this.Parse());
-
-        /// <summary>
-        /// Parses the specified command line parameters and converts them into the specified type.
-        /// </summary>
-        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
-        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public object Parse(string commandLineParameters, Type returnType) => this.Inject(this.Parse(commandLineParameters), returnType);
-
-        /// <summary>
-        /// Parses the specified command line parameters and converts them into the specified type.
-        /// </summary>
-        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public object Parse(Type returnType) => this.Parse(Environment.CommandLine, returnType);
-
-        /// <summary>
-        /// Parses the specified command line parameters and converts them into the specified type asynchronously.
-        /// </summary>
-        /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
-        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public Task<object> ParseAsync(string commandLineParameters, Type returnType) => Task.Run(() => this.Parse(commandLineParameters, returnType));
-
-        /// <summary>
-        /// Parses the specified command line parameters and converts them into the specified type asynchronously.
-        /// </summary>
-        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public Task<object> ParseAsync(Type returnType) => Task.Run(() => this.Parse(Environment.CommandLine, returnType));
-
-        /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public T Parse<T>(string commandLineParameters) where T : class => this.Parse(commandLineParameters, typeof(T)) as T;
-
-        /// <summary>
-        /// Parses the command line parameters that have been passed to the program and converts them into the specified type.
-        /// </summary>
-        /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public T Parse<T>() where T : class => this.Parse<T>(Environment.CommandLine);
+        public T Bind<T>(string commandLineParameters) where T : class => this.Bind(commandLineParameters, typeof(T)) as T;
 
         /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type asynchronously.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public Task<T> ParseAsync<T>(string commandLineParameters) where T : class => Task.Run(() => this.Parse<T>(commandLineParameters));
-
-        /// <summary>
-        /// Parses the command line parameters that have been passed to the program and converts them into the specified type asynchronously.
-        /// </summary>
-        /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
-        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
-        public Task<T> ParseAsync<T>() where T : class => Task.Run(() => this.Parse<T>());
-
+        public async Task<T> BindAsync<T>(string commandLineParameters) where T : class => await this.BindAsync(commandLineParameters, typeof(T)) as T;
+        
         #endregion
     }
 }

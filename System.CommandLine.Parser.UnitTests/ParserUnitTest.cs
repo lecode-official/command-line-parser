@@ -476,11 +476,11 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses an empty command line and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
-            EmptyParameterContainer emptyParameterContainer = parser.Parse<EmptyParameterContainer>(string.Empty);
+            EmptyParameterContainer emptyParameterContainer = parser.Bind<EmptyParameterContainer>(string.Empty);
             Assert.IsNotNull(emptyParameterContainer);
 
             // Parses several command line parameters and validates that the object was properly created
-            emptyParameterContainer = parser.Parse<EmptyParameterContainer>("/on /key:value --auto --parameter=123 -aFl");
+            emptyParameterContainer = parser.Bind<EmptyParameterContainer>("/on /key:value --auto --parameter=123 -aFl");
             Assert.IsNotNull(emptyParameterContainer);
         }
 
@@ -492,7 +492,7 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses command line parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
-            SingleConstructorParameterContainer singleConstructorParameterContainer = parser.Parse<SingleConstructorParameterContainer>("/first \"abc XYZ\" --second:-123.456");
+            SingleConstructorParameterContainer singleConstructorParameterContainer = parser.Bind<SingleConstructorParameterContainer>("/first \"abc XYZ\" --second:-123.456");
             Assert.IsNotNull(singleConstructorParameterContainer);
             Assert.AreEqual("abc XYZ", singleConstructorParameterContainer.First);
             Assert.AreEqual(-123, singleConstructorParameterContainer.Second);
@@ -506,15 +506,15 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses a single command line parameter and validates that the correct constructor was called
             CommandLineParser parser = new CommandLineParser();
-            MultipleConstructorsParameterContainer multipleConstructorsParameterContainer = parser.Parse<MultipleConstructorsParameterContainer>("/first true");
+            MultipleConstructorsParameterContainer multipleConstructorsParameterContainer = parser.Bind<MultipleConstructorsParameterContainer>("/first true");
             Assert.AreEqual(1, multipleConstructorsParameterContainer.ConstructorCalled);
 
             // Parses two command line parameters and validates that the correct constructor was called
-            multipleConstructorsParameterContainer = parser.Parse<MultipleConstructorsParameterContainer>("/first true --second=abc");
+            multipleConstructorsParameterContainer = parser.Bind<MultipleConstructorsParameterContainer>("/first true --second=abc");
             Assert.AreEqual(2, multipleConstructorsParameterContainer.ConstructorCalled);
 
             // Parses three command line parameters and validates that the correct constructor was called
-            multipleConstructorsParameterContainer = parser.Parse<MultipleConstructorsParameterContainer>("/first true --second=abc /third:123");
+            multipleConstructorsParameterContainer = parser.Bind<MultipleConstructorsParameterContainer>("/first true --second=abc /third:123");
             Assert.AreEqual(3, multipleConstructorsParameterContainer.ConstructorCalled);
         }
 
@@ -526,7 +526,7 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses command line parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
-            SimplePropertyParameterContainer simplePropertyParameterContainer = parser.Parse<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true /enum:Monday");
+            SimplePropertyParameterContainer simplePropertyParameterContainer = parser.Bind<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true /enum:Monday");
             Assert.IsNotNull(simplePropertyParameterContainer);
             Assert.AreEqual("abc XYZ", simplePropertyParameterContainer.String);
             Assert.AreEqual(123.456d, simplePropertyParameterContainer.Number);
@@ -542,7 +542,7 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses command line parameters that contain an array of boolean values and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
-            ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/BooleanCollection [true, 1, false, 0]");
+            ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("/BooleanCollection [true, 1, false, 0]");
             Assert.IsNotNull(arrayPropertyParameterContainer.BooleanCollection);
             Assert.IsTrue(arrayPropertyParameterContainer.BooleanCollection.ElementAt(0));
             Assert.IsTrue(arrayPropertyParameterContainer.BooleanCollection.ElementAt(1));
@@ -550,7 +550,7 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.IsFalse(arrayPropertyParameterContainer.BooleanCollection.ElementAt(3));
 
             // Parses command line parameters that contain an array of string values and validates that the object was properly created
-            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/StringCollection [abc, 123, \"abc XYZ\", 123.456, true]");
+            arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("/StringCollection [abc, 123, \"abc XYZ\", 123.456, true]");
             Assert.IsNotNull(arrayPropertyParameterContainer.StringCollection);
             Assert.AreEqual("abc", arrayPropertyParameterContainer.StringCollection[0]);
             Assert.AreEqual("123", arrayPropertyParameterContainer.StringCollection[1]);
@@ -559,7 +559,7 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual("True", arrayPropertyParameterContainer.StringCollection[4]);
 
             // Parses command line parameters that contain an array of number values and validates that the object was properly created
-            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("--NumberCollection:[123.456, 123, true, \"456\"]");
+            arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("--NumberCollection:[123.456, 123, true, \"456\"]");
             Assert.IsNotNull(arrayPropertyParameterContainer.NumberCollection);
             Assert.AreEqual(123.456d, arrayPropertyParameterContainer.NumberCollection.ElementAt(0));
             Assert.AreEqual(123.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(1));
@@ -567,7 +567,7 @@ namespace System.CommandLine.Parser.UnitTests
             Assert.AreEqual(456.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(3));
 
             // Parses command line parameters that contain an array of enumeration values and validates that the object was properly created
-            arrayPropertyParameterContainer = parser.Parse<ArrayPropertyParameterContainer>("/EnumerationCollection [Monday, \"Tuesday\", Wednesday, \"Thursday\", Friday, \"Saturday\", Sunday]");
+            arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("/EnumerationCollection [Monday, \"Tuesday\", Wednesday, \"Thursday\", Friday, \"Saturday\", Sunday]");
             Assert.IsNotNull(arrayPropertyParameterContainer.EnumerationCollection);
             Assert.AreEqual(DayOfWeek.Monday, arrayPropertyParameterContainer.EnumerationCollection[0]);
             Assert.AreEqual(DayOfWeek.Tuesday, arrayPropertyParameterContainer.EnumerationCollection[1]);
@@ -586,7 +586,7 @@ namespace System.CommandLine.Parser.UnitTests
         {
             // Parses command line parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
-            AliasParameterContainer aliasParameterContainer = parser.Parse<AliasParameterContainer>("/s \"abc XYZ\" -n:123.456");
+            AliasParameterContainer aliasParameterContainer = parser.Bind<AliasParameterContainer>("/s \"abc XYZ\" -n:123.456");
             Assert.IsNotNull(aliasParameterContainer);
             Assert.AreEqual(123.456M, aliasParameterContainer.Number);
             Assert.AreEqual("abc XYZ", aliasParameterContainer.String);
