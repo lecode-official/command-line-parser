@@ -17,17 +17,17 @@
 // Missing XML comment for publicly visible type or member '...'
 #pragma warning disable 1591
 
-namespace System.CommandLine.Parser.Antlr {
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using IToken = Antlr4.Runtime.IToken;
+namespace System.CommandLine.Parser.Antlr
+{
+    using Antlr4.Runtime.Misc;
+    using Antlr4.Runtime.Tree;
 
-/// <summary>
-/// This interface defines a complete generic visitor for a parse tree produced
-/// by <see cref="CommandLineParser"/>.
-/// </summary>
-/// <typeparam name="Result">The return type of the visit operation.</typeparam>
-[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
+    /// <summary>
+    /// This interface defines a complete generic visitor for a parse tree produced
+    /// by <see cref="CommandLineParser"/>.
+    /// </summary>
+    /// <typeparam name="Result">The return type of the visit operation.</typeparam>
+    [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5")]
 [System.CLSCompliant(false)]
 internal interface ICommandLineVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <summary>
