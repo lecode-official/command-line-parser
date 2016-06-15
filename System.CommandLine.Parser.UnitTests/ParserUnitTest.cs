@@ -594,6 +594,38 @@ namespace System.CommandLine.Parser.UnitTests
 
         #endregion
 
+        #region Default Parameter Injection Test Methods
+
+        /// <summary>
+        /// Tests how the parser handles the default parameter injection into the constructor.
+        /// </summary>
+        [TestMethod]
+        public void DefaultParameterContructorContainerInjectionTest()
+        {
+            // Parses default parameters and validates that the object was properly created
+            CommandLineParser parser = new CommandLineParser();
+            DefaultParameterContructorContainer defaultParameterContructorContainer = parser.Bind<DefaultParameterContructorContainer>("abc \"XYZ\"");
+            Assert.IsNotNull(defaultParameterContructorContainer);
+            Assert.AreEqual("abc XYZ", defaultParameterContructorContainer.DefaultParameters);
+        }
+
+        /// <summary>
+        /// Tests how the parser handles the default parameter injection into properties of a class.
+        /// </summary>
+        [TestMethod]
+        public void DeafultParameterPropertyContainerInjectionTest()
+        {
+            // Parses default parameters and validates that the object was properly created
+            CommandLineParser parser = new CommandLineParser();
+            DeafultParameterPropertyContainer deafultParameterPropertyContainer = parser.Bind<DeafultParameterPropertyContainer>("abc \"XYZ\"");
+            Assert.IsNotNull(deafultParameterPropertyContainer);
+            Assert.AreEqual("abc XYZ", deafultParameterPropertyContainer.First);
+            Assert.AreEqual("abc", deafultParameterPropertyContainer.Second.ElementAt(0));
+            Assert.AreEqual("XYZ", deafultParameterPropertyContainer.Second.ElementAt(1));
+        }
+
+        #endregion
+
         #region Nested Types
 
         /// <summary>
@@ -767,6 +799,56 @@ namespace System.CommandLine.Parser.UnitTests
             /// </summary>
             [ParameterName("string", "s")]
             public string String { get; set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Represents a parameter container, which is used to test the injection of default parameter into the constructor of a class.
+        /// </summary>
+        private class DefaultParameterContructorContainer
+        {
+            #region Constructors
+
+            /// <summary>
+            /// Initializes a new <see cref="DefaultParameterContructorContainer"/> instance.
+            /// </summary>
+            /// <param name="defaultParameters">The default parameters that are being injected.</param>
+            public DefaultParameterContructorContainer([DefaultParameter] string defaultParameters)
+            {
+                this.DefaultParameters = defaultParameters;
+            }
+
+            #endregion
+
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the default parametetrs that have been injected into the constructor.
+            /// </summary>
+            public string DefaultParameters { get; set; }
+
+            #endregion
+        }
+
+        /// <summary>
+        /// Represents a parameter container, which is used to test the injection of default parameter into the properties of a class.
+        /// </summary>
+        private class DeafultParameterPropertyContainer
+        {
+            #region Public Properties
+
+            /// <summary>
+            /// Gets or sets the default parametetrs that have been injected into the constructor as a string.
+            /// </summary>
+            [DefaultParameter]
+            public string First { get; set; }
+
+            /// <summary>
+            /// Gets or sets the default parametetrs that have been injected into the constructor as a collection of strings.
+            /// </summary>
+            [DefaultParameter]
+            public IEnumerable<string> Second { get; set; }
 
             #endregion
         }
