@@ -34,6 +34,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{3B85DF
 		Documentation\Images\Logo64x64.png = Documentation\Images\Logo64x64.png
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{3FCB2E29-1A05-4212-9F93-E5F54F5610BD}"
+EndProject
+Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "System.CommandLine.Parser", "NuGet\System.CommandLine.Parser\System.CommandLine.Parser.nuproj", "{39361A77-36A7-49A2-9417-D29DD3D0E360}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +56,10 @@ Global
 		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,5 +68,6 @@ Global
 		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD} = {E5145F79-EE92-4CA5-B27A-2A0F778FC2FB}
 		{40AC1CCC-8F15-4266-8B22-703B2F5F61E2} = {C609E21A-67B9-4366-B91F-1DD5B045F1E8}
 		{3B85DF69-C598-48A8-8C7D-200B657B2EB6} = {40AC1CCC-8F15-4266-8B22-703B2F5F61E2}
+		{39361A77-36A7-49A2-9417-D29DD3D0E360} = {3FCB2E29-1A05-4212-9F93-E5F54F5610BD}
 	EndGlobalSection
 EndGlobal
