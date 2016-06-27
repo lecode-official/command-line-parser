@@ -122,8 +122,13 @@ namespace System.CommandLine.Parser
         /// <returns>Returns the parsed parameters.</returns>
         public ParameterBag Parse(string commandLineParameters)
         {
-            // Parses the command line parameters using the ANTRL4 generated parsers
+            // Creates a new lexer and adds an error listener 
+            LexerErrorListener lexerErrorListener = new LexerErrorListener();
             CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
+            lexer.RemoveErrorListeners();
+            lexer.AddErrorListener(lexerErrorListener);
+
+            // Parses the command line parameters using the ANTRL4 generated parsers
             Antlr.CommandLineParser parser = new Antlr.CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
             IParseTree parseTree = parser.commandLine();
             CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
