@@ -11,12 +11,12 @@ namespace System.CommandLine.Parser
         /// <summary>
         /// Initializes a new <see cref="LexicalError"/> instance.
         /// </summary>
-        /// <param name="startIndex">The index at which the offending token starts.</param>
-        /// <param name="offendingToken">The token that caused the lexical error.</param>
-        public LexicalError(int startIndex, string offendingToken)
+        /// <param name="startIndex">The index at which the offending symbol starts.</param>
+        /// <param name="offendingSymbol">The symbol that caused the lexical error.</param>
+        public LexicalError(int startIndex, string offendingSymbol)
         {
             this.StartIndex = startIndex;
-            this.OffendingToken = offendingToken;
+            this.OffendingSymbol = offendingSymbol;
         }
 
         #endregion
@@ -24,14 +24,14 @@ namespace System.CommandLine.Parser
         #region Public Properties
 
         /// <summary>
-        /// Gets the index at which the offending token starts.
+        /// Gets the index at which the offending symbol starts.
         /// </summary>
         public int StartIndex { get; private set; }
 
         /// <summary>
-        /// Gets the token that caused the lexical error.
+        /// Gets the symbol that caused the lexical error.
         /// </summary>
-        public string OffendingToken { get; private set; }
+        public string OffendingSymbol { get; private set; }
 
         #endregion
     }
