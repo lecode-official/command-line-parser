@@ -65,10 +65,12 @@
     <Compile Include="ParameterNameAttribute.cs" />
     <Compile Include="Parameters\ParameterKind.cs" />
     <Compile Include="CommandLineParser.cs" />
+    <Compile Include="ParserErrorListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParameterBag.cs" />
     <Compile Include="Parameters\StringParameter.cs" />
     <Compile Include="ParameterConverters\IParameterConverter.cs" />
+    <Compile Include="SyntacticalError.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr\CommandLine.g4" />

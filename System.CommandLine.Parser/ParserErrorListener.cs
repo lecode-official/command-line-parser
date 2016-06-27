@@ -3,43 +3,42 @@
 
 using Antlr4.Runtime;
 using System.Collections.Generic;
-using System.CommandLine.Parser.Antlr;
 
 #endregion
 
 namespace System.CommandLine.Parser
 {
     /// <summary>
-    /// Represents a listener, which listens to errors during the lexing of the input and makes errors available in a simple way.
+    /// Represents a listener, which listens to errors during the parsing of the input and makes errors available in a simple way.
     /// </summary>
-    internal class LexerErrorListener : IAntlrErrorListener<int>
+    public class ParserErrorListener : BaseErrorListener
     {
-        #region IAntlrErrorListener Implementation
+        #region  BaseErrorListener Implementation
 
         /// <summary>
-        /// Is invoked when a lexical error is detected in the lexer.
+        /// Is invoked when a syntactical error is detected in the parser.
         /// </summary>
-        /// <param name="recognizer">The lexer that found the lexical error.</param>
+        /// <param name="recognizer">The parser that found the syntactical error.</param>
         /// <param name="offendingSymbol">The ID of the symbol that caused the error.</param>
         /// <param name="line">The line number where the error occurred.</param>
         /// <param name="charPositionInLine">The index of the character where the error starts within the current line.</param>
         /// <param name="msg">The error message that was produced.</param>
         /// <param name="e">The original exception that was thrown when the error occurred.</param>
-        public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => this.errors.Add(new LexicalError(charPositionInLine, (recognizer as CommandLineLexer).Text));
+        public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => this.errors.Add(new SyntacticalError(charPositionInLine, offendingSymbol.Text));
 
         #endregion
 
         #region Public Properties
 
         /// <summary>
-        /// Contains all the lexical errors that have been found.
+        /// Contains all the syntactical errors that have been found.
         /// </summary>
-        private List<LexicalError> errors = new List<LexicalError>();
+        private List<SyntacticalError> errors = new List<SyntacticalError>();
 
         /// <summary>
-        /// Gets all the lexical errors that have been found.
+        /// Gets all the syntactical errors that have been found.
         /// </summary>
-        public IEnumerable<LexicalError> Errors
+        public IEnumerable<SyntacticalError> Errors
         {
             get
             {
