@@ -47,7 +47,7 @@
     <Compile Include="Antlr\CommandLineVisitor.cs" />
     <Compile Include="DefaultParameterAttribute.cs" />
     <Compile Include="LexerErrorListener.cs" />
-    <Compile Include="LexicalError.cs" />
+    <Compile Include="ParserError.cs" />
     <Compile Include="ParameterConverters\CollectionOfBooleanParameterConverter.cs" />
     <Compile Include="ParameterConverters\CollectionOfEnumerationParameterConverter.cs" />
     <Compile Include="ParameterConverters\CollectionOfNumberParameterConverter.cs" />
@@ -65,12 +65,12 @@
     <Compile Include="ParameterNameAttribute.cs" />
     <Compile Include="Parameters\ParameterKind.cs" />
     <Compile Include="CommandLineParser.cs" />
+    <Compile Include="ParserErrorKind.cs" />
     <Compile Include="ParserErrorListener.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ParameterBag.cs" />
     <Compile Include="Parameters\StringParameter.cs" />
     <Compile Include="ParameterConverters\IParameterConverter.cs" />
-    <Compile Include="SyntacticalError.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Antlr\CommandLine.g4" />
