@@ -128,11 +128,19 @@ namespace System.CommandLine.Parser
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(lexerErrorListener);
 
+            // Checks if any errors occurred during the lexing of the input
+            if (lexerErrorListener.Errors.Any())
+                throw new InvalidOperationException($"{lexerErrorListener.Errors.Count()} error(s) occurred during the lexing of the input.");
+
             // Creates a new parser and add a custom error listener
             ParserErrorListener parserErrorListener = new ParserErrorListener();
             Antlr.CommandLineParser parser = new Antlr.CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
             parser.RemoveErrorListeners();
             parser.AddErrorListener(parserErrorListener);
+
+            // Checks if any errors occurred during the parsing of the input
+            if (parserErrorListener.Errors.Any())
+                throw new InvalidOperationException($"{parserErrorListener.Errors.Count()} error(s) occurred during the parsing of the input.");
 
             // Parses the command line parameters using the ANTRL4 generated parsers
             IParseTree parseTree = parser.commandLine();
