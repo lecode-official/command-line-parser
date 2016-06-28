@@ -24,7 +24,7 @@ namespace System.CommandLine.Parser
         /// <param name="charPositionInLine">The index of the character where the error starts within the current line.</param>
         /// <param name="msg">The error message that was produced.</param>
         /// <param name="e">The original exception that was thrown when the error occurred.</param>
-        public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => this.errors.Add(new SyntacticalError(charPositionInLine, offendingSymbol.Text));
+        public override void SyntaxError(IRecognizer recognizer, IToken offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => this.errors.Add(new ParserError(charPositionInLine, offendingSymbol.Text, ParserErrorKind.Syntactical));
 
         #endregion
 
@@ -33,12 +33,12 @@ namespace System.CommandLine.Parser
         /// <summary>
         /// Contains all the syntactical errors that have been found.
         /// </summary>
-        private List<SyntacticalError> errors = new List<SyntacticalError>();
+        private List<ParserError> errors = new List<ParserError>();
 
         /// <summary>
         /// Gets all the syntactical errors that have been found.
         /// </summary>
-        public IEnumerable<SyntacticalError> Errors
+        public IEnumerable<ParserError> Errors
         {
             get
             {
