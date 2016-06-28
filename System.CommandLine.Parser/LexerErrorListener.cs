@@ -25,7 +25,7 @@ namespace System.CommandLine.Parser
         /// <param name="charPositionInLine">The index of the character where the error starts within the current line.</param>
         /// <param name="msg">The error message that was produced.</param>
         /// <param name="e">The original exception that was thrown when the error occurred.</param>
-        public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => this.errors.Add(new LexicalError(charPositionInLine, (recognizer as CommandLineLexer).Text));
+        public void SyntaxError(IRecognizer recognizer, int offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e) => this.errors.Add(new ParserError(charPositionInLine, (recognizer as CommandLineLexer).Text, ParserErrorKind.Lexical));
 
         #endregion
 
@@ -34,12 +34,12 @@ namespace System.CommandLine.Parser
         /// <summary>
         /// Contains all the lexical errors that have been found.
         /// </summary>
-        private List<LexicalError> errors = new List<LexicalError>();
+        private List<ParserError> errors = new List<ParserError>();
 
         /// <summary>
         /// Gets all the lexical errors that have been found.
         /// </summary>
-        public IEnumerable<LexicalError> Errors
+        public IEnumerable<ParserError> Errors
         {
             get
             {
