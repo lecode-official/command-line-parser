@@ -119,6 +119,7 @@ namespace System.CommandLine.Parser
         /// Parses the specified command line parameters.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
         /// <returns>Returns the parsed parameters.</returns>
         public ParameterBag Parse(string commandLineParameters)
         {
@@ -151,11 +152,12 @@ namespace System.CommandLine.Parser
                 DefaultParameters = commandLineVisitor.DefaultParameters
             };
         }
-        
+
         /// <summary>
         /// Parses the specified command line parameters asynchronously.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
         /// <returns>Returns the parsed parameters.</returns>
         public Task<ParameterBag> ParseAsync(string commandLineParameters) => Task.Run(() => this.Parse(commandLineParameters));
         
@@ -401,6 +403,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
         /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
         public object Bind(string commandLineParameters, Type returnType)
@@ -421,6 +424,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
         /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
         public async Task<object> BindAsync(string commandLineParameters, Type returnType)
@@ -441,6 +445,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
         /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
         public T Bind<T>(string commandLineParameters) where T : class => this.Bind(commandLineParameters, typeof(T)) as T;
@@ -450,6 +455,7 @@ namespace System.CommandLine.Parser
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
         /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
         /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
         public async Task<T> BindAsync<T>(string commandLineParameters) where T : class => await this.BindAsync(commandLineParameters, typeof(T)) as T;
