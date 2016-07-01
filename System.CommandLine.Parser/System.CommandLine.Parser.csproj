@@ -45,6 +45,7 @@
     <Compile Include="Antlr\CommandLineLexer.cs" />
     <Compile Include="Antlr\CommandLineParser.cs" />
     <Compile Include="Antlr\CommandLineVisitor.cs" />
+    <Compile Include="CommandLineParserException.cs" />
     <Compile Include="DefaultParameterAttribute.cs" />
     <Compile Include="LexerErrorListener.cs" />
     <Compile Include="ParserError.cs" />
