@@ -466,6 +466,52 @@ namespace System.CommandLine.Parser.UnitTests
 
         #endregion
 
+        #region Parser Errors Test Methods
+
+        /// <summary>
+        /// Tests how the lexer handles too many dashes in front of a parameter name.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(CommandLineParserException))]
+        public void ToManyDashesTest() => new CommandLineParser().Parse("---parameter");
+
+        /// <summary>
+        /// Tests how the lexer handles too many slashes in front of a parameter name.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(CommandLineParserException))]
+        public void ToManySlashesTest() => new CommandLineParser().Parse("//parameter");
+
+        /// <summary>
+        /// Tests how the lexer handles strings that are missing a closing quote.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(CommandLineParserException))]
+        public void ToManyInvalidStringTest() => new CommandLineParser().Parse("\"value");
+
+        /// <summary>
+        /// Tests how the parser handles a missing parameter value.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(CommandLineParserException))]
+        public void MissingParameterValueTest() => new CommandLineParser().Parse("--parameter1= /parameter2");
+        
+        /// <summary>
+        /// Tests how the parser handles a missing parameter name in front of a parameter value.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(CommandLineParserException))]
+        public void MissingParameterNameTest() => new CommandLineParser().Parse("--parameter=123 \"value\"");
+
+        /// <summary>
+        /// Tests how the parser handles invalid default parameter formats.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(CommandLineParserException))]
+        public void InvalidDefaultParameter() => new CommandLineParser().Parse("abc 123 \"xyz\"");
+
+        #endregion
+
         #region Command Line Parameter Injection Test Methods
 
         /// <summary>
