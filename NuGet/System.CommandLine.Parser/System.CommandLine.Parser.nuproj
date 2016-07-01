@@ -19,13 +19,13 @@
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
     <Id>System.CommandLine.Parser</Id>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Title>Command Line Parser</Title>
     <Authors>David Neumann</Authors>
     <Owners>David Neumann</Owners>
     <Summary>A simple and light-weight parser for command line arguments</Summary>
     <Description>A simple and light-weight parser for command line arguments, which makes it possible to access parameters from the command line via well-defined .NET data structures.</Description>
-    <ReleaseNotes>Initial release of the command line parser.</ReleaseNotes>
+    <ReleaseNotes>Improved the error handling of the command line parser. Lexical and syntactical errors can now be handled.</ReleaseNotes>
     <ProjectUrl>https://github.com/lecode-official/command-line-parser</ProjectUrl>
     <LicenseUrl>https://raw.githubusercontent.com/lecode-official/command-line-parser/master/LICENSE</LicenseUrl>
     <Copyright>Copyright 2016 © David Neumann</Copyright>
