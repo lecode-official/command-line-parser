@@ -127,25 +127,21 @@ namespace System.CommandLine.Parser
             CommandLineLexer lexer = new CommandLineLexer(new AntlrInputStream(new StringReader(commandLineParameters)));
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(lexerErrorListener);
-
-            // Checks if any errors occurred during the lexing of the input
-            if (lexerErrorListener.Errors.Any())
-                throw new InvalidOperationException($"{lexerErrorListener.Errors.Count()} error(s) occurred during the lexing of the input.");
-
+            
             // Creates a new parser and add a custom error listener
             ParserErrorListener parserErrorListener = new ParserErrorListener();
             Antlr.CommandLineParser parser = new Antlr.CommandLineParser(new CommonTokenStream(lexer)) { BuildParseTree = true };
             parser.RemoveErrorListeners();
             parser.AddErrorListener(parserErrorListener);
 
-            // Checks if any errors occurred during the parsing of the input
-            if (parserErrorListener.Errors.Any())
-                throw new InvalidOperationException($"{parserErrorListener.Errors.Count()} error(s) occurred during the parsing of the input.");
-
             // Parses the command line parameters using the ANTRL4 generated parsers
             IParseTree parseTree = parser.commandLine();
             CommandLineVisitor commandLineVisitor = new CommandLineVisitor();
             commandLineVisitor.Visit(parseTree);
+
+            // Checks if any errors occurred during the lexing or the parsing of the input, if so, an exception is thrown
+            if (lexerErrorListener.Errors.Any() || parserErrorListener.Errors.Any())
+                throw new CommandLineParserException(lexerErrorListener.Errors.Union(parserErrorListener.Errors));
 
             // Returns the parsed parameters wrapped in a parameter bag
             return new ParameterBag
