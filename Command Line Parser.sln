@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{20707C87-E
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CommandLineParser.UnitTests", "Test\CommandLineParser.UnitTests\CommandLineParser.UnitTests.xproj", "{C6A158B6-9AA2-4BA8-9FB4-91DFA4B0A808}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{CB16ADDA-2104-451D-ADE8-BDA8D2FCCF6A}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "CommandLineParser.Samples.Console", "Samples\CommandLineParser.Samples.Console\CommandLineParser.Samples.Console.xproj", "{7318BA9D-1543-42C7-BAAB-BBAF8FB964E3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,6 +34,10 @@ Global
 		{C6A158B6-9AA2-4BA8-9FB4-91DFA4B0A808}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C6A158B6-9AA2-4BA8-9FB4-91DFA4B0A808}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C6A158B6-9AA2-4BA8-9FB4-91DFA4B0A808}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7318BA9D-1543-42C7-BAAB-BBAF8FB964E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7318BA9D-1543-42C7-BAAB-BBAF8FB964E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7318BA9D-1543-42C7-BAAB-BBAF8FB964E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7318BA9D-1543-42C7-BAAB-BBAF8FB964E3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,5 +45,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0337C4C9-4128-4F8C-9265-ADCCA3D81C84} = {BAA8A4EE-6C46-4307-BC50-DCF1D0EA7995}
 		{C6A158B6-9AA2-4BA8-9FB4-91DFA4B0A808} = {20707C87-E431-4DEC-A8B2-767F105F3D8C}
+		{7318BA9D-1543-42C7-BAAB-BBAF8FB964E3} = {CB16ADDA-2104-451D-ADE8-BDA8D2FCCF6A}
 	EndGlobalSection
 EndGlobal
