@@ -19,7 +19,7 @@
   <Import Project="$(NuProjPath)\NuProj.props" Condition="Exists('$(NuProjPath)\NuProj.props')" />
   <PropertyGroup Label="Configuration">
     <Id>System.CommandLine.Parser</Id>
-    <Version>0.1.1</Version>
+    <Version>0.1.2-beta1</Version>
     <Title>Command Line Parser</Title>
     <Authors>David Neumann</Authors>
     <Owners>David Neumann</Owners>
