@@ -3,40 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.CommandLine.Parser", "System.CommandLine.Parser\System.CommandLine.Parser.csproj", "{5E4FB20C-183E-46E0-AC8A-53D6637184A5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{BAA8A4EE-6C46-4307-BC50-DCF1D0EA7995}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C609E21A-67B9-4366-B91F-1DD5B045F1E8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8F070BC8-8787-4F58-8ACB-0E09E6BE836B}"
 	ProjectSection(SolutionItems) = preProject
-		.gitattributes = .gitattributes
-		.gitignore = .gitignore
-		LICENSE = LICENSE
-		README.md = README.md
+		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.CommandLine.Parser.UnitTests", "System.CommandLine.Parser.UnitTests\System.CommandLine.Parser.UnitTests.csproj", "{421171E6-9970-4E6B-82DF-BFC1E41C4A81}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{E5145F79-EE92-4CA5-B27A-2A0F778FC2FB}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineParser.Samples.Console", "Samples\CommandLineParser.Samples.Console\CommandLineParser.Samples.Console.csproj", "{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{40AC1CCC-8F15-4266-8B22-703B2F5F61E2}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Images", "Images", "{3B85DF69-C598-48A8-8C7D-200B657B2EB6}"
-	ProjectSection(SolutionItems) = preProject
-		Documentation\Images\Banner.png = Documentation\Images\Banner.png
-		Documentation\Images\Logo.fw.png = Documentation\Images\Logo.fw.png
-		Documentation\Images\Logo.ico = Documentation\Images\Logo.ico
-		Documentation\Images\Logo1024x1024.png = Documentation\Images\Logo1024x1024.png
-		Documentation\Images\Logo128x128.png = Documentation\Images\Logo128x128.png
-		Documentation\Images\Logo256x256.png = Documentation\Images\Logo256x256.png
-		Documentation\Images\Logo32x32.png = Documentation\Images\Logo32x32.png
-		Documentation\Images\Logo512x512.png = Documentation\Images\Logo512x512.png
-		Documentation\Images\Logo64x64.png = Documentation\Images\Logo64x64.png
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "NuGet", "NuGet", "{3FCB2E29-1A05-4212-9F93-E5F54F5610BD}"
-EndProject
-Project("{FF286327-C783-4F7A-AB73-9BCBAD0D4460}") = "System.CommandLine.Parser", "NuGet\System.CommandLine.Parser\System.CommandLine.Parser.nuproj", "{39361A77-36A7-49A2-9417-D29DD3D0E360}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "System.CommandLine.Parser", "Source\System.CommandLine.Parser\System.CommandLine.Parser.xproj", "{0337C4C9-4128-4F8C-9265-ADCCA3D81C84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,30 +18,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5E4FB20C-183E-46E0-AC8A-53D6637184A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E4FB20C-183E-46E0-AC8A-53D6637184A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E4FB20C-183E-46E0-AC8A-53D6637184A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E4FB20C-183E-46E0-AC8A-53D6637184A5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{421171E6-9970-4E6B-82DF-BFC1E41C4A81}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{421171E6-9970-4E6B-82DF-BFC1E41C4A81}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{421171E6-9970-4E6B-82DF-BFC1E41C4A81}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{421171E6-9970-4E6B-82DF-BFC1E41C4A81}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{39361A77-36A7-49A2-9417-D29DD3D0E360}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0337C4C9-4128-4F8C-9265-ADCCA3D81C84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0337C4C9-4128-4F8C-9265-ADCCA3D81C84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0337C4C9-4128-4F8C-9265-ADCCA3D81C84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0337C4C9-4128-4F8C-9265-ADCCA3D81C84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{1932A3EC-0E02-4E2F-A2CB-E864BAF8B9BD} = {E5145F79-EE92-4CA5-B27A-2A0F778FC2FB}
-		{40AC1CCC-8F15-4266-8B22-703B2F5F61E2} = {C609E21A-67B9-4366-B91F-1DD5B045F1E8}
-		{3B85DF69-C598-48A8-8C7D-200B657B2EB6} = {40AC1CCC-8F15-4266-8B22-703B2F5F61E2}
-		{39361A77-36A7-49A2-9417-D29DD3D0E360} = {3FCB2E29-1A05-4212-9F93-E5F54F5610BD}
+		{0337C4C9-4128-4F8C-9265-ADCCA3D81C84} = {BAA8A4EE-6C46-4307-BC50-DCF1D0EA7995}
 	EndGlobalSection
 EndGlobal

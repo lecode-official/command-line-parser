@@ -2,19 +2,20 @@
 // Represents the grammar for the command line parameters
 grammar CommandLine;
 
-// The command line parameters can have default parameters and/or parameters, default parameters are just strings, while parameters are switches
-// or key-value-pairs
+// The command line parameters can have default parameters and/or parameters, default parameters are just strings, while parameters are
+// switches or key-value-pairs
 commandLine: defaultParameter* parameter*;
 
-// Default parameters are strings, strings can either be string that is not quoted (but there are several limitations that apply) or a string in
-// quotes, which can pretty much contain any character
+// Default parameters are strings, strings can either be string that is not quoted (but there are several limitations that apply) or a
+// string in quotes, which can pretty much contain any character
 defaultParameter: String                                    # DefaultParameterString
     | QuotedString                                          # DefaultParameterString
     ;
 
-// The parameters can be either Windows style (starting with "/") or Unix style (starting with "--"), Unix style flagged switches are also
-// supported (flags start with a "-" followed by one or more characters, which each represent a switch), parameters can either be key-value-pairs
-// or switches (switches do not require a value, because when they are specified they implicitely have the boolean value true)
+// The parameters can be either Windows style (starting with "/") or Unix style (starting with "--"), Unix style flagged switches are
+// also supported (flags start with a "-" followed by one or more characters, which each represent a switch), parameters can either be
+// key-value-pairs or switches (switches do not require a value, because when they are specified they implicitely have the boolean
+// value true)
 parameter: WindowsStyleIdentifier                           # WindowsStyleSwitch
     | WindowsStyleIdentifier AssignmentOperator value       # WindowsStyleParameter
     | WindowsStyleIdentifier value                          # WindowsStyleParameter
@@ -60,8 +61,8 @@ Number: '-'? Digit+
     ;
 Digit: [0-9];
 
-// Unquoted strings can consist of any character except "-", ",", ":", "=", "/", '"', "[", "]", spaces, and line-breaks, because otherwise the
-// grammar would be ambigous
+// Unquoted strings can consist of any character except "-", ",", ":", "=", "/", '"', "[", "]", spaces, and line-breaks, because
+// otherwise the grammar would be ambigous
 String: ~[-,:=/"\[\] \r\n]+;
 
 // Quoted strings can consist of any character except for line-breaks

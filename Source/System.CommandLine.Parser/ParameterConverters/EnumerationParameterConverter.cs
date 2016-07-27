@@ -2,6 +2,8 @@
 #region Using Directives
 
 using System.CommandLine.Parser.Parameters;
+using System.Linq;
+using System.Reflection;
 
 #endregion
 
@@ -23,11 +25,11 @@ namespace System.CommandLine.Parser.ParameterConverters
         public bool CanConvert(Type propertyType, Parameter parameter)
         {
             // Checks if the property is of type boolean, other types are not supported
-            if (!propertyType.IsEnum)
+            if (!propertyType.GetTypeInfo().IsEnum)
                 return false;
 
             // Checks if the parameter is a string and can be converted into the enumeration
-            if (parameter.Kind == ParameterKind.String && propertyType.IsEnumDefined((parameter as StringParameter).Value))
+            if (parameter.Kind == ParameterKind.String && Enum.GetNames(propertyType).Contains((parameter as StringParameter).Value))
                 return true;
             return false;
         }
@@ -43,13 +45,13 @@ namespace System.CommandLine.Parser.ParameterConverters
         {
             // Gets the value of the parameter, if the value could not be retrieved an exception is thrown
             object value;
-            if (parameter.Kind == ParameterKind.String && propertyType.IsEnumDefined((parameter as StringParameter).Value))
+            if (parameter.Kind == ParameterKind.String && Enum.GetNames(propertyType).Contains((parameter as StringParameter).Value))
                 value = Enum.Parse(propertyType, (parameter as StringParameter).Value);
             else
                 throw new InvalidOperationException("The parameter could not be converted, because the command line parameter is not a string, or the value is not a valid value for the enumeration.");
 
             // Checks the type of the property, converts the value accordingly, and returns it
-            if (propertyType.IsEnum)
+            if (propertyType.GetTypeInfo().IsEnum)
                 return value;
 
             // Since the value could not be converted, an exception is thrown
