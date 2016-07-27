@@ -3,11 +3,11 @@
 
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
 using System.IO;
 using System.Linq;
+using Xunit;
 
 #endregion
 
@@ -16,7 +16,6 @@ namespace System.CommandLine.Parser.UnitTests
     /// <summary>
     /// Represents a unit testing class, which contains all of the unit tests for the command line parser.
     /// </summary>
-    [TestClass]
     public class AntlrParserUnitTests
     {
         #region Private Methods
@@ -67,15 +66,15 @@ namespace System.CommandLine.Parser.UnitTests
             if (typedParseTree != null)
             {
                 if (expectedParseTree.RuleName != null)
-                    Assert.AreEqual(expectedParseTree.RuleName, parser.RuleNames[typedParseTree.RuleIndex]);
+                    Assert.Equal(expectedParseTree.RuleName, parser.RuleNames[typedParseTree.RuleIndex]);
                 if (expectedParseTree.Content != null)
-                    Assert.AreEqual(expectedParseTree.Content, typedParseTree.GetText());
+                    Assert.Equal(expectedParseTree.Content, typedParseTree.GetText());
             }
             if (expectedParseTree.IsTerminalNode)
-                Assert.IsInstanceOfType(parseTree, typeof(TerminalNodeImpl));
+                Assert.IsType(typeof(TerminalNodeImpl), parseTree);
 
             // Checks if the amount of child nodes are the same in the parser generated parse tree and the expected parse tree
-            Assert.AreEqual(expectedParseTree.Children.Count(), parseTree.ChildCount);
+            Assert.Equal(expectedParseTree.Children.Count(), parseTree.ChildCount);
             if (parseTree.ChildCount != expectedParseTree.Children.Count())
                 return;
 
@@ -91,17 +90,17 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles empty command line parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void EmptyCommandLineParametersTest()
         {
             // Lexes the input and checks whether there are no tokens
             CommandLineLexer lexer = this.LexInput(string.Empty);
-            Assert.AreEqual(TokenConstants.Eof, lexer.NextToken().Type);
+            Assert.Equal(TokenConstants.Eof, lexer.NextToken().Type);
 
             // Parses the tokens and checks whether the resulting tree is empty
             Antlr.CommandLineParser parser;
             IParseTree parseTree = this.ParseTokens(lexer, out parser);
-            Assert.AreEqual(0, parseTree.ChildCount);
+            Assert.Equal(0, parseTree.ChildCount);
         }
 
         #endregion
@@ -111,7 +110,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles a single default parameter.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void SingleDefaultParameterTest()
         {
             // Parses a single string default parameter
@@ -167,7 +166,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles multiple default parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void MutlipleDefaultParameterTest()
         {
             // Parses multiple default parameters
@@ -239,7 +238,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles Windows style switches.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void WindowsStyleSwitchTest()
         {
             // Parses a Windows style switch
@@ -271,7 +270,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles Windows style parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void WindowsStyleParameterTest()
         {
             // Parses a Windows style parameter
@@ -320,7 +319,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles UNIX style switches.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleSwitchTest()
         {
             // Parses a UNIX style switch
@@ -352,7 +351,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles UNIX style parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleParameterTest()
         {
             // Parses a UNIX style parameter
@@ -401,7 +400,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles UNIX style flagged switches.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleFlaggedSwitchesTest()
         {
             // Parses UNIX style flagged switches
@@ -433,7 +432,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles UNIX style alias parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleAliasParameterTest()
         {
             // Parses UNIX style alias parameter
@@ -482,7 +481,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles multiple parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void MultipleParameterTest()
         {
             // Parses multiple parameters
@@ -600,7 +599,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles mixing of default parameters and parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void MixedDefaultParameterAndParameterTest()
         {
             // Parses multiple parameters
@@ -677,7 +676,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles the colon assignment operator.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ColonAssignmentOperatorTest()
         {
             // Parses a Windows style parameter with a colon as an assignement operator
@@ -767,7 +766,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles the equal sign assignment operator.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void EqualSignAssignmentOperatorTest()
         {
             // Parses a Windows style parameter with a equal sign as an assignement operator
@@ -857,7 +856,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 parser handles no assignment operator.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void NoAssignmentOperatorTest()
         {
             // Parses a Windows style parameter with no assignement operator

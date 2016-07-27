@@ -2,11 +2,11 @@
 #region Using Directives
 
 using Antlr4.Runtime;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
 using System.IO;
 using System.Linq;
+using Xunit;
 
 #endregion
 
@@ -15,7 +15,6 @@ namespace System.CommandLine.Parser.UnitTests
     /// <summary>
     /// Represents a unit testing class, which contains all of the unit tests for the command line lexer.
     /// </summary>
-    [TestClass]
     public class AntlrLexerUnitTests
     {
         #region Private Methods
@@ -66,9 +65,9 @@ namespace System.CommandLine.Parser.UnitTests
         private void ValidateMatchedToken(CommandLineLexer lexer, string expectedToken, string expectedTokenType)
         {
             IToken token = lexer.NextToken();
-            Assert.AreEqual(expectedToken, token.Text);
+            Assert.Equal(expectedToken, token.Text);
             string tokenType = this.GetTokenTypeName(lexer, token);
-            Assert.AreEqual(expectedTokenType, tokenType);
+            Assert.Equal(expectedTokenType, tokenType);
         }
 
         #endregion
@@ -78,7 +77,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of boolean values.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void BooleanDataTypeTest()
         {
             // Lexes the boolean value true and checks if the correct token was recognized
@@ -93,7 +92,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of numbers.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void NumberDataTypeTest()
         {
             // Lexes a positive integer and checks if the correct token was recognized
@@ -132,7 +131,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of un-quoted strings.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void StringDataTypeTest()
         {
             // Lexes an arbitrary un-quoted string and checks if the correct token was recognized
@@ -148,7 +147,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of quoted strings.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void QuotedStringDataTypeTest()
         {
             // Lexes an arbitrary uquoted string and checks if the correct token was recognized
@@ -159,7 +158,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of arrays.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ArrayDataTypeTest()
         {
             // Lexes an empty array and checks if the correct tokens were recognized
@@ -205,7 +204,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of UNIX style flagged parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleFlaggedParameterTest()
         {
             // Lexes a UNIX style flagged parameter with one flag and checks if the correct token was recognized
@@ -220,7 +219,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of Windows style parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void WindowsStyleParameterTest()
         {
             // Lexes a Windows style parameter and checks if the correct token was recognized
@@ -231,7 +230,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of UNIX style parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleParameterTest()
         {
             // Lexes a UNIX style parameter and checks if the correct token was recognized
@@ -242,7 +241,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the ANTLR4 lexer handles the lexing of UNIX alias style parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleAliasParameterTest()
         {
             // Lexes a UNIX style alias parameter and checks if the correct token was recognized
