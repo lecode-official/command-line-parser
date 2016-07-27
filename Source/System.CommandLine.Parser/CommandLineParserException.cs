@@ -3,7 +3,6 @@
 
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 
 #endregion
 
@@ -42,16 +41,7 @@ namespace System.CommandLine.Parser
         public CommandLineParserException(string message, Exception innerException)
             : base(message, innerException)
         { }
-
-        /// <summary>
-        /// Initializes a new <see cref="CommandLineParserException"/> instance.
-        /// </summary>
-        /// <param name="info">The <see cref="SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
-        /// <param name="context">The <see cref="StreamingContext"/> that contains contextual information about the source or destination.</param>
-        protected CommandLineParserException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        { }
-
+        
         #endregion
 
         #region Public Properties

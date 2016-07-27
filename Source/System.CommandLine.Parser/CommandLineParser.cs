@@ -177,7 +177,7 @@ namespace System.CommandLine.Parser
             // Determines the constructor, which is to be used for instantiating the specified type, the algorithm is greedy and uses the constructor with the most constructor arguments that can be matched from the parsed command line arguments
             ConstructorInfo chosenConstructorInfo = null;
             Dictionary<Attribute, Type> chosenConstructorParameterInfos = null;
-            foreach (ConstructorInfo constructorInfo in returnType.GetConstructors()
+            foreach (ConstructorInfo constructorInfo in returnType.GetTypeInfo().DeclaredConstructors
                 .Where(constructor => constructor.IsPublic && !constructor.IsStatic)
                 .OrderByDescending(constructor => constructor.GetParameters().Count()))
             {
@@ -335,7 +335,7 @@ namespace System.CommandLine.Parser
         public void Inject(ParameterBag parameterBag, object instance)
         {
             // Matches the public properties of the instance and injects all possible command line parameters into it
-            foreach (PropertyInfo propertyInfo in instance.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(property => property.CanWrite))
+            foreach (PropertyInfo propertyInfo in instance.GetType().GetTypeInfo().DeclaredProperties.Where(property => property.CanWrite))
             {
                 // Gets the default parameter attribute of the property, which means that the property is to be matched with the default parameters
                 DefaultParameterAttribute defaultParameterAttribute = propertyInfo.GetCustomAttribute<DefaultParameterAttribute>();
