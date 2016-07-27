@@ -1,0 +1,38 @@
+﻿{
+  "title": "Command Line Parser",
+  "version": "0.1.2-beta1",
+  "description": "A simple and light-weight parser for command line arguments, which makes it possible to access parameters from the command line via well-defined .NET data structures.",
+  "authors": [ "David Neumann" ],
+  "copyright": "Copyright © David Neumann 2016",
+  "language": "en-us",
+
+  "packOptions": {
+    "iconUrl": "https://raw.githubusercontent.com/lecode-official/command-line-parser/master/Documentation/Images/Logo128x128.png",
+    "licenseUrl": "https://raw.githubusercontent.com/lecode-official/command-line-parser/master/LICENSE",
+    "owners": [ "David Neumann" ],
+    "releaseNotes": "Improved the error handling of the command line parser. Lexical and syntactical errors can now be handled.",
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/lecode-official/command-line-parser.git"
+    },
+    "requireLicenseAcceptance": false,
+    "summary": "A simple and light-weight parser for command line arguments, which makes it possible to access parameters from the command line via well-defined .NET data structures.",
+    "tags": [
+      "CIL",
+      "command line",
+      "command line parameters",
+      "parser"
+    ]
+  },
+
+  "dependencies": {
+    "Antlr4.Runtime": "4.5.3.1-beta001",
+    "NETStandard.Library": "1.6.0"
+  },
+
+  "frameworks": {
+    "netstandard1.3": {
+      "imports": "dnxcore50"
+    }
+  }
+}

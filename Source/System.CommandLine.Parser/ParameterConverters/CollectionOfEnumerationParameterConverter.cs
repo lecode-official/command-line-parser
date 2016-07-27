@@ -76,9 +76,9 @@ namespace System.CommandLine.Parser.ParameterConverters
                 return false;
 
             // Checks if the collection or array type is of an enumeration type, if not, then false is returned
-            if (!propertyType.IsArray && !propertyType.GetGenericArguments().First().IsEnum)
+            if (!propertyType.IsArray && !propertyType.GetTypeInfo().GenericTypeArguments.First().GetTypeInfo().IsEnum)
                 return false;
-            if (propertyType.IsArray && !propertyType.GetElementType().IsEnum)
+            if (propertyType.IsArray && !propertyType.GetElementType().GetTypeInfo().IsEnum)
                 return false;
 
             // Checks if the parameter is of type array, if not then the single item must be of type string and the value must be a defined enumeration value
@@ -86,13 +86,13 @@ namespace System.CommandLine.Parser.ParameterConverters
             {
                 foreach (Parameter item in (parameter as ArrayParameter).Value)
                 {
-                    if (item.Kind != ParameterKind.String && !propertyType.IsEnumDefined((item as StringParameter).Value))
+                    if (item.Kind != ParameterKind.String && !Enum.GetNames(propertyType).Contains((item as StringParameter).Value))
                         return false;
                 }
             }
             else
             {
-                if (parameter.Kind != ParameterKind.String && !propertyType.IsEnumDefined((parameter as StringParameter).Value))
+                if (parameter.Kind != ParameterKind.String && !Enum.GetNames(propertyType).Contains((parameter as StringParameter).Value))
                     return false;
             }
 
@@ -131,15 +131,15 @@ namespace System.CommandLine.Parser.ParameterConverters
             }
 
             // Determines the element type of the result collection
-            if (!propertyType.IsArray && !propertyType.GetGenericArguments().First().IsEnum)
+            if (!propertyType.IsArray && !propertyType.GetTypeInfo().GenericTypeArguments.First().GetTypeInfo().IsEnum)
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
-            if (propertyType.IsArray && !propertyType.GetElementType().IsEnum)
+            if (propertyType.IsArray && !propertyType.GetElementType().GetTypeInfo().IsEnum)
                 throw new InvalidOperationException("The parameter could not be converted, because the type of array or list is not supported.");
-            Type propertyContentType = propertyType.IsArray ? propertyType.GetElementType() : propertyType.GetGenericArguments().First();
+            Type propertyContentType = propertyType.IsArray ? propertyType.GetElementType() : propertyType.GetTypeInfo().GenericTypeArguments.First();
 
             // Creates the internal array for the specified type
             Type arrayType = propertyContentType.MakeArrayType();
-            IList array = arrayType.GetConstructors().First().Invoke(new object[] { parameterValue.Count }) as IList;
+            IList array = arrayType.GetTypeInfo().DeclaredConstructors.First().Invoke(new object[] { parameterValue.Count }) as IList;
 
             // Fills in the values into the internal array
             for (int i = 0; i < parameterValue.Count; i++)
@@ -155,7 +155,7 @@ namespace System.CommandLine.Parser.ParameterConverters
             Type propertyResultType = CollectionOfEnumerationParameterConverter.collectionTypeConversionMap[propertyType.GetGenericTypeDefinition()].MakeGenericType(propertyContentType);
 
             // Instantiates a new result collection from the result type (all the collection types that are supported have a constructor that takes either an IList<> or an IEnumerable<> as a parameter)
-            ConstructorInfo propertyTypeConstructorInfo = propertyResultType.GetConstructors().First(constructorInfo => constructorInfo.GetParameters().Count() == 1 && constructorInfo.GetParameters().First().ParameterType.IsAssignableFrom(arrayType));
+            ConstructorInfo propertyTypeConstructorInfo = propertyResultType.GetTypeInfo().DeclaredConstructors.First(constructorInfo => constructorInfo.GetParameters().Count() == 1 && constructorInfo.GetParameters().First().ParameterType.GetTypeInfo().IsAssignableFrom(arrayType.GetTypeInfo()));
             if (propertyTypeConstructorInfo == null)
                 throw new InvalidOperationException("The parameter could not be converted, because the result collection type could not be instantiated.");
             object resultCollection = propertyTypeConstructorInfo.Invoke(new object[] { array });
