@@ -9,6 +9,9 @@ using System.Runtime.Serialization;
 
 namespace System.CommandLine.Parser
 {
+    /// <summary>
+    /// Represents an exception, which is thrown when there is any error during the lexing or parsing.
+    /// </summary>
     public class CommandLineParserException : Exception
     {
         #region Constructors
