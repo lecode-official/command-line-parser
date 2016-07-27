@@ -1,10 +1,10 @@
 ﻿
 #region Using Directives
 
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Generic;
 using System.CommandLine.Parser.Parameters;
 using System.Linq;
+using Xunit;
 
 #endregion
 
@@ -13,7 +13,6 @@ namespace System.CommandLine.Parser.UnitTests
     /// <summary>
     /// Represents a unit testing class, which tests the actual command line parser, which turns the command line parameters into typed .NET objects.
     /// </summary>
-    [TestClass]
     public class ParserUnitTest
     {
         #region Private Methods
@@ -26,13 +25,13 @@ namespace System.CommandLine.Parser.UnitTests
         private void ValidateParseOutput(IDictionary<string, Parameter> parameters, IDictionary<string, Parameter> expectedParameters)
         {
             // Validates that the amount of parameters in the parameter bag and the expected parameter bag are the same
-            Assert.AreEqual(expectedParameters.Count(), parameters.Count());
+            Assert.Equal(expectedParameters.Count(), parameters.Count());
             if (parameters.Count() != expectedParameters.Count())
                 return;
 
             // Validates that both parameter sets have the same parameter names
-            Assert.IsTrue(parameters.Keys.All(key => expectedParameters.ContainsKey(key)));
-            Assert.IsTrue(expectedParameters.Keys.All(key => parameters.ContainsKey(key)));
+            Assert.True(parameters.Keys.All(key => expectedParameters.ContainsKey(key)));
+            Assert.True(expectedParameters.Keys.All(key => parameters.ContainsKey(key)));
 
             // Cycles over all parameters in the parameter bag and validates them against the expected parameters
             foreach (string parameterName in parameters.Keys)
@@ -42,20 +41,20 @@ namespace System.CommandLine.Parser.UnitTests
                 Parameter expectedParameter = expectedParameters[parameterName];
 
                 // Validates that the parameter has the same type as the expected parameter
-                Assert.IsInstanceOfType(parameter, expectedParameter.GetType());
+                Assert.IsType(expectedParameter.GetType(), parameter);
                 if (parameter.GetType() != expectedParameter.GetType())
                     continue;
                 
                 // Checks if the parameter is a simple data type, if so its value is validated againts the expected parameter
                 BooleanParameter booleanParameter = parameter as BooleanParameter;
                 if (booleanParameter != null)
-                    Assert.AreEqual((expectedParameter as BooleanParameter).Value, booleanParameter.Value);
+                    Assert.Equal((expectedParameter as BooleanParameter).Value, booleanParameter.Value);
                 NumberParameter numberParameter = parameter as NumberParameter;
                 if (numberParameter != null)
-                    Assert.AreEqual((expectedParameter as NumberParameter).Value, numberParameter.Value);
+                    Assert.Equal((expectedParameter as NumberParameter).Value, numberParameter.Value);
                 StringParameter stringParameter = parameter as StringParameter;
                 if (stringParameter != null)
-                    Assert.AreEqual((expectedParameter as StringParameter).Value, stringParameter.Value);
+                    Assert.Equal((expectedParameter as StringParameter).Value, stringParameter.Value);
 
                 // Checks if the parameter is of type array, if so then its contents are validated recursively
                 ArrayParameter arrayParameter = parameter as ArrayParameter;
@@ -76,7 +75,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles empty command line parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void EmptyCommandLineParametersTest()
         {
             // Parses empty command line parameters
@@ -94,7 +93,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles a single default parameter.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void SingleDefaultParameterTest()
         {
             // Parses a single default command line parameter
@@ -102,14 +101,14 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = parser.Parse("abcXYZ");
 
             // Validates that the parsed parameters are correct
-            Assert.AreEqual(1, parameterBag.DefaultParameters.Count());
-            Assert.AreEqual("abcXYZ", parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value);
+            Assert.Equal(1, parameterBag.DefaultParameters.Count());
+            Assert.Equal("abcXYZ", parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value);
         }
 
         /// <summary>
         /// Tests how the parser handles multiple default parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void MutlipleDefaultParameterTest()
         {
             // Parses multiple default command line parameters
@@ -117,11 +116,11 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = parser.Parse("abc \"123 456\" XYZ \"789 0\"");
 
             // Validates that the parsed parameters are correct
-            Assert.AreEqual(4, parameterBag.DefaultParameters.Count());
-            Assert.AreEqual("abc", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(0).Value);
-            Assert.AreEqual("123 456", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(1).Value);
-            Assert.AreEqual("XYZ", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(2).Value);
-            Assert.AreEqual("789 0", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(3).Value);
+            Assert.Equal(4, parameterBag.DefaultParameters.Count());
+            Assert.Equal("abc", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(0).Value);
+            Assert.Equal("123 456", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(1).Value);
+            Assert.Equal("XYZ", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(2).Value);
+            Assert.Equal("789 0", parameterBag.DefaultParameters.OfType<DefaultParameter>().ElementAt(3).Value);
         }
 
         #endregion
@@ -131,7 +130,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles Windows style switches.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void WindowsStyleSwitchTest()
         {
             // Parses a Windows style switch
@@ -148,7 +147,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles Windows style parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void WindowsStyleParameterTest()
         {
             // Parses a Windows style parameter
@@ -165,7 +164,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles UNIX style switches.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleSwitchTest()
         {
             // Parses a UNIX style switch
@@ -182,7 +181,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles UNIX style parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleParameterTest()
         {
             // Parses a UNIX style parameter
@@ -199,7 +198,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles UNIX style flagged switches.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleFlaggedSwitchesTest()
         {
             // Parses a UNIX style flagged switch
@@ -219,7 +218,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles UNIX style alias parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void UnixStyleAliasParameterTest()
         {
             // Parses a UNIX style alias parameters
@@ -236,7 +235,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles multiple parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void MultipleParameterTest()
         {
             // Parses a multiple parameter
@@ -264,7 +263,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles mixing of default parameters and parameters.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void MixedDefaultParameterAndParameterTest()
         {
             // Parses multiple parameters
@@ -272,8 +271,8 @@ namespace System.CommandLine.Parser.UnitTests
             ParameterBag parameterBag = parser.Parse("\"C:\\Users\\name\\Downloads\" /key:value --auto");
 
             // Validates that the parsed parameters are correct
-            Assert.AreEqual(1, parameterBag.DefaultParameters.Count());
-            Assert.AreEqual("C:\\Users\\name\\Downloads", parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value);
+            Assert.Equal(1, parameterBag.DefaultParameters.Count());
+            Assert.Equal("C:\\Users\\name\\Downloads", parameterBag.DefaultParameters.OfType<DefaultParameter>().First().Value);
             this.ValidateParseOutput(parameterBag.Parameters, new Dictionary<string, Parameter>
             {
                 ["key"] = new StringParameter { Value = "value" },
@@ -288,7 +287,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles boolean values.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void BooleanDataTypeTest()
         {
             // Parses a boolean value
@@ -306,7 +305,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles numbers.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void NumberDataTypeTest()
         {
             // Parses a positive integer and validates that the parsed parameters are correct
@@ -370,7 +369,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles un-quoted strings.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void StringDataTypeTest()
         {
             // Parses an un-quoted string value
@@ -388,7 +387,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parsers handles quoted strings.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void QuotedStringDataTypeTest()
         {
             // Parses a quoted string value
@@ -405,7 +404,7 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles arrays.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ArrayDataTypeTest()
         {
             // Parses an empty array and validates that the parsed parameters are correct
@@ -471,44 +470,38 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the lexer handles too many dashes in front of a parameter name.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CommandLineParserException))]
-        public void ToManyDashesTest() => new CommandLineParser().Parse("---parameter");
+        [Fact]
+        public void ToManyDashesTest() => Assert.Throws<CommandLineParserException>(() => new CommandLineParser().Parse("---parameter"));
 
         /// <summary>
         /// Tests how the lexer handles too many slashes in front of a parameter name.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CommandLineParserException))]
-        public void ToManySlashesTest() => new CommandLineParser().Parse("//parameter");
+        [Fact]
+        public void ToManySlashesTest() => Assert.Throws<CommandLineParserException>(() => new CommandLineParser().Parse("//parameter"));
 
         /// <summary>
         /// Tests how the lexer handles strings that are missing a closing quote.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CommandLineParserException))]
-        public void ToManyInvalidStringTest() => new CommandLineParser().Parse("\"value");
+        [Fact]
+        public void ToManyInvalidStringTest() => Assert.Throws<CommandLineParserException>(() => new CommandLineParser().Parse("\"value"));
 
         /// <summary>
         /// Tests how the parser handles a missing parameter value.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CommandLineParserException))]
-        public void MissingParameterValueTest() => new CommandLineParser().Parse("--parameter1= /parameter2");
+        [Fact]
+        public void MissingParameterValueTest() => Assert.Throws<CommandLineParserException>(() => new CommandLineParser().Parse("--parameter1= /parameter2"));
         
         /// <summary>
         /// Tests how the parser handles a missing parameter name in front of a parameter value.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CommandLineParserException))]
-        public void MissingParameterNameTest() => new CommandLineParser().Parse("--parameter=123 \"value\"");
+        [Fact]
+        public void MissingParameterNameTest() => Assert.Throws<CommandLineParserException>(() => new CommandLineParser().Parse("--parameter=123 \"value\""));
 
         /// <summary>
         /// Tests how the parser handles invalid default parameter formats.
         /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(CommandLineParserException))]
-        public void InvalidDefaultParameter() => new CommandLineParser().Parse("abc 123 \"xyz\"");
+        [Fact]
+        public void InvalidDefaultParameter() => Assert.Throws<CommandLineParserException>(() => new CommandLineParser().Parse("abc 123 \"xyz\""));
 
         #endregion
 
@@ -517,125 +510,125 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles the command line parameter injection into an empty class.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void EmptyParameterContainerInjectionTest()
         {
             // Parses an empty command line and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
             EmptyParameterContainer emptyParameterContainer = parser.Bind<EmptyParameterContainer>(string.Empty);
-            Assert.IsNotNull(emptyParameterContainer);
+            Assert.NotNull(emptyParameterContainer);
 
             // Parses several command line parameters and validates that the object was properly created
             emptyParameterContainer = parser.Bind<EmptyParameterContainer>("/on /key:value --auto --parameter=123 -aFl");
-            Assert.IsNotNull(emptyParameterContainer);
+            Assert.NotNull(emptyParameterContainer);
         }
 
         /// <summary>
         /// Tests how the parser handles the command line parameter injection into a class that has a single non-default constructor.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void SingleConstructorParameterContainerInjectionTest()
         {
             // Parses command line parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
             SingleConstructorParameterContainer singleConstructorParameterContainer = parser.Bind<SingleConstructorParameterContainer>("/first \"abc XYZ\" --second:-123.456");
-            Assert.IsNotNull(singleConstructorParameterContainer);
-            Assert.AreEqual("abc XYZ", singleConstructorParameterContainer.First);
-            Assert.AreEqual(-123, singleConstructorParameterContainer.Second);
+            Assert.NotNull(singleConstructorParameterContainer);
+            Assert.Equal("abc XYZ", singleConstructorParameterContainer.First);
+            Assert.Equal(-123, singleConstructorParameterContainer.Second);
         }
 
         /// <summary>
         /// Tests how the parser handles the command line parameter injection into a class that has a multiple non-default constructor.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void MultipleConstructorParameterContainerInjectionTest()
         {
             // Parses a single command line parameter and validates that the correct constructor was called
             CommandLineParser parser = new CommandLineParser();
             MultipleConstructorsParameterContainer multipleConstructorsParameterContainer = parser.Bind<MultipleConstructorsParameterContainer>("/first true");
-            Assert.AreEqual(1, multipleConstructorsParameterContainer.ConstructorCalled);
+            Assert.Equal(1, multipleConstructorsParameterContainer.ConstructorCalled);
 
             // Parses two command line parameters and validates that the correct constructor was called
             multipleConstructorsParameterContainer = parser.Bind<MultipleConstructorsParameterContainer>("/first true --second=abc");
-            Assert.AreEqual(2, multipleConstructorsParameterContainer.ConstructorCalled);
+            Assert.Equal(2, multipleConstructorsParameterContainer.ConstructorCalled);
 
             // Parses three command line parameters and validates that the correct constructor was called
             multipleConstructorsParameterContainer = parser.Bind<MultipleConstructorsParameterContainer>("/first true --second=abc /third:123");
-            Assert.AreEqual(3, multipleConstructorsParameterContainer.ConstructorCalled);
+            Assert.Equal(3, multipleConstructorsParameterContainer.ConstructorCalled);
         }
 
         /// <summary>
         /// Tests how the parser handles the command line parameter injection into a class with some simple-type properties.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void SimplePropertyParameterContainerInjectionTest()
         {
             // Parses command line parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
             SimplePropertyParameterContainer simplePropertyParameterContainer = parser.Bind<SimplePropertyParameterContainer>("/string \"abc XYZ\" --number:123.456 --boolean=true /enum:Monday");
-            Assert.IsNotNull(simplePropertyParameterContainer);
-            Assert.AreEqual("abc XYZ", simplePropertyParameterContainer.String);
-            Assert.AreEqual(123.456d, simplePropertyParameterContainer.Number);
-            Assert.AreEqual(true, simplePropertyParameterContainer.Boolean);
-            Assert.AreEqual(DayOfWeek.Monday, simplePropertyParameterContainer.Enumeration);
+            Assert.NotNull(simplePropertyParameterContainer);
+            Assert.Equal("abc XYZ", simplePropertyParameterContainer.String);
+            Assert.Equal(123.456d, simplePropertyParameterContainer.Number);
+            Assert.Equal(true, simplePropertyParameterContainer.Boolean);
+            Assert.Equal(DayOfWeek.Monday, simplePropertyParameterContainer.Enumeration);
         }
 
         /// <summary>
         /// Tests how the parser handles the command line parameter injection into a class with array-type properties.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void ArrayPropertyParameterContainerInjectionTest()
         {
             // Parses command line parameters that contain an array of boolean values and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
             ArrayPropertyParameterContainer arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("/BooleanCollection [true, 1, false, 0]");
-            Assert.IsNotNull(arrayPropertyParameterContainer.BooleanCollection);
-            Assert.IsTrue(arrayPropertyParameterContainer.BooleanCollection.ElementAt(0));
-            Assert.IsTrue(arrayPropertyParameterContainer.BooleanCollection.ElementAt(1));
-            Assert.IsFalse(arrayPropertyParameterContainer.BooleanCollection.ElementAt(2));
-            Assert.IsFalse(arrayPropertyParameterContainer.BooleanCollection.ElementAt(3));
+            Assert.NotNull(arrayPropertyParameterContainer.BooleanCollection);
+            Assert.True(arrayPropertyParameterContainer.BooleanCollection.ElementAt(0));
+            Assert.True(arrayPropertyParameterContainer.BooleanCollection.ElementAt(1));
+            Assert.False(arrayPropertyParameterContainer.BooleanCollection.ElementAt(2));
+            Assert.False(arrayPropertyParameterContainer.BooleanCollection.ElementAt(3));
 
             // Parses command line parameters that contain an array of string values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("/StringCollection [abc, 123, \"abc XYZ\", 123.456, true]");
-            Assert.IsNotNull(arrayPropertyParameterContainer.StringCollection);
-            Assert.AreEqual("abc", arrayPropertyParameterContainer.StringCollection[0]);
-            Assert.AreEqual("123", arrayPropertyParameterContainer.StringCollection[1]);
-            Assert.AreEqual("abc XYZ", arrayPropertyParameterContainer.StringCollection[2]);
-            Assert.AreEqual("123.456", arrayPropertyParameterContainer.StringCollection[3]);
-            Assert.AreEqual("True", arrayPropertyParameterContainer.StringCollection[4]);
+            Assert.NotNull(arrayPropertyParameterContainer.StringCollection);
+            Assert.Equal("abc", arrayPropertyParameterContainer.StringCollection[0]);
+            Assert.Equal("123", arrayPropertyParameterContainer.StringCollection[1]);
+            Assert.Equal("abc XYZ", arrayPropertyParameterContainer.StringCollection[2]);
+            Assert.Equal("123.456", arrayPropertyParameterContainer.StringCollection[3]);
+            Assert.Equal("True", arrayPropertyParameterContainer.StringCollection[4]);
 
             // Parses command line parameters that contain an array of number values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("--NumberCollection:[123.456, 123, true, \"456\"]");
-            Assert.IsNotNull(arrayPropertyParameterContainer.NumberCollection);
-            Assert.AreEqual(123.456d, arrayPropertyParameterContainer.NumberCollection.ElementAt(0));
-            Assert.AreEqual(123.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(1));
-            Assert.AreEqual(1.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(2));
-            Assert.AreEqual(456.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(3));
+            Assert.NotNull(arrayPropertyParameterContainer.NumberCollection);
+            Assert.Equal(123.456d, arrayPropertyParameterContainer.NumberCollection.ElementAt(0));
+            Assert.Equal(123.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(1));
+            Assert.Equal(1.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(2));
+            Assert.Equal(456.0d, arrayPropertyParameterContainer.NumberCollection.ElementAt(3));
 
             // Parses command line parameters that contain an array of enumeration values and validates that the object was properly created
             arrayPropertyParameterContainer = parser.Bind<ArrayPropertyParameterContainer>("/EnumerationCollection [Monday, \"Tuesday\", Wednesday, \"Thursday\", Friday, \"Saturday\", Sunday]");
-            Assert.IsNotNull(arrayPropertyParameterContainer.EnumerationCollection);
-            Assert.AreEqual(DayOfWeek.Monday, arrayPropertyParameterContainer.EnumerationCollection[0]);
-            Assert.AreEqual(DayOfWeek.Tuesday, arrayPropertyParameterContainer.EnumerationCollection[1]);
-            Assert.AreEqual(DayOfWeek.Wednesday, arrayPropertyParameterContainer.EnumerationCollection[2]);
-            Assert.AreEqual(DayOfWeek.Thursday, arrayPropertyParameterContainer.EnumerationCollection[3]);
-            Assert.AreEqual(DayOfWeek.Friday, arrayPropertyParameterContainer.EnumerationCollection[4]);
-            Assert.AreEqual(DayOfWeek.Saturday, arrayPropertyParameterContainer.EnumerationCollection[5]);
-            Assert.AreEqual(DayOfWeek.Sunday, arrayPropertyParameterContainer.EnumerationCollection[6]);
+            Assert.NotNull(arrayPropertyParameterContainer.EnumerationCollection);
+            Assert.Equal(DayOfWeek.Monday, arrayPropertyParameterContainer.EnumerationCollection[0]);
+            Assert.Equal(DayOfWeek.Tuesday, arrayPropertyParameterContainer.EnumerationCollection[1]);
+            Assert.Equal(DayOfWeek.Wednesday, arrayPropertyParameterContainer.EnumerationCollection[2]);
+            Assert.Equal(DayOfWeek.Thursday, arrayPropertyParameterContainer.EnumerationCollection[3]);
+            Assert.Equal(DayOfWeek.Friday, arrayPropertyParameterContainer.EnumerationCollection[4]);
+            Assert.Equal(DayOfWeek.Saturday, arrayPropertyParameterContainer.EnumerationCollection[5]);
+            Assert.Equal(DayOfWeek.Sunday, arrayPropertyParameterContainer.EnumerationCollection[6]);
         }
 
         /// <summary>
         /// Tests how the parser handles the command line parameter injection into a class that has properties with parameter name aliases.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void AliasParameterContainerInjectionTest()
         {
             // Parses command line parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
             AliasParameterContainer aliasParameterContainer = parser.Bind<AliasParameterContainer>("/s \"abc XYZ\" -n:123.456");
-            Assert.IsNotNull(aliasParameterContainer);
-            Assert.AreEqual(123.456M, aliasParameterContainer.Number);
-            Assert.AreEqual("abc XYZ", aliasParameterContainer.String);
+            Assert.NotNull(aliasParameterContainer);
+            Assert.Equal(123.456M, aliasParameterContainer.Number);
+            Assert.Equal("abc XYZ", aliasParameterContainer.String);
         }
 
         #endregion
@@ -645,29 +638,29 @@ namespace System.CommandLine.Parser.UnitTests
         /// <summary>
         /// Tests how the parser handles the default parameter injection into the constructor.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void DefaultParameterContructorContainerInjectionTest()
         {
             // Parses default parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
             DefaultParameterContructorContainer defaultParameterContructorContainer = parser.Bind<DefaultParameterContructorContainer>("abc \"XYZ\"");
-            Assert.IsNotNull(defaultParameterContructorContainer);
-            Assert.AreEqual("abc XYZ", defaultParameterContructorContainer.DefaultParameters);
+            Assert.NotNull(defaultParameterContructorContainer);
+            Assert.Equal("abc XYZ", defaultParameterContructorContainer.DefaultParameters);
         }
 
         /// <summary>
         /// Tests how the parser handles the default parameter injection into properties of a class.
         /// </summary>
-        [TestMethod]
+        [Fact]
         public void DeafultParameterPropertyContainerInjectionTest()
         {
             // Parses default parameters and validates that the object was properly created
             CommandLineParser parser = new CommandLineParser();
             DeafultParameterPropertyContainer deafultParameterPropertyContainer = parser.Bind<DeafultParameterPropertyContainer>("abc \"XYZ\"");
-            Assert.IsNotNull(deafultParameterPropertyContainer);
-            Assert.AreEqual("abc XYZ", deafultParameterPropertyContainer.First);
-            Assert.AreEqual("abc", deafultParameterPropertyContainer.Second.ElementAt(0));
-            Assert.AreEqual("XYZ", deafultParameterPropertyContainer.Second.ElementAt(1));
+            Assert.NotNull(deafultParameterPropertyContainer);
+            Assert.Equal("abc XYZ", deafultParameterPropertyContainer.First);
+            Assert.Equal("abc", deafultParameterPropertyContainer.Second.ElementAt(0));
+            Assert.Equal("XYZ", deafultParameterPropertyContainer.Second.ElementAt(1));
         }
 
         #endregion

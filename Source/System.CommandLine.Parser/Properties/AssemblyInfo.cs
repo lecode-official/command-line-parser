@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 [assembly: Guid("5e4fb20c-183e-46e0-ac8a-53d6637184a5")]
 [assembly: CLSCompliant(false)]
-[assembly: InternalsVisibleTo("System.CommandLine.Parser.UnitTests")]
+[assembly: InternalsVisibleTo("CommandLineParser.UnitTests")]
 
 #endregion
 
