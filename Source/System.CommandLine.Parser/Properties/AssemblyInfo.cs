@@ -19,7 +19,6 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: ComVisible(false)]
-[assembly: Guid("5e4fb20c-183e-46e0-ac8a-53d6637184a5")]
 [assembly: CLSCompliant(false)]
 [assembly: InternalsVisibleTo("CommandLineParser.UnitTests")]
 

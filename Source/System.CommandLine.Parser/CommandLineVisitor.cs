@@ -143,7 +143,7 @@ namespace System.CommandLine.Parser
         public override Parameter VisitUnixStyleFlaggedSwitch([NotNull] Antlr.CommandLineParser.UnixStyleFlaggedSwitchContext context)
         {
             // Adds all the flags to the result set
-            foreach (char flag in context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty).ToList())
+            foreach (char flag in context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty))
             {
                 string parameterName = flag.ToString();
                 if (this.Parameters.ContainsKey(parameterName))
@@ -224,7 +224,7 @@ namespace System.CommandLine.Parser
             Parameter parameter = this.Visit(context.value());
 
             // Adds the parameters to the result set
-            foreach (char flag in context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty).ToList())
+            foreach (char flag in context.UnixStyleFlaggedIdentifiers().GetText().Replace("-", string.Empty))
             {
                 string parameterName = flag.ToString();
                 if (this.Parameters.ContainsKey(parameterName))
