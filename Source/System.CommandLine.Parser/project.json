@@ -1,4 +1,4 @@
-﻿{
+{
   "title": "Command Line Parser",
   "version": "0.1.2-beta1",
   "description": "A simple and light-weight parser for command line arguments, which makes it possible to access parameters from the command line via well-defined .NET data structures.",
@@ -27,11 +27,12 @@
 
   "dependencies": {
     "Antlr4.Runtime": "4.5.3.1-beta001",
-    "NETStandard.Library": "1.6.0"
+    "NETStandard.Library": "1.6.0",
+    "System.Runtime": "4.1.0"
   },
 
   "frameworks": {
-    "netstandard1.0": {
+    "netstandard1.1": {
       "imports": "dnxcore50"
     }
   }
