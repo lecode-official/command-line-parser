@@ -11,6 +11,7 @@ using System.CommandLine.Parser.Parameters;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -82,6 +83,20 @@ namespace System.CommandLine.Parser
             new CollectionOfEnumerationParameterConverter(),
             new CollectionOfStringParameterConverter()
         };
+
+        #endregion
+
+        #region Private Static Native Methods
+
+        /// <summary>
+        /// Gets the arguments that were passed to the program on the command line.
+        /// </summary>
+        /// <returns>
+        /// Returns a pointer to a buffer allocated and owned by the operating system, which contains the command line arguments passed to the program. Since this
+        /// buffer was allocated by the operating system, it must not be freed.
+        /// </returns>
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr GetCommandLine();
 
         #endregion
 
@@ -399,6 +414,19 @@ namespace System.CommandLine.Parser
         #region Public Utility Methods
 
         /// <summary>
+        /// Gets the command line arguments passed to the program.
+        /// </summary>
+        /// <returns>Returns the command line arguments passed to the program on the command line.</returns>
+        public string GetCommandLineArguments()
+        {
+            // Gets a pointer to a buffer, that contains the command line arguments
+            IntPtr commandLineArgumentsBuffer = CommandLineParser.GetCommandLine();
+
+            // Marshals the contents of the buffer to a CLR string and returns it
+            return Marshal.PtrToStringUni(commandLineArgumentsBuffer);
+        }
+
+        /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
@@ -418,6 +446,15 @@ namespace System.CommandLine.Parser
             // Returns the instantiated object
             return instance;
         }
+
+        /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type.
+        /// </summary>
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public object Bind(Type returnType) => this.Bind(this.GetCommandLineArguments(), returnType);
 
         /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type asynchronously.
@@ -441,6 +478,15 @@ namespace System.CommandLine.Parser
         }
 
         /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type asynchronously.
+        /// </summary>
+        /// <param name="returnType">The type that is to be instantiated and injected with the parameters from the command line.</param>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public Task<object> BindAsync(Type returnType) => this.BindAsync(this.GetCommandLineArguments(), returnType);
+
+        /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
@@ -451,6 +497,15 @@ namespace System.CommandLine.Parser
         public T Bind<T>(string commandLineParameters) where T : class => this.Bind(commandLineParameters, typeof(T)) as T;
 
         /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type.
+        /// </summary>
+        /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public T Bind<T>() where T : class => this.Bind<T>(this.GetCommandLineArguments());
+
+        /// <summary>
         /// Parses the specified command line parameters and converts them into the specified type asynchronously.
         /// </summary>
         /// <param name="commandLineParameters">The command line parameters that are to be parsed.</param>
@@ -459,7 +514,16 @@ namespace System.CommandLine.Parser
         /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
         /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
         public async Task<T> BindAsync<T>(string commandLineParameters) where T : class => await this.BindAsync(commandLineParameters, typeof(T)) as T;
-        
+
+        /// <summary>
+        /// Parses the specified command line parameters and converts them into the specified type asynchronously.
+        /// </summary>
+        /// <typeparam name="T">The type that is to be instantiated and injected with the parameters from the command line.</typeparam>
+        /// <exception cref="CommandLineParserException">If there are any lexical or syntactical errors during the parsing of the command line parameters, then a <see cref="CommandLineParserException"/> exception is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If no constructor whose parameter list can be satisfied could be found or an error occurred during the instantiation of the object, then an <see cref="InvalidOperationException"/> exception is thrown.</exception>
+        /// <returns>Returns an instance of the specified type injected with the parameters from the command line.</returns>
+        public Task<T> BindAsync<T>() where T : class => this.BindAsync<T>(this.GetCommandLineArguments());
+
         #endregion
     }
 }
