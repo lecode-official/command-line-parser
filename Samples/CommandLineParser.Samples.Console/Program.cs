@@ -111,25 +111,13 @@ namespace CommandLineParser.Samples.Console
         /// </summary>
         private class CommandLineParameters
         {
-            #region Constructors
-
-            /// <summary>
-            /// Initializes a new <see cref="CommandLineParameters"/> instance.
-            /// </summary>
-            /// <param name="method">The "method" command line parameter.</param>
-            public CommandLineParameters(string method)
-            {
-                this.Method = method;
-            }
-
-            #endregion
-            
             #region Public Properties
 
             /// <summary>
             /// Gets the "method" command line parameter.
             /// </summary>
-            public string Method { get; private set; }
+            [ParameterName("method")]
+            public string Method { get; set; }
 
             /// <summary>
             /// Gets or sets the "numberOfBytes" command line parameter.
