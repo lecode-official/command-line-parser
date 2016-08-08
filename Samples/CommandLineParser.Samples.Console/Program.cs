@@ -1,10 +1,12 @@
 ﻿
 #region Using Directives
 
+using System;
 using System.Collections.Generic;
 using System.CommandLine.Parser;
 using System.CommandLine.Parser.Parameters;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
 #endregion
@@ -65,11 +67,11 @@ namespace CommandLineParser.Samples.Console
             // Prints out the command line parameters passed to the application
             System.CommandLine.Parser.CommandLineParser parser = new System.CommandLine.Parser.CommandLineParser();
             System.Console.WriteLine("Command line parameters:");
-            System.Console.WriteLine(parser.GetCommandLineArguments());
+            System.Console.WriteLine(Program.GetCommandLineArguments());
             System.Console.WriteLine();
 
             // Parses the command line parameters passed to the application and prints them out
-            ParameterBag parameterBag = await parser.ParseAsync(parser.GetCommandLineArguments());
+            ParameterBag parameterBag = await parser.ParseAsync(Program.GetCommandLineArguments());
             if (parameterBag.Parameters.Any())
             {
                 System.Console.WriteLine("Parameter bag content:");
@@ -78,7 +80,7 @@ namespace CommandLineParser.Samples.Console
             }
 
             // Parses the command line parameters passed to the application, injects them into a strongly typed object, and prints them out
-            CommandLineParameters commandLineParameters = await parser.BindAsync<CommandLineParameters>();
+            CommandLineParameters commandLineParameters = await parser.BindAsync<CommandLineParameters>(Program.GetCommandLineArguments());
             System.Console.WriteLine("Parameters:");
             System.Console.WriteLine($"Method: {commandLineParameters.Method}");
             System.Console.WriteLine($"Number of bytes: {commandLineParameters.NumberOfBytes}");
@@ -89,6 +91,29 @@ namespace CommandLineParser.Samples.Console
             // Waits for the user to press a key before the program is exited
             System.Console.Write("Press any key to exit...");
             System.Console.ReadKey();
+        }
+
+        /// <summary>
+        /// Gets the arguments that were passed to the program on the command line.
+        /// </summary>
+        /// <returns>
+        /// Returns a pointer to a buffer allocated and owned by the operating system, which contains the command line arguments passed to the program. Since this
+        /// buffer was allocated by the operating system, it must not be freed.
+        /// </returns>
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        private static extern IntPtr GetCommandLine();
+
+        /// <summary>
+        /// Gets the command line arguments passed to the program.
+        /// </summary>
+        /// <returns>Returns the command line arguments passed to the program on the command line.</returns>
+        private static string GetCommandLineArguments()
+        {
+            // Gets a pointer to a buffer, that contains the command line arguments
+            IntPtr commandLineArgumentsBuffer = Program.GetCommandLine();
+
+            // Marshals the contents of the buffer to a CLR string and returns it
+            return Marshal.PtrToStringUni(commandLineArgumentsBuffer);
         }
 
         #endregion
