@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.CommandLine.Parser.Antlr;
 using System.CommandLine.Parser.Parameters;
 using System.Globalization;
-using System.Linq;
 
 #endregion
 
