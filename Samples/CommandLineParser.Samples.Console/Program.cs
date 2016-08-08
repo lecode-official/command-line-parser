@@ -1,7 +1,6 @@
 ﻿
 #region Using Directives
 
-using System;
 using System.Collections.Generic;
 using System.CommandLine.Parser;
 using System.CommandLine.Parser.Parameters;
