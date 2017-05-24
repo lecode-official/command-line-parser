@@ -10,7 +10,7 @@ namespace System.CommandLine
     /// <summary>
     /// Represents a single argument of a command line parser.
     /// </summary>
-    public class Argument
+    public class Argument : IArgument
     {
         #region Constructors
 

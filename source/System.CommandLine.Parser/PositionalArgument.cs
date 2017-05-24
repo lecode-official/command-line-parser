@@ -4,7 +4,7 @@ namespace System.CommandLine
     /// <summary>
     /// Represents a single positional argument of a command line parser.
     /// </summary>
-    public class PositionalArgument
+    public class PositionalArgument : IArgument
     {
         #region Constructors
 
