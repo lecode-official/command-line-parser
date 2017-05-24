@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{23B68DFF-3D21-42B9-8E37-FB5D6B51FE11}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{23B68DFF-3D21-42B9-8E37-FB5D6B51FE11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.CommandLine.Parser", "src\System.CommandLine.Parser\System.CommandLine.Parser.csproj", "{2FF67E01-D4AD-4378-8D99-58A39CE98587}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.CommandLine.Parser", "source\System.CommandLine.Parser\System.CommandLine.Parser.csproj", "{2FF67E01-D4AD-4378-8D99-58A39CE98587}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{27E652C6-5165-4804-AE19-7D6C777B7C75}"
 EndProject
