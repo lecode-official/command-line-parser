@@ -10,9 +10,9 @@ using Xunit;
 namespace System.CommandLine.Parser.Tests
 {
     /// <summary>
-    /// Represents a set of unit tests for the positional arguments of the command line parser.
+    /// Represents a set of unit tests for the camel casing routine.
     /// </summary>
-    public class PositionalArgumentTests
+    public class CamelCasingTests
     {
         /// <summary>
         /// Tests the camel-casing methods used for the positional arguments.
