@@ -56,7 +56,7 @@ namespace System.CommandLine
         /// <summary>
         /// Contains the positional arguments of the parser.
         /// </summary>
-        private readonly List<PositionalArgument> positionalArguments = new List<PositionalArgument>();
+        private readonly List<IArgument> positionalArguments = new List<IArgument>();
 
         #endregion
 
