@@ -107,7 +107,7 @@ namespace System.CommandLine
             if (this.positionalArguments.Any(positionalArgument => string.Compare(positionalArgument.Name, name, this.Options.IgnoreCase) == 0))
                 throw new InvalidOperationException("There is already a positional argument with the same name.");
             if (this.positionalArguments.Any(positionalArgument => positionalArgument.Destination == destination))
-                throw new InvalidOperationException("There is already a positional argument with the same name.");
+                throw new InvalidOperationException("There is already a positional argument with the same destination.");
 
             // Adds the positional argument to the parser
             this.positionalArguments.Add(new PositionalArgument<T>(name, destination, help));
