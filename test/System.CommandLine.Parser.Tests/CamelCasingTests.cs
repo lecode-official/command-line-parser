@@ -25,6 +25,7 @@ namespace System.CommandLine.Parser.Tests
             Assert.Equal("ThisIsATest", "--this-is-a-test".ToCamelCasePropertyName());
             Assert.Equal("ThisIsATest", " this is a test ".ToCamelCasePropertyName());
             Assert.Equal("ThisIsATest", "T!h§i%s_i&s_a_t/e(s)t".ToCamelCasePropertyName());
+            Assert.Equal("_45ThisIsATest123", "45this is a test123".ToCamelCasePropertyName());
         }
     }
 }

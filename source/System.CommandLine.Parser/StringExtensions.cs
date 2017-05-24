@@ -29,10 +29,27 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(name));
 
             // Makes sure that the name is a valid C# name by first removing all characters that are not allowed, except for whitespaces, underscores, and dashes (they are needed to camel case the name)
-            name = Regex.Replace(name, @"[^0-9a-zA-Z \-_]", string.Empty).Trim();
+            const string firstCharacterRegex = @"\p{Lu}\p{Ll}\p{Lt}\p{Lm}\p{Lo}\p{Nl}";
+            const string extendedCharacterRegex = @"\p{Mn}\p{Mc}\p{Nd}\p{Pc}\p{Cf}";
+            Regex invalidCharacters = new Regex(string.Format(@"[^{0}{1} \-_]", firstCharacterRegex, extendedCharacterRegex));
+            name = invalidCharacters.Replace(name, string.Empty);
+
+            // Adds spaces at the end of strings of digits, to make sure that the following characters are correctly capitalized
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int index = 0; index < name.Length; index++)
+            {
+                char currentCharacter = name[index];
+                stringBuilder.Append(currentCharacter);
+                if (index == name.Length - 1)
+                    break;
+                char nextCharacter = name[index + 1];
+                if (char.IsDigit(currentCharacter) && !char.IsDigit(nextCharacter))
+                    stringBuilder.Append(" ");
+            }
+            name = stringBuilder.ToString();
 
             // Camel cases the name
-            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder = new StringBuilder();
             foreach (string part in name.Split(' ', '-', '_'))
             {
                 if (part.Length == 0)
@@ -43,10 +60,8 @@ namespace System.CommandLine
             name = stringBuilder.ToString();
 
             // Makes sure that the first character of the name is a letter
-            if (new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9" }.Contains(name.Substring(0, 1)))
-                name = $"_{name}";
-
-            // Returns the camel cased name
+            if (char.IsDigit(name[0]))
+                return $"_{name}";
             return name;
         }
 
