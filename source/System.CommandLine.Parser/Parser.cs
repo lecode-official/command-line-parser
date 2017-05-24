@@ -58,6 +58,11 @@ namespace System.CommandLine
         /// </summary>
         private readonly List<IArgument> positionalArguments = new List<IArgument>();
 
+        /// <summary>
+        /// Contains the arguments of the parser.
+        /// </summary>
+        private readonly List<IArgument> arguments = new List<IArgument>();
+
         #endregion
 
         #region Public Properties
@@ -111,6 +116,99 @@ namespace System.CommandLine
 
             // Adds the positional argument to the parser
             this.positionalArguments.Add(new PositionalArgument<T>(name, destination, help));
+        }
+
+        /// <summary>
+        /// Adds an argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <exception cref="ArgumentNullException">If the name is <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public void AddArgument<T>(string name) => this.AddArgument<T>(name, name);
+
+        /// <summary>
+        /// Adds an argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <exception cref="ArgumentNullException">If either the name or the alias are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public void AddArgument<T>(string name, string alias) => this.AddArgument<T>(name, alias, string.Empty);
+
+        /// <summary>
+        /// Adds an argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
+        /// <exception cref="ArgumentNullException">If either the name or the alias are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public void AddArgument<T>(string name, string alias, string help) => this.AddArgument<T>(name, alias, name, help);
+
+        /// <summary>
+        /// Adds an argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
+        /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
+        /// <exception cref="ArgumentNullException">If either the name, the alias, or the destination are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public void AddArgument<T>(string name, string alias, string destination, string help) => this.AddArgument<T>(name, alias, destination, help, default(T));
+
+        /// <summary>
+        /// Adds an argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
+        /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
+        /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
+        /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, or the default value are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public void AddArgument<T>(string name, string alias, string destination, string help, T defaultValue) => this.AddArgument<T>(name, alias, destination, help, defaultValue, (oldValue, newValue) => newValue);
+
+        /// <summary>
+        /// Adds an argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
+        /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
+        /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
+        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was sepcified twice.</param>
+        /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        public void AddArgument<T>(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
+        {
+            // Validates the arguments
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrWhiteSpace(alias))
+                throw new ArgumentNullException(nameof(alias));
+            if (string.IsNullOrWhiteSpace(destination))
+                throw new ArgumentNullException(nameof(destination));
+            if (defaultValue == null)
+                throw new ArgumentNullException(nameof(defaultValue));
+            if (duplicateResolutionPolicy == null)
+                throw new ArgumentNullException(nameof(duplicateResolutionPolicy));
+
+            // Checks if there is already an argument with the same name, the same alias, or destination
+            if (this.arguments.Any(argument => string.Compare(argument.Name, name, this.Options.IgnoreCase) == 0))
+                throw new InvalidOperationException("There is already a argument with the same name.");
+            if (this.arguments.Any(argument => string.Compare(argument.Alias, alias, this.Options.IgnoreCase) == 0))
+                throw new InvalidOperationException("There is already a argument with the same alias.");
+            if (this.arguments.Any(argument => argument.Destination == destination))
+                throw new InvalidOperationException("There is already a argument with the same destination.");
+
+            // Adds the argument to the parser
+            this.arguments.Add(new Argument<T>(name, alias, destination, help, defaultValue, duplicateResolutionPolicy));
         }
 
         #endregion
