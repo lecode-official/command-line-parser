@@ -23,8 +23,25 @@ namespace System.CommandLine
         /// </summary>
         /// <param name="description">The description of the parser. If this is a root parser, then this is the description of the application. Otherwise this it the description for the command.</param>
         public Parser(string description)
+            : this(description, ParserOptions.Default)
         {
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="Parser"/> instance.
+        /// </summary>
+        /// <param name="description">The description of the parser. If this is a root parser, then this is the description of the application. Otherwise this it the description for the command.</param>
+        /// <param name="options">The options of the command line parser.</param>
+        /// <exception cref="ArgumentNullException">If the options are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        public Parser(string description, ParserOptions options)
+        {
+            // Validates the arguments
+            if (options == null)
+                throw new ArgumentNullException(nameof(options));
+
+            // Stores the arguments for later use
             this.description = description;
+            this.Options = options;
         }
 
         #endregion
@@ -40,6 +57,15 @@ namespace System.CommandLine
         /// Contains the positional arguments of the parser.
         /// </summary>
         private readonly List<PositionalArgument> positionalArguments = new List<PositionalArgument>();
+
+        #endregion
+
+        #region Public Properties
+
+        /// <summary>
+        /// Gets or sets the options of the command line parser.
+        /// </summary>
+        public ParserOptions Options { get; set; }
 
         #endregion
 
@@ -78,7 +104,7 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(destination));
 
             // Checks if there is already a positional argument with the same name or destination
-            if (this.positionalArguments.Any(positionalArgument => positionalArgument.Name == name))
+            if (this.positionalArguments.Any(positionalArgument => string.Compare(positionalArgument.Name, name, this.Options.IgnoreCase) == 0))
                 throw new InvalidOperationException("There is already a positional argument with the same name.");
             if (this.positionalArguments.Any(positionalArgument => positionalArgument.Destination == destination))
                 throw new InvalidOperationException("There is already a positional argument with the same name.");
