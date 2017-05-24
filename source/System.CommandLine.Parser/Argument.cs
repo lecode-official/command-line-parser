@@ -18,17 +18,20 @@ namespace System.CommandLine
         /// <summary>
         /// Initializes a new <see cref="Argument"/> instance.
         /// </summary>
-        /// <param name="name">The name of the argument, which is used in the help string.</param>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
         /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
         /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was sepcified twice.</param>
-        /// <exception cref="ArgumentNullException">If either the name, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        public Argument(string name, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
+        /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        public Argument(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrWhiteSpace(alias))
+                throw new ArgumentNullException(nameof(alias));
             if (string.IsNullOrWhiteSpace(destination))
                 throw new ArgumentNullException(nameof(destination));
             if (defaultValue == null)
@@ -38,6 +41,7 @@ namespace System.CommandLine
 
             // Stores the arguments for later use
             this.Name = name;
+            this.Alias = alias;
             this.Destination = destination;
             this.Help = help;
             this.DefaultValue = defaultValue;
@@ -49,9 +53,14 @@ namespace System.CommandLine
         #region Public Properties
 
         /// <summary>
-        /// Gets the name of the argument, which is used in the help string.
+        /// Gets the name of the argument, which is used for parsing and in the help string.
         /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets the alias name of the argument.
+        /// </summary>
+        public string Alias { get; private set; }
 
         /// <summary>
         /// Contains the name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.

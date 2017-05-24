@@ -40,6 +40,11 @@ namespace System.CommandLine
         public string Name { get; private set; }
 
         /// <summary>
+        /// Gets the alias name of the argument. For positional arguments, this is always the same as the name.
+        /// </summary>
+        public string Alias { get => this.Name; }
+
+        /// <summary>
         /// Contains the name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
         /// </summary>
         private string destination;

@@ -9,9 +9,14 @@ namespace System.CommandLine
         #region Properties
 
         /// <summary>
-        /// Gets the name of the argument, which is used in the help string.
+        /// Gets the name of the argument.
         /// </summary>
         string Name { get; }
+
+        /// <summary>
+        /// Gets the alias name of the argument.
+        /// </summary>
+        string Alias { get; }
 
         /// <summary>
         /// Gets the name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
