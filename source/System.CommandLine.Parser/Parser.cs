@@ -110,7 +110,7 @@ namespace System.CommandLine
                 throw new InvalidOperationException("There is already a positional argument with the same name.");
 
             // Adds the positional argument to the parser
-            this.positionalArguments.Add(new PositionalArgument(name, destination, help, typeof(T)));
+            this.positionalArguments.Add(new PositionalArgument<T>(name, destination, help));
         }
 
         #endregion
