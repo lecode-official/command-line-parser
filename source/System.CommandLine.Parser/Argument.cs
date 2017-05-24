@@ -22,9 +22,10 @@ namespace System.CommandLine
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="type">The type of the argument.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
-        /// <exception cref="ArgumentNullException">If either the name, the destination, the type, or the default value are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was sepcified twice.</param>
+        /// <exception cref="ArgumentNullException">If either the name, the destination, the type, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="ArgumentException">If the default value is not of the specified type or does not derive from the specified type, then an <see cref="ArgumentException"/> is thrown.</exception>
-        public Argument(string name, string destination, string help, Type type, object defaultValue)
+        public Argument(string name, string destination, string help, Type type, object defaultValue, Func<object, object, object> duplicateResolutionPolicy)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
@@ -37,6 +38,8 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(defaultValue));
             if (!type.GetTypeInfo().IsAssignableFrom(defaultValue.GetType().GetTypeInfo()))
                 throw new ArgumentException("The default value is not of the specified type or derived from the specified type.");
+            if (duplicateResolutionPolicy == null)
+                throw new ArgumentNullException(nameof(duplicateResolutionPolicy));
 
             // Stores the arguments for later use
             this.Name = name;
@@ -44,6 +47,7 @@ namespace System.CommandLine
             this.Help = help;
             this.Type = type;
             this.DefaultValue = defaultValue;
+            this.DuplicateResolutionPolicy = duplicateResolutionPolicy;
         }
 
         #endregion
@@ -83,6 +87,11 @@ namespace System.CommandLine
         /// Gets the value that the argument receives if it was not detected by the parser.
         /// </summary>
         public object DefaultValue { get; private set; }
+
+        /// <summary>
+        /// Gets a callback function, which is invoked when the same argument was sepcified twice.
+        /// </summary>
+        public Func<object, object, object> DuplicateResolutionPolicy { get; private set; }
 
         #endregion
     }
