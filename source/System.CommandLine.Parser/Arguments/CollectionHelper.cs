@@ -14,7 +14,7 @@ namespace System.CommandLine.Arguments
     /// <summary>
     /// Represents a helper, which makes it easy to create collections of many different kinds via one, simple API.
     /// </summary>
-    public static class CollectionHelper<T> where T : class
+    public static class CollectionHelper
     {
         #region Private Static Fields
 
@@ -61,14 +61,14 @@ namespace System.CommandLine.Arguments
         /// </summary>
         /// <param name="type">The type that is to be checked for support.</param>
         /// <returns>Returns <c>true</c> if the specified type is one of the supported collection types and <c>false</c> otherwise.</returns>
-        public static bool IsSupportedCollectionType()
+        public static bool IsSupportedCollectionType<T>()
         {
             Type type = typeof(T);
             if (type.IsArray)
                 return true;
             if (!type.IsConstructedGenericType)
                 return false;
-            return CollectionHelper<T>.supportedTypes.Contains(type.GetGenericTypeDefinition());
+            return CollectionHelper.supportedTypes.Contains(type.GetGenericTypeDefinition());
         }
 
         /// <summary>
@@ -77,15 +77,16 @@ namespace System.CommandLine.Arguments
         /// <param name="firstCollection">The first collection.</param>
         /// <param name="secondCollection">The second collection.</param>
         /// <returns>Returns a collection that contains the elements of both collections, which is of the same type as the input collections.</returns>
-        public static T Merge(T firstCollection, T secondCollection)
+        public static T Merge<T>(T firstCollection, T secondCollection)
+            where T : class
         {
             // Validates that the two collections are of a supported collection type
-            if (!CollectionHelper<T>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<T>())
                 throw new InvalidOperationException("The specified type is not a supported collection type.");
 
             // Converts the two collections to arrays first
-            Array firstArray = CollectionHelper<T>.ToArray(firstCollection);
-            Array secondArray = CollectionHelper<T>.ToArray(secondCollection);
+            Array firstArray = CollectionHelper.ToArray<T>(firstCollection);
+            Array secondArray = CollectionHelper.ToArray<T>(secondCollection);
 
             // Combines the two arrays into a single array
             object[] mergedArray = new object[firstArray.Length + secondArray.Length];
@@ -93,7 +94,7 @@ namespace System.CommandLine.Arguments
             Array.Copy(secondArray, 0, mergedArray, firstArray.Length, secondArray.Length);
 
             // Converts the merged array back to the collection type and returns it
-            return CollectionHelper<object[]>.To<T>(mergedArray);
+            return CollectionHelper.To<object[], T>(mergedArray);
         }
 
         /// <summary>
@@ -101,17 +102,18 @@ namespace System.CommandLine.Arguments
         /// </summary>
         /// <param name="inputCollection">The collection, that is to be converted to another collection type.</param>
         /// <returns>Returns the converted collection.</returns>
-        public static TResult To<TResult>(T inputCollection) where TResult : class
+        public static TResult To<TInput, TResult>(TInput inputCollection)
+            where TResult : class
         {
             // Checks if both collection types are supported
-            if (!CollectionHelper<T>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<TInput>())
                 throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
-            if (!CollectionHelper<TResult>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<TResult>())
                 throw new InvalidOperationException("The type of the result is not a supported collection type.");
 
             // First the input collection is converted to an array and then the array is converted to the result collection type
-            Array array = CollectionHelper<T>.ToArray(inputCollection);
-            return CollectionHelper<TResult>.FromArray(array);
+            Array array = CollectionHelper.ToArray(inputCollection);
+            return CollectionHelper.FromArray<TResult>(array);
         }
 
         /// <summary>
@@ -119,17 +121,18 @@ namespace System.CommandLine.Arguments
         /// </summary>
         /// <param name="inputCollection">The collection, that is to be converted to another collection type.</param>
         /// <returns>Returns the converted collection.</returns>
-        public static T From<TInput>(TInput inputCollection) where TInput : class
+        public static TResult From<TInput, TResult>(TInput inputCollection)
+            where TResult : class
         {
             // Checks if both collection types are supported
-            if (!CollectionHelper<TInput>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<TInput>())
                 throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
-            if (!CollectionHelper<T>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<TResult>())
                 throw new InvalidOperationException("The type of the result is not a supported collection type.");
 
             // First the input collection is converted to an array and then the array is converted to the result collection type
-            Array array = CollectionHelper<TInput>.ToArray(inputCollection);
-            return CollectionHelper<T>.FromArray(array);
+            Array array = CollectionHelper.ToArray<TInput>(inputCollection);
+            return CollectionHelper.FromArray<TResult>(array);
         }
 
         /// <summary>
@@ -137,10 +140,10 @@ namespace System.CommandLine.Arguments
         /// </summary>
         /// <param name="inputCollection">The collection that is to be converted into an array.</param>
         /// <returns>Returns an array that contains the same elements of the specified input collection.</returns>
-        public static Array ToArray(T inputCollection)
+        public static Array ToArray<T>(T inputCollection)
         {
             // Checks if the type of the input collection is supported
-            if (!CollectionHelper<T>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<T>())
                 throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
 
             // Checks if the collection already is an array, then nothing needs to be done
@@ -149,7 +152,7 @@ namespace System.CommandLine.Arguments
                 return inputCollection as Array;
 
             // Creates a new array
-            int arraySize = CollectionHelper<T>.GetCount(inputCollection);
+            int arraySize = CollectionHelper.GetCount<T>(inputCollection);
             object[] array = new object[arraySize];
 
             // Checks if the input collection implements ICollection, in that case there is a way to copy its contents to an array
@@ -183,10 +186,11 @@ namespace System.CommandLine.Arguments
         /// </summary>
         /// <param name="inputArray">The array that is to be converted into another collection type.</param>
         /// <returns>Returns a collection that contains the same elements of the specified input array.</returns>
-        public static T FromArray(Array inputArray)
+        public static T FromArray<T>(Array inputArray)
+            where T : class
         {
             // Checks if the type of the input collection is supported
-            if (!CollectionHelper<T>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<T>())
                 throw new InvalidOperationException("The return type is not a supported collection type.");
 
             // Determines which type the elements will have in the result collection
@@ -291,10 +295,10 @@ namespace System.CommandLine.Arguments
         /// </summary>
         /// <param name="inputCollection">The collection for which the number of elements is to be determined.</param>
         /// <returns>Returns the number of elements that are in the specified collection.</returns>
-        public static int GetCount(T inputCollection)
+        public static int GetCount<T>(T inputCollection)
         {
             // Determines if the specified collection is of a supported type
-            if (!CollectionHelper<T>.IsSupportedCollectionType())
+            if (!CollectionHelper.IsSupportedCollectionType<T>())
                 throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
 
             // Checks if the collection implements ICollection, in that case, the length of the collection can directly be accessed
