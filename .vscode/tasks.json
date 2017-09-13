@@ -1,0 +1,26 @@
+
+{
+    "version": "0.1.0",
+    "command": "dotnet",
+    "isShellCommand": true,
+    "args": [],
+    "tasks": [
+        {
+            "taskName": "build",
+            "args": [
+                "${workspaceRoot}/CommandLineParser.sln"
+            ],
+            "isBuildCommand": true,
+            "problemMatcher": "$msCompile"
+        },
+        {
+          "taskName": "test",
+          "args": [
+            "${workspaceRoot}/test/System.CommandLine.Parser.Tests/System.CommandLine.Parser.Tests.csproj"
+          ],
+          "isTestCommand": true,
+          "showOutput": "always",
+          "problemMatcher": "$msCompile"
+        }
+    ]
+}
