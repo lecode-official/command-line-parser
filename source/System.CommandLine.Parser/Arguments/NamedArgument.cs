@@ -23,10 +23,8 @@ namespace System.CommandLine.Arguments
         /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
-        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified twice.</param>
-        /// <exception cref="ArgumentNullException">
-        /// If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.
-        /// </exception>
+        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified more than once.</param>
+        /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, or the default value are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         public NamedArgument(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
         {
             // Validates the arguments
@@ -38,8 +36,6 @@ namespace System.CommandLine.Arguments
                 throw new ArgumentNullException(nameof(destination));
             if (defaultValue == null)
                 throw new ArgumentNullException(nameof(defaultValue));
-            if (duplicateResolutionPolicy == null)
-                throw new ArgumentNullException(nameof(duplicateResolutionPolicy));
 
             // Stores the arguments for later use
             this.Name = name;
@@ -47,7 +43,7 @@ namespace System.CommandLine.Arguments
             this.Destination = destination;
             this.Help = help;
             this.DefaultValue = defaultValue;
-            this.DuplicateResolutionPolicy = duplicateResolutionPolicy;
+            this.DuplicateResolutionPolicy = duplicateResolutionPolicy == null ? this.ResolveDuplicateValues : duplicateResolutionPolicy;
             this.Type = typeof(T);
         }
 
@@ -61,9 +57,27 @@ namespace System.CommandLine.Arguments
         public T DefaultValue { get; private set; }
 
         /// <summary>
-        /// Gets a callback function, which is invoked when the same argument was specified twice.
+        /// Gets a callback function, which is invoked when the same argument was specified more than once.
         /// </summary>
         public Func<T, T, T> DuplicateResolutionPolicy { get; private set; }
+
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// This the default duplicate resolution strategy. If the type parameter <see cref="T"/> is a supported collection type, then the old and the new value are merged into a single collection, otherwise the new value
+        /// always wins.
+        /// </summary>
+        /// <param name="oldValue">The old value.</param>
+        /// <param name="newValue">The new value.</param>
+        /// <returns>Returns the resolved value.</returns>
+        private T ResolveDuplicateValues(T oldValue, T newValue)
+        {
+            if (CollectionHelper<T>.IsSupportedCollectionType())
+                return CollectionHelper<T>.Merge(oldValue, newValue);
+            return newValue;
+        }
 
         #endregion
     }
