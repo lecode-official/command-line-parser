@@ -64,12 +64,12 @@ namespace System.CommandLine
         /// <summary>
         /// Contains the positional arguments of the parser.
         /// </summary>
-        private readonly List<IArgument> positionalArguments = new List<IArgument>();
+        private readonly List<Argument> positionalArguments = new List<Argument>();
 
         /// <summary>
-        /// Contains the arguments of the parser.
+        /// Contains the named arguments of the parser.
         /// </summary>
-        private readonly List<IArgument> arguments = new List<IArgument>();
+        private readonly List<Argument> namedArguments = new List<Argument>();
 
         /// <summary>
         /// Contains the sub-commands of the parser (which in turn consist of a parser, which is able to parse the arguments of the command).
@@ -225,15 +225,15 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(duplicateResolutionPolicy));
 
             // Checks if there is already an argument with the same name, the same alias, or destination
-            if (this.arguments.Any(argument => string.Compare(argument.Name, name, this.Options.IgnoreCase) == 0))
+            if (this.namedArguments.Any(argument => string.Compare(argument.Name, name, this.Options.IgnoreCase) == 0))
                 throw new InvalidOperationException("There is already a argument with the same name.");
-            if (this.arguments.Any(argument => string.Compare(argument.Alias, alias, this.Options.IgnoreCase) == 0))
+            if (this.namedArguments.Any(argument => string.Compare(argument.Alias, alias, this.Options.IgnoreCase) == 0))
                 throw new InvalidOperationException("There is already a argument with the same alias.");
-            if (this.arguments.Any(argument => argument.Destination == destination))
+            if (this.namedArguments.Any(argument => argument.Destination == destination))
                 throw new InvalidOperationException("There is already a argument with the same destination.");
 
             // Adds the argument to the parser
-            this.arguments.Add(new NamedArgument<T>(name, alias, destination, help, defaultValue, duplicateResolutionPolicy));
+            this.namedArguments.Add(new NamedArgument<T>(name, alias, destination, help, defaultValue, duplicateResolutionPolicy));
 
             // Returns this parser, so that method invocations can be chained
             return this;
