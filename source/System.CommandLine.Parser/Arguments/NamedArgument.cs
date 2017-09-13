@@ -74,8 +74,13 @@ namespace System.CommandLine.Arguments
         /// <returns>Returns the resolved value.</returns>
         private T ResolveDuplicateValues(T oldValue, T newValue)
         {
-            //if (CollectionHelper<T>.IsSupportedCollectionType())
-            //    return CollectionHelper<T>.Merge(oldValue, newValue);
+            if (CollectionHelper.IsSupportedCollectionType<T>())
+            {
+                MethodInfo mergeMethodInfo = typeof(CollectionHelper).GetMethod(nameof(CollectionHelper.Merge));
+                MethodInfo genericMergeMethodInfo = mergeMethodInfo.MakeGenericMethod(new[] { typeof(T) });
+                object mergedCollection = genericMergeMethodInfo.Invoke(null, new object[] { oldValue, newValue });
+                return (T)mergedCollection;
+            }
             return newValue;
         }
 
