@@ -6,7 +6,7 @@ using System.Reflection;
 
 #endregion
 
-namespace System.CommandLine
+namespace System.CommandLine.Arguments
 {
     /// <summary>
     /// Represents a single flag argument of a command line parser. In contrast to named arguments, flag arguments, cannot be explicitly assigned a value, but rather get their value from their presence or absence.

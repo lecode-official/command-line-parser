@@ -5,7 +5,7 @@ using System.Reflection;
 
 #endregion
 
-namespace System.CommandLine
+namespace System.CommandLine.Arguments
 {
     /// <summary>
     /// Represents a single named argument of a command line parser. A named argument is a command line argument that is comprised of a name and an explicit value.
