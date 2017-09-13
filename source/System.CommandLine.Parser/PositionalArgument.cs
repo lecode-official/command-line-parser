@@ -2,10 +2,11 @@
 namespace System.CommandLine
 {
     /// <summary>
-    /// Represents a single positional argument of a command line parser.
+    /// Represents a single positional argument of a command line parser. A positional argument, in contrast to a named or flag argument, is an argument, which is only comprised of a value. They are not optional and must
+    /// be at the beginning of the command line arguments in exactly the same order as they were declared.
     /// </summary>
     /// <typeparam name="T">The type of the positional argument.</param>
-    public class PositionalArgument<T> : IArgument
+    public class PositionalArgument<T> : Argument
     {
         #region Constructors
 
@@ -13,7 +14,9 @@ namespace System.CommandLine
         /// Initializes a new <see cref="PositionalArgument"/> instance.
         /// </summary>
         /// <param name="name">The name of the positional argument, which is used in the help string.</param>
-        /// <param name="destination">The name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
+        /// <param name="destination">
+        /// The name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.
+        /// </param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <exception cref="ArgumentNullException">If either the name or the destination are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         public PositionalArgument(string name, string destination, string help)
@@ -26,47 +29,11 @@ namespace System.CommandLine
 
             // Stores the arguments for later use
             this.Name = name;
+            this.Alias = name;
             this.Destination = destination;
             this.Help = help;
+            this.Type = typeof(T);
         }
-
-        #endregion
-
-        #region Public Properties
-
-        /// <summary>
-        /// Gets the name of the positional argument, which is used in the help string.
-        /// </summary>
-        public string Name { get; private set; }
-
-        /// <summary>
-        /// Gets the alias name of the argument. For positional arguments, this is always the same as the name.
-        /// </summary>
-        public string Alias { get => this.Name; }
-
-        /// <summary>
-        /// Contains the name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
-        /// </summary>
-        private string destination;
-
-        /// <summary>
-        /// Gets the name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
-        /// </summary>
-        public string Destination
-        {
-            get => this.destination;
-            set => this.destination = value.ToCamelCasePropertyName();
-        }
-
-        /// <summary>
-        /// Gets the descriptive help text for the argument, which is used in the help string.
-        /// </summary>
-        public string Help { get; private set; }
-
-        /// <summary>
-        /// Gets the type of the positional argument.
-        /// </summary>
-        public Type Type { get => typeof(T); }
 
         #endregion
     }
