@@ -233,7 +233,7 @@ namespace System.CommandLine
                 throw new InvalidOperationException("There is already a argument with the same destination.");
 
             // Adds the argument to the parser
-            this.arguments.Add(new Argument<T>(name, alias, destination, help, defaultValue, duplicateResolutionPolicy));
+            this.arguments.Add(new NamedArgument<T>(name, alias, destination, help, defaultValue, duplicateResolutionPolicy));
 
             // Returns this parser, so that method invocations can be chained
             return this;

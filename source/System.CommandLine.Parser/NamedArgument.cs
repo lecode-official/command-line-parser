@@ -11,12 +11,12 @@ namespace System.CommandLine
     /// Represents a single argument of a command line parser.
     /// </summary>
     /// <typeparam name="T">The type of the argument.</param>
-    public class Argument<T> : IArgument
+    public class NamedArgument<T> : IArgument
     {
         #region Constructors
 
         /// <summary>
-        /// Initializes a new <see cref="Argument"/> instance.
+        /// Initializes a new <see cref="NamedArgument"/> instance.
         /// </summary>
         /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
         /// <param name="alias">The alias name of the argument.</param>
@@ -25,7 +25,7 @@ namespace System.CommandLine
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
         /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified twice.</param>
         /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        public Argument(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
+        public NamedArgument(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
