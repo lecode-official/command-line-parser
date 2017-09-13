@@ -228,7 +228,7 @@ namespace System.CommandLine.Arguments
 
             // Since all of the following types are generic types, the input array is first cast into a generic IEnumerable
             IEnumerable enumerable = inputArray as IEnumerable;
-            MethodInfo castMethod = typeof(Enumerable).GetMethod("Cast").MakeGenericMethod( new System.Type[]{ elementType } );
+            MethodInfo castMethod = typeof(Enumerable).GetMethod(nameof(Enumerable.Cast)).MakeGenericMethod( new System.Type[]{ elementType } );
             object genericEnumerable = castMethod.Invoke(null, new object[] { enumerable });
 
             // Many of the generic collection types have a constructor that takes a generic IEnumerable as a parameter, so reflection can be used to instantiated instances of them
