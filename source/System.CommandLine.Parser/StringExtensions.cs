@@ -20,7 +20,7 @@ namespace System.CommandLine
         /// Converts an arbitrary string into a valid C# property name in camel case.
         /// </summary>
         /// <param name="name">The string that is to be converted into a valid C# property name.</param>
-        /// <exception cref="ArgumentNullException">If the specified string is either <c>null</c>, empty, or only consists of white spaces, then an <see cref="ArgumentNullException"/> is thrown.</excpetion>
+        /// <exception cref="ArgumentNullException">If the specified string is either <c>null</c>, empty, or only consists of white spaces, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <returns>Returns a valid C# property name in camel case.</returns>
         public static string ToCamelCasePropertyName(this string name)
         {

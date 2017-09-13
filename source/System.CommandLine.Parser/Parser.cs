@@ -205,7 +205,7 @@ namespace System.CommandLine
         /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
-        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was sepcified twice.</param>
+        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified twice.</param>
         /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
