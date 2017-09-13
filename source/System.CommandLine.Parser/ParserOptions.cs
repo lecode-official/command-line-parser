@@ -1,5 +1,9 @@
 
+#region Using Directives
+
 using System.Runtime.InteropServices;
+
+#endregion
 
 namespace System.CommandLine
 {
