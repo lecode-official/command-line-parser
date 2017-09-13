@@ -203,7 +203,7 @@ namespace System.CommandLine
         /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
-        public Parser AddNamedArgument<T>(string name, string alias, string destination, string help, T defaultValue) => this.AddNamedArgument<T>(name, alias, destination, help, defaultValue, (oldValue, newValue) => newValue);
+        public Parser AddNamedArgument<T>(string name, string alias, string destination, string help, T defaultValue) => this.AddNamedArgument<T>(name, alias, destination, help, defaultValue, null);
 
         /// <summary>
         /// Adds a named argument to the command line parser.
@@ -213,10 +213,8 @@ namespace System.CommandLine
         /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
-        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified twice.</param>
-        /// <exception cref="ArgumentNullException">
-        /// If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.
-        /// </exception>
+        /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified more than once.</param>
+        /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, or the default value are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
@@ -231,8 +229,6 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(destination));
             if (defaultValue == null)
                 throw new ArgumentNullException(nameof(defaultValue));
-            if (duplicateResolutionPolicy == null)
-                throw new ArgumentNullException(nameof(duplicateResolutionPolicy));
 
             // Checks if there is already a named argument with the same name, the same alias, or destination
             if (this.namedArguments.Any(argument => string.Compare(argument.Name, name, this.Options.IgnoreCase) == 0))
