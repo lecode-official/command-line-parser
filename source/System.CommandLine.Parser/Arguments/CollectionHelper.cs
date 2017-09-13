@@ -78,7 +78,6 @@ namespace System.CommandLine.Arguments
         /// <param name="secondCollection">The second collection.</param>
         /// <returns>Returns a collection that contains the elements of both collections, which is of the same type as the input collections.</returns>
         public static T Merge<T>(T firstCollection, T secondCollection)
-            where T : class
         {
             // Validates that the two collections are of a supported collection type
             if (!CollectionHelper.IsSupportedCollectionType<T>())
@@ -103,7 +102,6 @@ namespace System.CommandLine.Arguments
         /// <param name="inputCollection">The collection, that is to be converted to another collection type.</param>
         /// <returns>Returns the converted collection.</returns>
         public static TResult To<TInput, TResult>(TInput inputCollection)
-            where TResult : class
         {
             // Checks if both collection types are supported
             if (!CollectionHelper.IsSupportedCollectionType<TInput>())
@@ -122,7 +120,6 @@ namespace System.CommandLine.Arguments
         /// <param name="inputCollection">The collection, that is to be converted to another collection type.</param>
         /// <returns>Returns the converted collection.</returns>
         public static TResult From<TInput, TResult>(TInput inputCollection)
-            where TResult : class
         {
             // Checks if both collection types are supported
             if (!CollectionHelper.IsSupportedCollectionType<TInput>())
@@ -187,7 +184,6 @@ namespace System.CommandLine.Arguments
         /// <param name="inputArray">The array that is to be converted into another collection type.</param>
         /// <returns>Returns a collection that contains the same elements of the specified input array.</returns>
         public static T FromArray<T>(Array inputArray)
-            where T : class
         {
             // Checks if the type of the input collection is supported
             if (!CollectionHelper.IsSupportedCollectionType<T>())
@@ -210,12 +206,12 @@ namespace System.CommandLine.Arguments
             {
                 Array resultArray = Array.CreateInstance(elementType, inputArray.Length);
                 Array.Copy(inputArray, resultArray, inputArray.Length);
-                return resultArray as T;
+                return (T)(object)resultArray;
             }
 
             // Checks if the result collection is ICollection, IEnumerable, or IList, in that case nothing needs to be done, because Array already implements all three of them
             if (type == typeof(ICollection) || type == typeof(IEnumerable) || type == typeof(IList))
-                return inputArray as T;
+                return (T)(object)inputArray;
 
             // Checks if the result collection is a non-generic collection type, all non-generic collection types implement a constructor that takes an ICollection as a parameter, so reflection can be used to instantiated
             // instances of them
@@ -223,7 +219,7 @@ namespace System.CommandLine.Arguments
             {
                 ConstructorInfo collectionConstructor = type.GetConstructor(new Type[] { typeof(ICollection) });
                 object newCollection = collectionConstructor.Invoke(new object[] { inputArray });
-                return newCollection as T;
+                return (T)newCollection;
             }
 
             // Since all of the following types are generic types, the input array is first cast into a generic IEnumerable
@@ -251,7 +247,7 @@ namespace System.CommandLine.Arguments
                 Type collectionType = type.MakeGenericType(new Type[] { elementType });
                 ConstructorInfo collectionConstructor = collectionType.GetConstructor(new Type[] { genericEnumerable.GetType() });
                 object newCollection = collectionConstructor.Invoke(new object[] { genericEnumerable });
-                return newCollection as T;
+                return (T)newCollection;
             }
 
             // The ReadOnlyObservableCollection<> is a special case, as it only one constructor, which takes a ObservableCollection<> as parameter, so reflection can be used to instantiated instances of it
@@ -263,7 +259,7 @@ namespace System.CommandLine.Arguments
                 Type collectionType = typeof(ReadOnlyObservableCollection<>).MakeGenericType(new Type[] { elementType });
                 ConstructorInfo collectionConstructor = collectionType.GetConstructor(new Type[] { observableCollectionType });
                 object newCollection = collectionConstructor.Invoke(new object[] { observableCollection });
-                return newCollection as T;
+                return (T)newCollection;
             }
 
             // The Collection<> and ReadOnlyCollection<> are special cases, as they have constructors, which take generic IList values as parameters, so reflection can be used to instantiated instances of them
@@ -284,7 +280,7 @@ namespace System.CommandLine.Arguments
                 Type collectionType = type.MakeGenericType(new Type[] { elementType });
                 ConstructorInfo collectionConstructor = collectionType.GetConstructor(new Type[] { listType });
                 object newCollection = collectionConstructor.Invoke(new object[] { newList });
-                return newCollection as T;
+                return (T)newCollection;
             }
 
             throw new InvalidOperationException("The array could not be converted.");
