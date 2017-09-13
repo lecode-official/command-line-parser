@@ -2,36 +2,45 @@
 namespace System.CommandLine
 {
     /// <summary>
-    /// Represents the base interface all argument types have to implement.
+    /// Represents the abstract base class that all argument types have to implement.
     /// </summary>
-    public interface IArgument
+    public abstract class Argument
     {
         #region Properties
 
         /// <summary>
         /// Gets the name of the argument.
         /// </summary>
-        string Name { get; }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// Gets the alias name of the argument.
         /// </summary>
-        string Alias { get; }
+        public string Alias { get; protected set; }
+
+        /// <summary>
+        /// Contains the name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
+        /// </summary>
+        private string destination;
 
         /// <summary>
         /// Gets the name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
         /// </summary>
-        string Destination { get; }
+        public string Destination
+        {
+            get => this.destination;
+            protected set => this.destination = value.ToCamelCasePropertyName();
+        }
 
         /// <summary>
         /// Gets the descriptive help text for the argument, which is used in the help string.
         /// </summary>
-        string Help { get; }
+        public string Help { get; protected set; }
 
         /// <summary>
         /// Gets the type of the argument.
         /// </summary>
-        Type Type { get; }
+        public Type Type { get; protected set; }
 
         #endregion
     }
