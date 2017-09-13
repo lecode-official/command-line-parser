@@ -72,6 +72,11 @@ namespace System.CommandLine
         private readonly List<Argument> namedArguments = new List<Argument>();
 
         /// <summary>
+        /// Contains the flag arguments of the parser.
+        /// </summary>
+        private readonly List<Argument> flagArguments = new List<Argument>();
+
+        /// <summary>
         /// Contains the sub-commands of the parser (which in turn consist of a parser, which is able to parse the arguments of the command).
         /// </summary>
         private readonly Dictionary<string, Parser> commands = new Dictionary<string, Parser>();
@@ -110,7 +115,9 @@ namespace System.CommandLine
         /// Adds a positional argument to the command line parser.
         /// </summary>
         /// <param name="name">The name of the positional argument, which is used in the help string.</param>
-        /// <param name="destination">The name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
+        /// <param name="destination">
+        /// The name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.
+        /// </param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <exception cref="ArgumentNullException">If either the name or the destination is <c>null<c>, empty, only consists of white spaces, then a <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="InvalidOperationException">If there already is a positional argument with the same name or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
@@ -138,53 +145,53 @@ namespace System.CommandLine
         }
 
         /// <summary>
-        /// Adds an argument to the command line parser.
+        /// Adds a named argument to the command line parser.
         /// </summary>
         /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
         /// <exception cref="ArgumentNullException">If the name is <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
-        public Parser AddArgument<T>(string name) => this.AddArgument<T>(name, name);
+        public Parser AddNamedArgument<T>(string name) => this.AddNamedArgument<T>(name, name);
 
         /// <summary>
-        /// Adds an argument to the command line parser.
+        /// Adds a named argument to the command line parser.
         /// </summary>
         /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
         /// <param name="alias">The alias name of the argument.</param>
         /// <exception cref="ArgumentNullException">If either the name or the alias are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
-        public Parser AddArgument<T>(string name, string alias) => this.AddArgument<T>(name, alias, string.Empty);
+        public Parser AddNamedArgument<T>(string name, string alias) => this.AddNamedArgument<T>(name, alias, string.Empty);
 
         /// <summary>
-        /// Adds an argument to the command line parser.
+        /// Adds a named argument to the command line parser.
         /// </summary>
         /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
         /// <param name="alias">The alias name of the argument.</param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <exception cref="ArgumentNullException">If either the name or the alias are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
-        public Parser AddArgument<T>(string name, string alias, string help) => this.AddArgument<T>(name, alias, name, help);
+        public Parser AddNamedArgument<T>(string name, string alias, string help) => this.AddNamedArgument<T>(name, alias, name, help);
 
         /// <summary>
-        /// Adds an argument to the command line parser.
+        /// Adds a named argument to the command line parser.
         /// </summary>
         /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
         /// <param name="alias">The alias name of the argument.</param>
         /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <exception cref="ArgumentNullException">If either the name, the alias, or the destination are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
-        public Parser AddArgument<T>(string name, string alias, string destination, string help) => this.AddArgument<T>(name, alias, destination, help, default(T));
+        public Parser AddNamedArgument<T>(string name, string alias, string destination, string help) => this.AddNamedArgument<T>(name, alias, destination, help, default(T));
 
         /// <summary>
-        /// Adds an argument to the command line parser.
+        /// Adds a named argument to the command line parser.
         /// </summary>
         /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
         /// <param name="alias">The alias name of the argument.</param>
@@ -192,13 +199,13 @@ namespace System.CommandLine
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
         /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, or the default value are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
-        public Parser AddArgument<T>(string name, string alias, string destination, string help, T defaultValue) => this.AddArgument<T>(name, alias, destination, help, defaultValue, (oldValue, newValue) => newValue);
+        public Parser AddNamedArgument<T>(string name, string alias, string destination, string help, T defaultValue) => this.AddNamedArgument<T>(name, alias, destination, help, defaultValue, (oldValue, newValue) => newValue);
 
         /// <summary>
-        /// Adds an argument to the command line parser.
+        /// Adds a named argument to the command line parser.
         /// </summary>
         /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
         /// <param name="alias">The alias name of the argument.</param>
@@ -206,11 +213,13 @@ namespace System.CommandLine
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
         /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified twice.</param>
-        /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        /// <exception cref="InvalidOperationException">If there already is an argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <exception cref="ArgumentNullException">
+        /// If either the name, the alias, the destination, the default value, or the duplicate resolution policy are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.
+        /// </exception>
+        /// <exception cref="InvalidOperationException">If there already is a named argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <typeparam name="T">The type of the argument.</typeparam>
         /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
-        public Parser AddArgument<T>(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
+        public Parser AddNamedArgument<T>(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
@@ -224,13 +233,13 @@ namespace System.CommandLine
             if (duplicateResolutionPolicy == null)
                 throw new ArgumentNullException(nameof(duplicateResolutionPolicy));
 
-            // Checks if there is already an argument with the same name, the same alias, or destination
+            // Checks if there is already a named argument with the same name, the same alias, or destination
             if (this.namedArguments.Any(argument => string.Compare(argument.Name, name, this.Options.IgnoreCase) == 0))
-                throw new InvalidOperationException("There is already a argument with the same name.");
+                throw new InvalidOperationException("There is already a named argument with the same name.");
             if (this.namedArguments.Any(argument => string.Compare(argument.Alias, alias, this.Options.IgnoreCase) == 0))
-                throw new InvalidOperationException("There is already a argument with the same alias.");
+                throw new InvalidOperationException("There is already a named argument with the same alias.");
             if (this.namedArguments.Any(argument => argument.Destination == destination))
-                throw new InvalidOperationException("There is already a argument with the same destination.");
+                throw new InvalidOperationException("There is already a named argument with the same destination.");
 
             // Adds the argument to the parser
             this.namedArguments.Add(new NamedArgument<T>(name, alias, destination, help, defaultValue, duplicateResolutionPolicy));
@@ -238,6 +247,75 @@ namespace System.CommandLine
             // Returns this parser, so that method invocations can be chained
             return this;
         }
+
+        /// <summary>
+        /// Adds a flag argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
+        /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
+        /// <exception cref="ArgumentNullException">If either the name, the alias, or the destination are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a flag argument with the same name, the same alias, or the same destination, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
+        public Parser AddFlagArgument<T>(string name, string alias, string destination, string help)
+        {
+            // Validates the arguments
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentNullException(nameof(name));
+            if (string.IsNullOrWhiteSpace(alias))
+                throw new ArgumentNullException(nameof(alias));
+            if (string.IsNullOrWhiteSpace(destination))
+                throw new ArgumentNullException(nameof(destination));
+
+            // Checks if there is already a named argument with the same name, the same alias, or destination
+            if (this.flagArguments.Any(argument => string.Compare(argument.Name, name, this.Options.IgnoreCase) == 0))
+                throw new InvalidOperationException("There is already a flag argument with the same name.");
+            if (this.flagArguments.Any(argument => string.Compare(argument.Alias, alias, this.Options.IgnoreCase) == 0))
+                throw new InvalidOperationException("There is already a flag argument with the same alias.");
+            if (this.flagArguments.Any(argument => argument.Destination == destination))
+                throw new InvalidOperationException("There is already a flag argument with the same destination.");
+
+            // Adds the argument to the parser
+            this.flagArguments.Add(new FlagArgument<T>(name, alias, destination, help));
+
+            // Returns this parser, so that method invocations can be chained
+            return this;
+        }
+
+        /// <summary>
+        /// Adds a flag argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <exception cref="ArgumentNullException">If the name is <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a flag argument with the same name, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
+        public Parser AddFlagArgument<T>(string name) => this.AddFlagArgument<T>(name, name);
+
+        /// <summary>
+        /// Adds a flag argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <exception cref="ArgumentNullException">If either the name or the alias are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a flag argument with the same name or the same alias, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
+        public Parser AddFlagArgument<T>(string name, string alias) => this.AddFlagArgument<T>(name, alias, string.Empty);
+
+        /// <summary>
+        /// Adds a flag argument to the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the argument, which is used for parsing and in the help string.</param>
+        /// <param name="alias">The alias name of the argument.</param>
+        /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
+        /// <exception cref="ArgumentNullException">If either the name or the alias are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a flag argument with the same name or the same alias, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <typeparam name="T">The type of the argument.</typeparam>
+        /// <returns>Returns this command line parser so that method invocations can be chained.</returns>
+        public Parser AddFlagArgument<T>(string name, string alias, string help) => this.AddFlagArgument<T>(name, alias, name, help);
 
         /// <summary>
         /// Creates a new sub-command for the command line parser.
