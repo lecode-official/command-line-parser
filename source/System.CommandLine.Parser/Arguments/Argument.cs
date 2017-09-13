@@ -1,5 +1,5 @@
 
-namespace System.CommandLine
+namespace System.CommandLine.Arguments
 {
     /// <summary>
     /// Represents the abstract base class that all argument types have to implement.

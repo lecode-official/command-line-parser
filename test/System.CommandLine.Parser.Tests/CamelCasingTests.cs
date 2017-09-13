@@ -2,7 +2,7 @@
 #region Using Directives
 
 using System;
-using System.CommandLine;
+using System.CommandLine.Arguments;
 using Xunit;
 
 #endregion

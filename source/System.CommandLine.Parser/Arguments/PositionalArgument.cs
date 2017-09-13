@@ -1,5 +1,5 @@
 
-namespace System.CommandLine
+namespace System.CommandLine.Arguments
 {
     /// <summary>
     /// Represents a single positional argument of a command line parser. A positional argument, in contrast to a named or flag argument, is an argument, which is only comprised of a value. They are not optional and must
