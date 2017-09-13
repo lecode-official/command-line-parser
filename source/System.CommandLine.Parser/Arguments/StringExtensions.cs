@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace System.CommandLine
+namespace System.CommandLine.Arguments
 {
     /// <summary>
     /// Represents a set of extension methods for the <see cref="System.String"/> class.
