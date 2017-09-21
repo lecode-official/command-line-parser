@@ -106,7 +106,7 @@ namespace System.CommandLine.ValueConverters
         /// <param name="firstCollection">The first collection.</param>
         /// <param name="secondCollection">The second collection.</param>
         /// <returns>Returns a collection that contains the elements of both collections, which is of the same type as the input collections.</returns>
-        public static TResult Merge<TResult, TFirstInput, TSecondInput>(TFirstInput firstCollection, TSecondInput secondCollection)
+        public static TResult Merge<TFirstInput, TSecondInput, TResult>(TFirstInput firstCollection, TSecondInput secondCollection)
         {
             // Validates that the two collections are of a supported collection type
             if (!CollectionHelper.IsSupportedCollectionType<TFirstInput>())
@@ -144,24 +144,6 @@ namespace System.CommandLine.ValueConverters
 
             // First the input collection is converted to an array and then the array is converted to the result collection type
             Array array = CollectionHelper.ToArray(inputCollection);
-            return CollectionHelper.FromArray<TResult>(array);
-        }
-
-        /// <summary>
-        /// Converts the specified collection to a collection of another containing the same elements.
-        /// </summary>
-        /// <param name="inputCollection">The collection, that is to be converted to another collection type.</param>
-        /// <returns>Returns the converted collection.</returns>
-        public static TResult From<TInput, TResult>(TInput inputCollection)
-        {
-            // Checks if both collection types are supported
-            if (!CollectionHelper.IsSupportedCollectionType<TInput>())
-                throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
-            if (!CollectionHelper.IsSupportedCollectionType<TResult>())
-                throw new InvalidOperationException("The type of the result is not a supported collection type.");
-
-            // First the input collection is converted to an array and then the array is converted to the result collection type
-            Array array = CollectionHelper.ToArray<TInput>(inputCollection);
             return CollectionHelper.FromArray<TResult>(array);
         }
 
