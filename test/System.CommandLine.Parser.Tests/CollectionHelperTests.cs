@@ -224,6 +224,129 @@ namespace System.CommandLine.Parser.Tests
             Assert.Equal(1, CollectionHelper.GetCount(genericReadOnlyObservableCollection));
         }
 
+        /// <summary>
+        /// Tests the ability of the <see cref="CollectionHelper"/> to convert arrays to any collection type.
+        /// </summary>
+        [Fact]
+        public void TestToArray()
+        {
+            int[] integerArray = new int[] { 1, 2, 3, 4, 5 };
+            Array array = CollectionHelper.ToArray(integerArray);
+            Assert.Equal(5, array.Length);
+            Assert.Equal(1, array.GetValue(0));
+            Assert.Equal(2, array.GetValue(1));
+            Assert.Equal(3, array.GetValue(2));
+            Assert.Equal(4, array.GetValue(3));
+            Assert.Equal(5, array.GetValue(4));
+
+            ArrayList arrayList = new ArrayList { "foo", "bar", "foobar" };
+            array = CollectionHelper.ToArray(arrayList);
+            Assert.Equal(3, array.Length);
+            Assert.Equal("foo", array.GetValue(0));
+            Assert.Equal("bar", array.GetValue(1));
+            Assert.Equal("foobar", array.GetValue(2));
+
+            Queue queue = new Queue();
+            queue.Enqueue(1.0);
+            queue.Enqueue(2.0);
+            queue.Enqueue(3.0);
+            array = CollectionHelper.ToArray(queue);
+            Assert.Equal(3, array.Length);
+            Assert.Equal(1.0, array.GetValue(0));
+            Assert.Equal(2.0, array.GetValue(1));
+            Assert.Equal(3.0, array.GetValue(2));
+
+            Stack stack = new Stack();
+            stack.Push(true);
+            array = CollectionHelper.ToArray(stack);
+            Assert.Equal(1, array.Length);
+            Assert.Equal(true, array.GetValue(0));
+
+            HashSet<int> genericHashSet = new HashSet<int> { 1, 2, 3, 4, 5, 6 };
+            array = CollectionHelper.ToArray(genericHashSet);
+            Assert.Equal(6, array.Length);
+            Assert.Equal(1, array.GetValue(0));
+            Assert.Equal(2, array.GetValue(1));
+            Assert.Equal(3, array.GetValue(2));
+            Assert.Equal(4, array.GetValue(3));
+            Assert.Equal(5, array.GetValue(4));
+            Assert.Equal(6, array.GetValue(5));
+
+            LinkedList<string> genericLinkedList = new LinkedList<string>();
+            genericLinkedList.AddFirst("foo");
+            genericLinkedList.AddFirst("bar");
+            array = CollectionHelper.ToArray(genericLinkedList);
+            Assert.Equal(2, array.Length);
+            Assert.Equal("bar", array.GetValue(0));
+            Assert.Equal("foo", array.GetValue(1));
+
+            List<double> genericList = new List<double> { 1.2, 2.3, 3.4, 4.5, 5.6, 6.7 };
+            array = CollectionHelper.ToArray(genericList);
+            Assert.Equal(6, array.Length);
+            Assert.Equal(1.2, array.GetValue(0));
+            Assert.Equal(2.3, array.GetValue(1));
+            Assert.Equal(3.4, array.GetValue(2));
+            Assert.Equal(4.5, array.GetValue(3));
+            Assert.Equal(5.6, array.GetValue(4));
+            Assert.Equal(6.7, array.GetValue(5));
+
+            Queue<bool> genericQueue = new Queue<bool>();
+            genericQueue.Enqueue(false);
+            array = CollectionHelper.ToArray(genericQueue);
+            Assert.Equal(1, array.Length);
+            Assert.Equal(false, array.GetValue(0));
+
+            SortedSet<int> genericSortedSet = new SortedSet<int> { 10, 20, 30, 40, 50, 60, 70, 80, 90, 100 };
+            array = CollectionHelper.ToArray(genericSortedSet);
+            Assert.Equal(10, array.Length);
+            Assert.Equal(10, array.GetValue(0));
+            Assert.Equal(20, array.GetValue(1));
+            Assert.Equal(30, array.GetValue(2));
+            Assert.Equal(40, array.GetValue(3));
+            Assert.Equal(50, array.GetValue(4));
+            Assert.Equal(60, array.GetValue(5));
+            Assert.Equal(70, array.GetValue(6));
+            Assert.Equal(80, array.GetValue(7));
+            Assert.Equal(90, array.GetValue(8));
+            Assert.Equal(100, array.GetValue(9));
+
+            Stack<double> genericStack = new Stack<double>();
+            genericStack.Push(3.14159);
+            genericStack.Push(2.71828);
+            array = CollectionHelper.ToArray(genericStack);
+            Assert.Equal(2, array.Length);
+            Assert.Equal(2.71828, array.GetValue(0));
+            Assert.Equal(3.14159, array.GetValue(1));
+
+            Collection<string> genericCollection = new Collection<string>();
+            genericCollection.Add("foo");
+            genericCollection.Add("bar");
+            genericCollection.Add("foobar");
+            array = CollectionHelper.ToArray(genericCollection);
+            Assert.Equal(3, array.Length);
+            Assert.Equal("foo", array.GetValue(0));
+            Assert.Equal("bar", array.GetValue(1));
+            Assert.Equal("foobar", array.GetValue(2));
+
+            ObservableCollection<bool> genericObservableCollection = new ObservableCollection<bool>() { false, true };
+            array = CollectionHelper.ToArray(genericObservableCollection);
+            Assert.Equal(2, array.Length);
+            Assert.Equal(false, array.GetValue(0));
+            Assert.Equal(true, array.GetValue(1));
+
+            ReadOnlyCollection<float> genericReadOnlyCollection = new ReadOnlyCollection<float>(new List<float> { 1.0f, 2.0f, 3.0f });
+            array = CollectionHelper.ToArray(genericReadOnlyCollection);
+            Assert.Equal(3, array.Length);
+            Assert.Equal(1.0f, array.GetValue(0));
+            Assert.Equal(2.0f, array.GetValue(1));
+            Assert.Equal(3.0f, array.GetValue(2));
+
+            ReadOnlyObservableCollection<string> genericReadOnlyObservableCollection = new ReadOnlyObservableCollection<string>(new ObservableCollection<string> { "bar" });
+            array = CollectionHelper.ToArray(genericReadOnlyObservableCollection);
+            Assert.Equal(1, array.Length);
+            Assert.Equal("bar", array.GetValue(0));
+        }
+
         #endregion
     }
 }
