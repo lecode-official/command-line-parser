@@ -160,7 +160,7 @@ namespace System.CommandLine.ValueConverters
             ICollection collection = inputCollection as ICollection;
             if (collection != null)
             {
-                collection.CopyTo(array, arraySize);
+                collection.CopyTo(array, 0);
                 return array;
             }
 
