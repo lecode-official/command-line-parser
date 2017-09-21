@@ -65,7 +65,11 @@ namespace System.CommandLine.ValueConverters
         {
             Type type = typeof(T);
             if (type.IsArray)
-                return true;
+            {
+                if (type.GetElementType().IsArray)
+                    return false;
+                return type.GetArrayRank() == 1;
+            }
             if (type.IsConstructedGenericType)
                 type = type.GetGenericTypeDefinition();
             return CollectionHelper.supportedTypes.Contains(type);

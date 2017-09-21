@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.CommandLine.ValueConverters;
+using System.Linq;
 using Xunit;
 
 #endregion
@@ -17,6 +18,150 @@ namespace System.CommandLine.Parser.Tests
     public class CollectionHelperTests
     {
         #region Unit Tests
+
+        /// <summary>
+        /// Tests the ability of the <see cref="CollectionHelper"/> to detect supported collection types.
+        /// </summary>
+        [Fact]
+        public void TestIsSupportedCollectionType()
+        {
+            Assert.True(CollectionHelper.IsSupportedCollectionType<int[]>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<float[]>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<double[]>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<string[]>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<bool[]>());
+
+            Assert.True(CollectionHelper.IsSupportedCollectionType<ArrayList>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<Queue>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<Stack>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<ICollection>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<IEnumerable>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<IList>());
+
+            Assert.True(CollectionHelper.IsSupportedCollectionType<HashSet<int>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<LinkedList<float>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<List<double>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<Queue<string>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<SortedSet<bool>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<Stack<int>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<ICollection<float>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<IEnumerable<double>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<IList<string>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<IReadOnlyCollection<bool>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<IReadOnlyList<int>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<ISet<float>>());
+
+
+            Assert.True(CollectionHelper.IsSupportedCollectionType<Collection<double>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<ObservableCollection<string>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<ReadOnlyCollection<bool>>());
+            Assert.True(CollectionHelper.IsSupportedCollectionType<ReadOnlyObservableCollection<int>>());
+
+            Assert.False(CollectionHelper.IsSupportedCollectionType<int>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<float>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<double>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<string>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<bool>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<object>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<Type>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<int[,]>());
+            Assert.False(CollectionHelper.IsSupportedCollectionType<float[][]>());
+        }
+
+        /// <summary>
+        /// Tests the ability of the <see cref="CollectionHelper"/> to create any kind of collection from an array.
+        /// </summary>
+        [Fact]
+        public void TestFromArray()
+        {
+            int[] integerArray = new int[] { 1, 2, 3, 4, 5 };
+            double[] doubleArray = new double[] { 3.14159, 2.71828 };
+            string[] stringArray = new string[] { "foo", "bar", "foobar" };
+
+            ArrayList arrayList = CollectionHelper.FromArray<ArrayList>(integerArray);
+            Assert.Equal(5, arrayList.Count);
+            Assert.Equal(1, arrayList[0]);
+            Assert.Equal(2, arrayList[1]);
+            Assert.Equal(3, arrayList[2]);
+            Assert.Equal(4, arrayList[3]);
+            Assert.Equal(5, arrayList[4]);
+
+            Queue queue = CollectionHelper.FromArray<Queue>(doubleArray);
+            Assert.Equal(2, queue.Count);
+            Assert.Equal(3.14159, queue.Dequeue());
+            Assert.Equal(2.71828, queue.Dequeue());
+
+            Stack stack = CollectionHelper.FromArray<Stack>(stringArray);
+            Assert.Equal(3, stack.Count);
+            Assert.Equal("foobar", stack.Pop());
+            Assert.Equal("bar", stack.Pop());
+            Assert.Equal("foo", stack.Pop());
+
+            HashSet<int> genericHashSet = CollectionHelper.FromArray<HashSet<int>>(integerArray);
+            Assert.Equal(5, genericHashSet.Count);
+            Assert.Equal(1, genericHashSet.ElementAt(0));
+            Assert.Equal(2, genericHashSet.ElementAt(1));
+            Assert.Equal(3, genericHashSet.ElementAt(2));
+            Assert.Equal(4, genericHashSet.ElementAt(3));
+            Assert.Equal(5, genericHashSet.ElementAt(4));
+
+            LinkedList<double> genericLinkedList = CollectionHelper.FromArray<LinkedList<double>>(doubleArray);
+            Assert.Equal(2, genericLinkedList.Count);
+            Assert.Equal(3.14159, genericLinkedList.ElementAt(0));
+            Assert.Equal(2.71828, genericLinkedList.ElementAt(1));
+
+            List<string> genericList = CollectionHelper.FromArray<List<string>>(stringArray);
+            Assert.Equal(3, genericList.Count);
+            Assert.Equal("foo", genericList[0]);
+            Assert.Equal("bar", genericList[1]);
+            Assert.Equal("foobar", genericList[2]);
+
+            Queue<int> genericQueue = CollectionHelper.FromArray<Queue<int>>(integerArray);
+            Assert.Equal(5, genericQueue.Count);
+            Assert.Equal(1, genericQueue.ElementAt(0));
+            Assert.Equal(2, genericQueue.ElementAt(1));
+            Assert.Equal(3, genericQueue.ElementAt(2));
+            Assert.Equal(4, genericQueue.ElementAt(3));
+            Assert.Equal(5, genericQueue.ElementAt(4));
+
+            SortedSet<double> genericSortedSet = CollectionHelper.FromArray<SortedSet<double>>(doubleArray);
+            Assert.Equal(2, genericSortedSet.Count);
+            Assert.Equal(2.71828, genericSortedSet.ElementAt(0));
+            Assert.Equal(3.14159, genericSortedSet.ElementAt(1));
+
+            Stack<string> genericStack = CollectionHelper.FromArray<Stack<string>>(stringArray);
+            Assert.Equal(3, genericStack.Count);
+            Assert.Equal("foobar", genericStack.Pop());
+            Assert.Equal("bar", genericStack.Pop());
+            Assert.Equal("foo", genericStack.Pop());
+
+            Collection<int> genericCollection = CollectionHelper.FromArray<Collection<int>>(integerArray);
+            Assert.Equal(5, genericCollection.Count);
+            Assert.Equal(1, genericCollection.ElementAt(0));
+            Assert.Equal(2, genericCollection.ElementAt(1));
+            Assert.Equal(3, genericCollection.ElementAt(2));
+            Assert.Equal(4, genericCollection.ElementAt(3));
+            Assert.Equal(5, genericCollection.ElementAt(4));
+
+            ObservableCollection<double> genericObservableCollection = CollectionHelper.FromArray<ObservableCollection<double>>(doubleArray);
+            Assert.Equal(2, genericObservableCollection.Count);
+            Assert.Equal(3.14159, genericObservableCollection.ElementAt(0));
+            Assert.Equal(2.71828, genericObservableCollection.ElementAt(1));
+
+            ReadOnlyCollection<string> genericReadOnlyCollection = CollectionHelper.FromArray<ReadOnlyCollection<string>>(stringArray);
+            Assert.Equal(3, genericReadOnlyCollection.Count);
+            Assert.Equal("foo", genericReadOnlyCollection.ElementAt(0));
+            Assert.Equal("bar", genericReadOnlyCollection.ElementAt(1));
+            Assert.Equal("foobar", genericReadOnlyCollection.ElementAt(2));
+
+            ReadOnlyObservableCollection<int> genericReadOnlyObservableCollection = CollectionHelper.FromArray<ReadOnlyObservableCollection<int>>(integerArray);
+            Assert.Equal(5, genericReadOnlyObservableCollection.Count);
+            Assert.Equal(1, genericReadOnlyObservableCollection.ElementAt(0));
+            Assert.Equal(2, genericReadOnlyObservableCollection.ElementAt(1));
+            Assert.Equal(3, genericReadOnlyObservableCollection.ElementAt(2));
+            Assert.Equal(4, genericReadOnlyObservableCollection.ElementAt(3));
+            Assert.Equal(5, genericReadOnlyObservableCollection.ElementAt(4));
+        }
 
         /// <summary>
         /// Tests the ability of the <see cref="CollectionHelper"/> to determine the length of any collection.
