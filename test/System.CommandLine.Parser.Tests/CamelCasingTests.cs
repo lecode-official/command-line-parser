@@ -14,6 +14,8 @@ namespace System.CommandLine.Parser.Tests
     /// </summary>
     public class CamelCasingTests
     {
+        #region Unit Tests
+
         /// <summary>
         /// Tests the camel-casing methods used for the positional arguments.
         /// </summary>
@@ -27,5 +29,7 @@ namespace System.CommandLine.Parser.Tests
             Assert.Equal("ThisIsATest", "T!h§i%s_i&s_a_t/e(s)t".ToCamelCasePropertyName());
             Assert.Equal("_45ThisIsATest123", "45this is a test123".ToCamelCasePropertyName());
         }
+
+        #endregion
     }
 }
