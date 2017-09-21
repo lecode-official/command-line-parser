@@ -9,7 +9,7 @@ using System.Reflection;
 
 #endregion
 
-namespace System.CommandLine.ValueConverts
+namespace System.CommandLine.ValueConverters
 {
     /// <summary>
     /// Represents a helper, which makes it easy to create collections of many different kinds via one, simple API.
