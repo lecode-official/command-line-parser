@@ -101,6 +101,35 @@ namespace System.CommandLine.ValueConverters
         }
 
         /// <summary>
+        /// Merges two collection into one collection, where the input collections and the result all may have a different collection type.
+        /// </summary>
+        /// <param name="firstCollection">The first collection.</param>
+        /// <param name="secondCollection">The second collection.</param>
+        /// <returns>Returns a collection that contains the elements of both collections, which is of the same type as the input collections.</returns>
+        public static TResult Merge<TResult, TFirstInput, TSecondInput>(TFirstInput firstCollection, TSecondInput secondCollection)
+        {
+            // Validates that the two collections are of a supported collection type
+            if (!CollectionHelper.IsSupportedCollectionType<TFirstInput>())
+                throw new InvalidOperationException("The type for the first input is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType<TSecondInput>())
+                throw new InvalidOperationException("The type for the second input is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType<TResult>())
+                throw new InvalidOperationException("The type for the result is not a supported collection type.");
+
+            // Converts the two collections to arrays first
+            Array firstArray = CollectionHelper.ToArray<TFirstInput>(firstCollection);
+            Array secondArray = CollectionHelper.ToArray<TSecondInput>(secondCollection);
+
+            // Combines the two arrays into a single array
+            object[] mergedArray = new object[firstArray.Length + secondArray.Length];
+            Array.Copy(firstArray, mergedArray, firstArray.Length);
+            Array.Copy(secondArray, 0, mergedArray, firstArray.Length, secondArray.Length);
+
+            // Converts the merged array back to the collection type and returns it
+            return CollectionHelper.To<object[], TResult>(mergedArray);
+        }
+
+        /// <summary>
         /// Converts the specified collection to a collection of another containing the same elements.
         /// </summary>
         /// <param name="inputCollection">The collection, that is to be converted to another collection type.</param>
