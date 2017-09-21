@@ -20,6 +20,89 @@ namespace System.CommandLine.Parser.Tests
         #region Unit Tests
 
         /// <summary>
+        /// Tests the ability of the <see cref="CollectionHelper"/> to convert any collection type to any other collection type.
+        /// </summary>
+        [Fact]
+        public void TestTo()
+        {
+            int[] integerArray = new int[] { 1, 2, 3, 4, 5 };
+            List<int> genericList = CollectionHelper.To<int[], List<int>>(integerArray);
+            Assert.Equal(5, genericList.Count);
+            Assert.Equal(1, genericList[0]);
+            Assert.Equal(2, genericList[1]);
+            Assert.Equal(3, genericList[2]);
+            Assert.Equal(4, genericList[3]);
+            Assert.Equal(5, genericList[4]);
+
+            ArrayList arrayList = new ArrayList { "foo", "bar" };
+            Collection<string> genericCollection = CollectionHelper.To<ArrayList, Collection<string>>(arrayList);
+            Assert.Equal(2, genericCollection.Count);
+            Assert.Equal("foo", genericCollection[0]);
+            Assert.Equal("bar", genericCollection[1]);
+
+            ObservableCollection<bool> genericObservableCollection = new ObservableCollection<bool>(new List<bool> { true });
+            Queue<bool> genericQueue = CollectionHelper.To<ObservableCollection<bool>, Queue<bool>>(genericObservableCollection);
+            Assert.Equal(1, genericQueue.Count);
+            Assert.Equal(true, genericQueue.Dequeue());
+
+            Stack stack = new Stack();
+            stack.Push(3.14159);
+            stack.Push(2.71828);
+            double[] doubleArray = CollectionHelper.To<Stack, double[]>(stack);
+            Assert.Equal(2, doubleArray.Length);
+            Assert.Equal(2.71828, doubleArray[0]);
+            Assert.Equal(3.14159, doubleArray[1]);
+
+            LinkedList<float> genericLinkedList = new LinkedList<float>();
+            genericLinkedList.AddFirst(1.0f);
+            genericLinkedList.AddLast(2.0f);
+            float[] floatArray = CollectionHelper.To<LinkedList<float>, float[]>(genericLinkedList);
+            Assert.Equal(2, floatArray.Length);
+            Assert.Equal(1.0f, floatArray[0]);
+            Assert.Equal(2.0f, floatArray[1]);
+        }
+
+        /// <summary>
+        /// Tests the ability of the <see cref="CollectionHelper"/> to merge different kinds of collections.
+        /// </summary>
+        public void TestMerge()
+        {
+            int[] firstIntegerArray = new int[] { 1, 2, 3 };
+            int[] secondIntegerArray = new int[] { 4, 5 };
+            int[] mergedIntegerArray = CollectionHelper.Merge(firstIntegerArray, secondIntegerArray);
+            Assert.Equal(5, mergedIntegerArray.Length);
+            Assert.Equal(1, mergedIntegerArray[0]);
+            Assert.Equal(2, mergedIntegerArray[1]);
+            Assert.Equal(3, mergedIntegerArray[2]);
+            Assert.Equal(4, mergedIntegerArray[3]);
+            Assert.Equal(5, mergedIntegerArray[4]);
+
+            ArrayList firstArrayList = new ArrayList { "foo" };
+            ArrayList secondArrayList = new ArrayList { "bar" };
+            ArrayList mergedArrayList = CollectionHelper.Merge(firstArrayList, secondArrayList);
+            Assert.Equal(2, mergedArrayList.Count);
+            Assert.Equal("foo", mergedArrayList[0]);
+            Assert.Equal("bar", mergedArrayList[1]);
+
+            List<double> firstGenericList = new List<double> { 2.71828, 6.62607 };
+            List<double> secondGenericList = new List<double> { 3.14159 };
+            List<double> mergedGenericList = CollectionHelper.Merge(firstGenericList, secondGenericList);
+            Assert.Equal(3, mergedGenericList.Count);
+            Assert.Equal(2.71828, mergedGenericList.ElementAt(0));
+            Assert.Equal(6.62607, mergedGenericList.ElementAt(1));
+            Assert.Equal(3.14159, mergedGenericList.ElementAt(1));
+
+            Queue firstQueue = new Queue();
+            firstQueue.Enqueue(true);
+            bool[] secondBooleanArray = new bool[] { false, true };
+            Collection<bool> mergedGenericCollection = CollectionHelper.Merge<Queue, bool[], Collection<bool>>(firstQueue, secondBooleanArray);
+            Assert.Equal(3, mergedGenericCollection.Count);
+            Assert.Equal(true, mergedGenericCollection.ElementAt(0));
+            Assert.Equal(false, mergedGenericCollection.ElementAt(1));
+            Assert.Equal(true, mergedGenericCollection.ElementAt(1));
+        }
+
+        /// <summary>
         /// Tests the ability of the <see cref="CollectionHelper"/> to detect supported collection types.
         /// </summary>
         [Fact]
