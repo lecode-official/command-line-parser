@@ -28,14 +28,12 @@ namespace System.CommandLine.Arguments
         /// <param name="alias">The alias name of the argument.</param>
         /// <param name="destination">The name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.</param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
-        /// <exception cref="ArgumentNullException">If either the name, the alias, or the destination are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="ArgumentNullException">If either the name or the destination are <c>null</c>, empty, or only consist of white spaces, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         public FlagArgument(string name, string alias, string destination, string help)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
-            if (string.IsNullOrWhiteSpace(alias))
-                throw new ArgumentNullException(nameof(alias));
             if (string.IsNullOrWhiteSpace(destination))
                 throw new ArgumentNullException(nameof(destination));
 
