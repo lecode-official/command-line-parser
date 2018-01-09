@@ -1,15 +1,11 @@
-// cSpell Settings
+
 {
-    // Version of the setting file, always 0.1
     "version": "0.1",
-    // The current active spelling language
     "language": "en",
-    // A list of words to be always considered correct
     "words": [
         "Neumann",
         "Xunit"
     ],
-    // A list of words to be always considered incorrect This is useful for offensive words and common spelling errors, e.g. "hte" should be "the".
     "flagWords": [
         "hte"
     ]
