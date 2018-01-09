@@ -18,7 +18,7 @@ namespace System.CommandLine.Arguments
         /// The name that the positional argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.
         /// </param>
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
-        /// <exception cref="ArgumentNullException">If either the name or the destination are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="ArgumentNullException">If either the name or the destination are <c>null</c>, empty, or only consist of white spaces then an <see cref="ArgumentNullException"/> is thrown.</exception>
         public PositionalArgument(string name, string destination, string help)
         {
             // Validates the arguments

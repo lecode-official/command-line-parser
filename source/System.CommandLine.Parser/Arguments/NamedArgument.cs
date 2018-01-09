@@ -25,18 +25,14 @@ namespace System.CommandLine.Arguments
         /// <param name="help">A descriptive help text for the argument, which is used in the help string.</param>
         /// <param name="defaultValue">The value that the argument receives if it was not detected by the parser.</param>
         /// <param name="duplicateResolutionPolicy">A callback function, which is invoked when the same argument was specified more than once.</param>
-        /// <exception cref="ArgumentNullException">If either the name, the alias, the destination, or the default value are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="ArgumentNullException">If either the name or the destination are <c>null</c>, empty, or only consist of white spaces, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         public NamedArgument(string name, string alias, string destination, string help, T defaultValue, Func<T, T, T> duplicateResolutionPolicy)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
-            if (string.IsNullOrWhiteSpace(alias))
-                throw new ArgumentNullException(nameof(alias));
             if (string.IsNullOrWhiteSpace(destination))
                 throw new ArgumentNullException(nameof(destination));
-            if (defaultValue == null)
-                throw new ArgumentNullException(nameof(defaultValue));
 
             // Stores the arguments for later use
             this.Name = name;
