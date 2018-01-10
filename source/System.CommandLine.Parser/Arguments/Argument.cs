@@ -19,12 +19,12 @@ namespace System.CommandLine.Arguments
         public string Alias { get; protected set; }
 
         /// <summary>
-        /// Contains the name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
+        /// Contains the name that the argument will have in the result dictionary after parsing. This must adhere to normal C# naming standards.
         /// </summary>
         private string destination;
 
         /// <summary>
-        /// Gets the name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards.
+        /// Gets the name that the argument will have in the result dictionary after parsing. This should adhere to normal C# naming standards. If it does not, it is automatically converted.
         /// </summary>
         public string Destination
         {
