@@ -58,7 +58,10 @@ namespace System.CommandLine.ValueConverters
                         disposableValueConverter.Dispose();
                 }
             }
-            ValueConverter.valueConverters = new List<IValueConverter>();
+            ValueConverter.valueConverters = new List<IValueConverter>
+            {
+                new IntegerConverter()
+            };
         }
 
         #endregion
