@@ -380,7 +380,7 @@ namespace System.CommandLine
 
             // Checks if there is already a command with the same name
             if (this.commands.ContainsKey(name))
-                throw new InvalidOperationException("There is already a command with the same name.");
+                throw new InvalidOperationException($"There already is a command with the name {name}.");
 
             // Creates the parser for the new command and adds it to the list of commands
             Parser commandArgumentsParser = new Parser(description, options);
@@ -408,7 +408,7 @@ namespace System.CommandLine
 
             // Checks if there is already a command with the same name
             if (this.commands.ContainsKey(name))
-                throw new InvalidOperationException("There is already a command with the same name.");
+                throw new InvalidOperationException($"There already is a command with the name {name}.");
 
             // Adds the new command to the list of commands
             this.commands.Add(name, parser);
