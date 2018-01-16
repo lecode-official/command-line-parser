@@ -9,7 +9,7 @@ using System.Globalization;
 namespace System.CommandLine.ValueConverters
 {
     /// <summary>
-    /// Represents a value converter, which is able to convert string to integers.
+    /// Represents a value converter, which is able to convert strings to integers.
     /// </summary>
     public class IntegerConverter : IValueConverter
     {
@@ -19,6 +19,11 @@ namespace System.CommandLine.ValueConverters
         /// Contains a list of all the types that are supported by this value converter.
         /// </summary>
         private static List<Type> supportedTypes = new List<Type> { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long), typeof(ulong) };
+
+        /// <summary>
+        /// Contains the number style that is used to parse the integer literals.
+        /// </summary>
+        private static readonly NumberStyles numberStyles = NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowHexSpecifier;
 
         #endregion
 
@@ -31,7 +36,7 @@ namespace System.CommandLine.ValueConverters
         /// <returns>Returns <c>true</c> if the value converter can convert to the specified type and <c>false</c> otherwise.</returns>
         public bool CanConvertFrom(string value) => long.TryParse(
             value,
-            NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
+            numberStyles,
             CultureInfo.InvariantCulture,
             out _
         );
@@ -60,21 +65,21 @@ namespace System.CommandLine.ValueConverters
             try
             {
                 if (type == typeof(byte))
-                    return byte.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return byte.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(sbyte))
-                    return sbyte.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return sbyte.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(short))
-                    return short.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return short.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(ushort))
-                    return ushort.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return ushort.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(int))
-                    return int.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return int.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(uint))
-                    return uint.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return uint.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(long))
-                    return long.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return long.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(ulong))
-                    return ulong.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                    return ulong.Parse(value, numberStyles, CultureInfo.InvariantCulture);
             }
             catch (FormatException) {}
 
