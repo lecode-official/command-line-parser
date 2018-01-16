@@ -61,7 +61,8 @@ namespace System.CommandLine.ValueConverters
             ValueConverter.valueConverters = new List<IValueConverter>
             {
                 new IntegerConverter(),
-                new FloatConverter()
+                new FloatConverter(),
+                new BooleanConverter()
             };
         }
 
