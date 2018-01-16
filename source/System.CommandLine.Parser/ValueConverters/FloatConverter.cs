@@ -9,16 +9,16 @@ using System.Globalization;
 namespace System.CommandLine.ValueConverters
 {
     /// <summary>
-    /// Represents a value converter, which is able to convert string to integers.
+    /// Represents a value converter, which is able to convert string to floats.
     /// </summary>
-    public class IntegerConverter : IValueConverter
+    public class FloatConverter : IValueConverter
     {
         #region Private Static Fields
 
         /// <summary>
         /// Contains a list of all the types that are supported by this value converter.
         /// </summary>
-        private static List<Type> supportedTypes = new List<Type> { typeof(byte), typeof(sbyte), typeof(short), typeof(ushort), typeof(int), typeof(uint), typeof(long), typeof(ulong) };
+        private static List<Type> supportedTypes = new List<Type> { typeof(float), typeof(double), typeof(decimal) };
 
         #endregion
 
@@ -29,9 +29,9 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="type">The type which is to be tested.</param>
         /// <returns>Returns <c>true</c> if the value converter can convert to the specified type and <c>false</c> otherwise.</returns>
-        public bool CanConvertFrom(string value) => long.TryParse(
+        public bool CanConvertFrom(string value) => decimal.TryParse(
             value,
-            NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent,
+            NumberStyles.Float | NumberStyles.AllowThousands,
             CultureInfo.InvariantCulture,
             out _
         );
@@ -41,7 +41,7 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="value">The value that is to be tested.</param>
         /// <returns>Returns <c>true</c> if the value converter is able to convert the specified type and <c>false</c> otherwise.</returns>
-        public bool CanConvertTo(Type type) => IntegerConverter.supportedTypes.Contains(type);
+        public bool CanConvertTo(Type type) => FloatConverter.supportedTypes.Contains(type);
 
         /// <summary>
         /// Converts the specified value to the specified destination type.
@@ -59,22 +59,12 @@ namespace System.CommandLine.ValueConverters
             // Tries to convert the specified value to the specified type
             try
             {
-                if (type == typeof(byte))
-                    return byte.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                if (type == typeof(sbyte))
-                    return sbyte.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                if (type == typeof(short))
-                    return short.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                if (type == typeof(ushort))
-                    return ushort.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                if (type == typeof(int))
-                    return int.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                if (type == typeof(uint))
-                    return uint.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                if (type == typeof(long))
-                    return long.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
-                if (type == typeof(ulong))
-                    return ulong.Parse(value, NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent, CultureInfo.InvariantCulture);
+                if (type == typeof(float))
+                    return float.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                if (type == typeof(double))
+                    return double.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                if (type == typeof(decimal))
+                    return decimal.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
             }
             catch (FormatException) {}
 
