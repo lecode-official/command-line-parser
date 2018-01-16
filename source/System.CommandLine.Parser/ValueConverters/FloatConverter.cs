@@ -9,7 +9,7 @@ using System.Globalization;
 namespace System.CommandLine.ValueConverters
 {
     /// <summary>
-    /// Represents a value converter, which is able to convert string to floats.
+    /// Represents a value converter, which is able to convert strings to floats.
     /// </summary>
     public class FloatConverter : IValueConverter
     {
@@ -18,7 +18,12 @@ namespace System.CommandLine.ValueConverters
         /// <summary>
         /// Contains a list of all the types that are supported by this value converter.
         /// </summary>
-        private static List<Type> supportedTypes = new List<Type> { typeof(float), typeof(double), typeof(decimal) };
+        private static readonly List<Type> supportedTypes = new List<Type> { typeof(float), typeof(double), typeof(decimal) };
+
+        /// <summary>
+        /// Contains the number style that is used to parse the floating point literals.
+        /// </summary>
+        private static readonly NumberStyles numberStyles = NumberStyles.Float | NumberStyles.AllowThousands;
 
         #endregion
 
@@ -29,12 +34,7 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="type">The type which is to be tested.</param>
         /// <returns>Returns <c>true</c> if the value converter can convert to the specified type and <c>false</c> otherwise.</returns>
-        public bool CanConvertFrom(string value) => decimal.TryParse(
-            value,
-            NumberStyles.Float | NumberStyles.AllowThousands,
-            CultureInfo.InvariantCulture,
-            out _
-        );
+        public bool CanConvertFrom(string value) => decimal.TryParse(value, numberStyles, CultureInfo.InvariantCulture, out _);
 
         /// <summary>
         /// Determines whether this value converter is able to convert the specified string.
@@ -60,11 +60,11 @@ namespace System.CommandLine.ValueConverters
             try
             {
                 if (type == typeof(float))
-                    return float.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                    return float.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(double))
-                    return double.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                    return double.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (type == typeof(decimal))
-                    return decimal.Parse(value, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture);
+                    return decimal.Parse(value, numberStyles, CultureInfo.InvariantCulture);
             }
             catch (FormatException) {}
 
