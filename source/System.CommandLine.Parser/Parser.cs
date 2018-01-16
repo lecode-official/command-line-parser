@@ -78,9 +78,9 @@ namespace System.CommandLine
         private readonly List<Argument> flagArguments = new List<Argument>();
 
         /// <summary>
-        /// Contains the sub-commands of the parser (which in turn consist of a parser, which is able to parse the arguments of the command).
+        /// Contains the commands of the parser (which in turn consist of a sub-parser, which is able to parse the arguments of the command).
         /// </summary>
-        private readonly Dictionary<string, Parser> commands = new Dictionary<string, Parser>();
+        private readonly List<Command> commands = new List<Command>();
 
         #endregion
 
@@ -105,19 +105,19 @@ namespace System.CommandLine
         {
             // Checks if there are any arguments with the same name
             if (this.namedArguments.Any(namedArgument => namedArgument.Name == argument.Name))
-                throw new InvalidOperationException($"There is already a named argument with the name {argument.Name}.");
+                throw new InvalidOperationException($"There already is a named argument with the name {argument.Name}.");
             if (this.flagArguments.Any(flagArgument => flagArgument.Name == argument.Name))
-                throw new InvalidOperationException($"There is already a flag argument with the name {argument.Name}.");
+                throw new InvalidOperationException($"There already is a flag argument with the name {argument.Name}.");
             if (this.positionalArguments.Any(positionalArgument => positionalArgument.Name == argument.Name))
-                throw new InvalidOperationException($"There is already a positional argument with the name {argument.Name}.");
+                throw new InvalidOperationException($"There already is a positional argument with the name {argument.Name}.");
 
             // Checks if there are any other arguments with the same alias
             if (!string.IsNullOrWhiteSpace(argument.Alias))
             {
                 if (this.namedArguments.Any(namedArgument => namedArgument.Alias == argument.Alias))
-                    throw new InvalidOperationException($"There is already a named argument with the alias {argument.Alias}.");
+                    throw new InvalidOperationException($"There already is a named argument with the alias {argument.Alias}.");
                 if (this.flagArguments.Any(flagArgument => flagArgument.Alias == argument.Alias))
-                    throw new InvalidOperationException($"There is already a flag argument with the alias {argument.Alias}.");
+                    throw new InvalidOperationException($"There already is a flag argument with the alias {argument.Alias}.");
             }
         }
 
@@ -339,7 +339,17 @@ namespace System.CommandLine
         /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists of white spaces, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="InvalidOperationException">If there already is a command with the same name, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
-        public Parser AddCommand(string name) => this.AddCommand(name, null, this.Options);
+        public Parser AddCommand(string name) => this.AddCommand(name, null, null, this.Options);
+
+        /// <summary>
+        /// Creates a new sub-command for the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the command.</param>
+        /// <param name="parserOptions">The parser options for the command.</param>
+        /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists or white spaces or the options are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a command with the same name, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
+        public Parser AddCommand(string name, ParserOptions parserOptions) => this.AddCommand(name, null, null, parserOptions);
 
         /// <summary>
         /// Creates a new sub-command for the command line parser.
@@ -349,72 +359,117 @@ namespace System.CommandLine
         /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists of white spaces, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="InvalidOperationException">If there already is a command with the same name, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
-        public Parser AddCommand(string name, string description) => this.AddCommand(name, description, this.Options);
+        public Parser AddCommand(string name, string description) => this.AddCommand(name, null, description, this.Options);
 
         /// <summary>
         /// Creates a new sub-command for the command line parser.
         /// </summary>
         /// <param name="name">The name of the command.</param>
-        /// <param name="options">The parser options for the command.</param>
-        /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists or white spaces or the options are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
-        /// <exception cref="InvalidOperationException">If there already is a command with the same name, then an <see cref="InvalidOperationException"/> is thrown.</exception>
-        /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
-        public Parser AddCommand(string name, ParserOptions options) => this.AddCommand(name, null, options);
-
-        /// <summary>
-        /// Creates a new sub-command for the command line parser.
-        /// </summary>
-        /// <param name="name">The name of the command.</param>
+        /// <param name="alias">The alias of the command, which can be used as an alternative to the name.</param>
         /// <param name="description">The description for the command.</param>
-        /// <param name="options">The parser options for the command.</param>
+        /// <param name="parserOptions">The parser options for the command.</param>
         /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists of white spaces or the options are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="InvalidOperationException">If there already is a command with the same name, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
-        public Parser AddCommand(string name, string description, ParserOptions options)
+        public Parser AddCommand(string name, string alias, string description) => this.AddCommand(name, alias, description, this.Options);
+
+        /// <summary>
+        /// Creates a new sub-command for the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the command.</param>
+        /// <param name="alias">The alias of the command, which can be used as an alternative to the name.</param>
+        /// <param name="description">The description for the command.</param>
+        /// <param name="parserOptions">The parser options for the command.</param>
+        /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists of white spaces or the options are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a command with the same name or alias, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
+        public Parser AddCommand(string name, string alias, string description, ParserOptions parserOptions)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
-            if (options == null)
-                throw new ArgumentNullException(nameof(options));
+            if (parserOptions == null)
+                throw new ArgumentNullException(nameof(parserOptions));
 
-            // Checks if there is already a command with the same name
-            if (this.commands.ContainsKey(name))
+            // Checks if there is already a command with the same name or alias
+            if (this.commands.Any(command => command.Name == name))
                 throw new InvalidOperationException($"There already is a command with the name {name}.");
+            if (!string.IsNullOrWhiteSpace(alias) && this.commands.Any(command => command.Alias == alias))
+                throw new InvalidOperationException($"There already is a command with the alias {alias}.");
 
             // Creates the parser for the new command and adds it to the list of commands
-            Parser commandArgumentsParser = new Parser(description, options);
-            this.commands.Add(name, commandArgumentsParser);
+            Command newCommand = new Command(name, alias, description, parserOptions);
+            this.commands.Add(newCommand);
 
             // Returns the created parser
-            return commandArgumentsParser;
+            return newCommand.SubParser;
         }
 
         /// <summary>
         /// Creates a new sub-command for the command line parser.
         /// </summary>
         /// <param name="name">The name of the command.</param>
-        /// <param name="parser">The parser that is used to parse the arguments of the command.</param>
+        /// <param name="subParser">The parser that is used to parse the arguments of the command.</param>
         /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists of white spaces or the parser is <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
         /// <exception cref="InvalidOperationException">If there already is a command with the same name, then an <see cref="InvalidOperationException"/> is thrown.</exception>
         /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
-        public Parser AddCommand(string name, Parser parser)
+        public Parser AddCommand(string name, Parser subParser) => this.AddCommand(name, null, subParser);
+
+        /// <summary>
+        /// Creates a new sub-command for the command line parser.
+        /// </summary>
+        /// <param name="name">The name of the command.</param>
+        /// <param name="alias">The alias of the command, which can be used as an alternative to the name.</param>
+        /// <param name="subParser">The parser that is used to parse the arguments of the command.</param>
+        /// <exception cref="ArgumentNullException">If the name is <c>null</c>, empty, or only consists of white spaces or the parser is <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a command with the same name or alias, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <returns>Returns the argument parser for the command, which can then be configured.</returns>
+        public Parser AddCommand(string name, string alias, Parser subParser)
         {
             // Validates the arguments
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
-            if (parser == null)
-                throw new ArgumentNullException(nameof(parser));
+            if (subParser == null)
+                throw new ArgumentNullException(nameof(subParser));
 
-            // Checks if there is already a command with the same name
-            if (this.commands.ContainsKey(name))
+            // Checks if there is already a command with the same name or alias
+            if (this.commands.Any(command => command.Name == name))
                 throw new InvalidOperationException($"There already is a command with the name {name}.");
+            if (!string.IsNullOrWhiteSpace(alias) && this.commands.Any(command => command.Alias == alias))
+                throw new InvalidOperationException($"There already is a command with the alias {alias}.");
 
             // Adds the new command to the list of commands
-            this.commands.Add(name, parser);
+            Command newCommand = new Command(name, alias, subParser);
+            this.commands.Add(newCommand);
 
-            // Returns the parser
-            return parser;
+            // Returns the sub-parser
+            return subParser;
+        }
+
+        /// <summary>
+        /// Adds the specified command to the command line parser.
+        /// </summary>
+        /// <param name="command">The command that is to be added.</param>
+        /// <exception cref="ArgumentNullException">If the command is <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        /// <exception cref="InvalidOperationException">If there already is a command with the same name or alias, then an <see cref="InvalidOperationException"/> is thrown.</exception>
+        /// <returns>Returns the parser of the command, which can be used to chain calls.</returns>
+        public Parser AddCommand(Command command)
+        {
+            // Validates the arguments
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
+
+            // Checks if there is already a command with the same name or alias
+            if (this.commands.Any(otherCommand => otherCommand.Name == command.Name))
+                throw new InvalidOperationException($"There already is a command with the name {command.Name}.");
+            if (!string.IsNullOrWhiteSpace(command.Alias) && this.commands.Any(otherCommand => otherCommand.Alias == command.Alias))
+                throw new InvalidOperationException($"There already is a command with the alias {command.Alias}.");
+
+            // Adds the command to the list of commands
+            this.commands.Add(command);
+
+            // Returns the sub-parser
+            return command.SubParser;
         }
 
         #endregion
