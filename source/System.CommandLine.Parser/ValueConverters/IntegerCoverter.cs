@@ -26,7 +26,7 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="type">The type which is to be tested.</param>
         /// <returns>Returns <c>true</c> if the value converter can convert to the specified type and <c>false</c> otherwise.</returns>
-        public bool CanConvertFrom(string value) => long.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out long _);
+        public bool CanConvertFrom(string value) => long.TryParse(value, NumberStyles.Number, CultureInfo.InvariantCulture, out _);
 
         /// <summary>
         /// Determines whether this value converter is able to convert the specified string.
