@@ -55,7 +55,7 @@ namespace System.CommandLine.Arguments
                 if (part.Length == 0)
                     continue;
                 stringBuilder.Append(part.Substring(0, 1).ToUpperInvariant());
-                stringBuilder.Append(part.Substring(1).ToLowerInvariant());
+                stringBuilder.Append(part.Substring(1));
             }
             name = stringBuilder.ToString();
 
