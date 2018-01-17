@@ -71,8 +71,8 @@ namespace System.CommandLine.Arguments
         /// <returns>Returns the resolved value.</returns>
         private T ResolveDuplicateValues(T oldValue, T newValue)
         {
-            if (CollectionHelper.IsSupportedCollectionType<T>())
-                return CollectionHelper.Merge(oldValue, newValue);
+            if (CollectionHelper.IsSupportedCollectionType(typeof(T)))
+                return (T)CollectionHelper.Merge(typeof(T), oldValue, newValue);
             return newValue;
         }
 

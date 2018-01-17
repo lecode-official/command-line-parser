@@ -61,9 +61,8 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="type">The type that is to be checked for support.</param>
         /// <returns>Returns <c>true</c> if the specified type is one of the supported collection types and <c>false</c> otherwise.</returns>
-        public static bool IsSupportedCollectionType<T>()
+        public static bool IsSupportedCollectionType(Type type)
         {
-            Type type = typeof(T);
             if (type.IsArray)
             {
                 if (type.GetElementType().IsArray)
@@ -78,18 +77,23 @@ namespace System.CommandLine.ValueConverters
         /// <summary>
         /// Merges two collection into one collection of the same type.
         /// </summary>
+        /// <param name="resultType">The type of collection into which the result is to be converted.</param>
         /// <param name="firstCollection">The first collection.</param>
         /// <param name="secondCollection">The second collection.</param>
         /// <returns>Returns a collection that contains the elements of both collections, which is of the same type as the input collections.</returns>
-        public static T Merge<T>(T firstCollection, T secondCollection)
+        public static object Merge(Type resultType, object firstCollection, object secondCollection)
         {
             // Validates that the two collections are of a supported collection type
-            if (!CollectionHelper.IsSupportedCollectionType<T>())
-                throw new InvalidOperationException("The specified type is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType(firstCollection.GetType()))
+                throw new InvalidOperationException("The type of the first collection is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType(firstCollection.GetType()))
+                throw new InvalidOperationException("The type of the second collection is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType(resultType))
+                throw new InvalidOperationException("The result type is not a supported collection type.");
 
             // Converts the two collections to arrays first
-            Array firstArray = CollectionHelper.ToArray<T>(firstCollection);
-            Array secondArray = CollectionHelper.ToArray<T>(secondCollection);
+            Array firstArray = CollectionHelper.ToArray(firstCollection);
+            Array secondArray = CollectionHelper.ToArray(secondCollection);
 
             // Combines the two arrays into a single array
             object[] mergedArray = new object[firstArray.Length + secondArray.Length];
@@ -97,54 +101,26 @@ namespace System.CommandLine.ValueConverters
             Array.Copy(secondArray, 0, mergedArray, firstArray.Length, secondArray.Length);
 
             // Converts the merged array back to the collection type and returns it
-            return CollectionHelper.To<object[], T>(mergedArray);
-        }
-
-        /// <summary>
-        /// Merges two collection into one collection, where the input collections and the result all may have a different collection type.
-        /// </summary>
-        /// <param name="firstCollection">The first collection.</param>
-        /// <param name="secondCollection">The second collection.</param>
-        /// <returns>Returns a collection that contains the elements of both collections, which is of the same type as the input collections.</returns>
-        public static TResult Merge<TFirstInput, TSecondInput, TResult>(TFirstInput firstCollection, TSecondInput secondCollection)
-        {
-            // Validates that the two collections are of a supported collection type
-            if (!CollectionHelper.IsSupportedCollectionType<TFirstInput>())
-                throw new InvalidOperationException("The type for the first input is not a supported collection type.");
-            if (!CollectionHelper.IsSupportedCollectionType<TSecondInput>())
-                throw new InvalidOperationException("The type for the second input is not a supported collection type.");
-            if (!CollectionHelper.IsSupportedCollectionType<TResult>())
-                throw new InvalidOperationException("The type for the result is not a supported collection type.");
-
-            // Converts the two collections to arrays first
-            Array firstArray = CollectionHelper.ToArray<TFirstInput>(firstCollection);
-            Array secondArray = CollectionHelper.ToArray<TSecondInput>(secondCollection);
-
-            // Combines the two arrays into a single array
-            object[] mergedArray = new object[firstArray.Length + secondArray.Length];
-            Array.Copy(firstArray, mergedArray, firstArray.Length);
-            Array.Copy(secondArray, 0, mergedArray, firstArray.Length, secondArray.Length);
-
-            // Converts the merged array back to the collection type and returns it
-            return CollectionHelper.To<object[], TResult>(mergedArray);
+            return CollectionHelper.To(resultType, mergedArray);
         }
 
         /// <summary>
         /// Converts the specified collection to a collection of another containing the same elements.
         /// </summary>
+        /// <param name="resultType">The type of collection into which the result is to be converted.</param>
         /// <param name="inputCollection">The collection, that is to be converted to another collection type.</param>
         /// <returns>Returns the converted collection.</returns>
-        public static TResult To<TInput, TResult>(TInput inputCollection)
+        public static object To(Type resultType, object inputCollection)
         {
             // Checks if both collection types are supported
-            if (!CollectionHelper.IsSupportedCollectionType<TInput>())
-                throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
-            if (!CollectionHelper.IsSupportedCollectionType<TResult>())
-                throw new InvalidOperationException("The type of the result is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType(inputCollection.GetType()))
+                throw new InvalidOperationException("The type of the input collection is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType(resultType))
+                throw new InvalidOperationException("The result type is not a supported collection type.");
 
             // First the input collection is converted to an array and then the array is converted to the result collection type
             Array array = CollectionHelper.ToArray(inputCollection);
-            return CollectionHelper.FromArray<TResult>(array);
+            return CollectionHelper.FromArray(resultType, array);
         }
 
         /// <summary>
@@ -152,19 +128,19 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="inputCollection">The collection that is to be converted into an array.</param>
         /// <returns>Returns an array that contains the same elements of the specified input collection.</returns>
-        public static Array ToArray<T>(T inputCollection)
+        public static Array ToArray(object inputCollection)
         {
             // Checks if the type of the input collection is supported
-            if (!CollectionHelper.IsSupportedCollectionType<T>())
-                throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
+            Type type = inputCollection.GetType();
+            if (!CollectionHelper.IsSupportedCollectionType(type))
+                throw new InvalidOperationException("The type of the input collection is not a supported collection type.");
 
             // Checks if the collection already is an array, then nothing needs to be done
-            Type type = typeof(T);
             if (type.IsArray)
                 return inputCollection as Array;
 
             // Creates a new array
-            int arraySize = CollectionHelper.GetCount<T>(inputCollection);
+            int arraySize = CollectionHelper.GetCount(inputCollection);
             object[] array = new object[arraySize];
 
             // Checks if the input collection implements ICollection, in that case there is a way to copy its contents to an array
@@ -190,51 +166,51 @@ namespace System.CommandLine.ValueConverters
             }
 
             // Since some weird error must have occurred (all supported collection types either implement ICollection or IEnumerator one or the other way), an exception is thrown
-            throw new InvalidOperationException("The specified collection type neither implements ICollection nor IEnumerable.");
+            throw new InvalidOperationException("The input collection type neither implements ICollection nor IEnumerable.");
         }
 
         /// <summary>
         /// Converts the specified array into another collection type with the same elements.
         /// </summary>
+        /// <param name="resultType">The type of collection into which the result is to be converted.</param>
         /// <param name="inputArray">The array that is to be converted into another collection type.</param>
         /// <returns>Returns a collection that contains the same elements of the specified input array.</returns>
-        public static T FromArray<T>(Array inputArray)
+        public static object FromArray(Type resultType, Array inputArray)
         {
             // Checks if the type of the input collection is supported
-            if (!CollectionHelper.IsSupportedCollectionType<T>())
-                throw new InvalidOperationException("The return type is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType(resultType))
+                throw new InvalidOperationException("The result type is not a supported collection type.");
 
             // Determines which type the elements will have in the result collection
-            Type type = typeof(T);
             Type elementType;
-            if (type.IsGenericType)
-                elementType = type.GenericTypeArguments[0];
-            else if (type.IsArray)
-                elementType = type.GetElementType();
+            if (resultType.IsGenericType)
+                elementType = resultType.GenericTypeArguments[0];
+            else if (resultType.IsArray)
+                elementType = resultType.GetElementType();
             else
                 elementType = typeof(object);
-            if (type.IsConstructedGenericType)
-                type = type.GetGenericTypeDefinition();
+            if (resultType.IsConstructedGenericType)
+                resultType = resultType.GetGenericTypeDefinition();
 
             // Checks if the result collection is an array and performs the necessary conversions
-            if (type.IsArray)
+            if (resultType.IsArray)
             {
                 Array resultArray = Array.CreateInstance(elementType, inputArray.Length);
                 Array.Copy(inputArray, resultArray, inputArray.Length);
-                return (T)(object)resultArray;
+                return resultArray;
             }
 
             // Checks if the result collection is ICollection, IEnumerable, or IList, in that case nothing needs to be done, because Array already implements all three of them
-            if (type == typeof(ICollection) || type == typeof(IEnumerable) || type == typeof(IList))
-                return (T)(object)inputArray;
+            if (resultType == typeof(ICollection) || resultType == typeof(IEnumerable) || resultType == typeof(IList))
+                return inputArray;
 
-            // Checks if the result collection is a non-generic collection type, all non-generic collection types implement a constructor that takes an ICollection as a parameter, so reflection can be used to instantiated
-            // instances of them
-            if (type == typeof(ArrayList) || type == typeof(Queue) || type == typeof(Stack))
+            // Checks if the result collection is a non-generic collection type, all non-generic collection types implement a constructor that takes an ICollection as a parameter,
+            // so reflection can be used to instantiated instances of them
+            if (resultType == typeof(ArrayList) || resultType == typeof(Queue) || resultType == typeof(Stack))
             {
-                ConstructorInfo collectionConstructor = type.GetConstructor(new Type[] { typeof(ICollection) });
+                ConstructorInfo collectionConstructor = resultType.GetConstructor(new Type[] { typeof(ICollection) });
                 object newCollection = collectionConstructor.Invoke(new object[] { inputArray });
-                return (T)newCollection;
+                return newCollection;
             }
 
             // Since all of the following types are generic types, the input array is first cast into a generic IEnumerable
@@ -243,30 +219,30 @@ namespace System.CommandLine.ValueConverters
             object genericEnumerable = castMethod.Invoke(null, new object[] { enumerable });
 
             // Many of the generic collection types have a constructor that takes a generic IEnumerable as a parameter, so reflection can be used to instantiated instances of them
-            if (type == typeof(HashSet<>) ||
-                type == typeof(LinkedList<>) ||
-                type == typeof(List<>) ||
-                type == typeof(Queue<>) ||
-                type == typeof(SortedSet<>) ||
-                type == typeof(Stack<>) ||
-                type == typeof(ObservableCollection<>) ||
-                type == typeof(IEnumerable<>) ||
-                type == typeof(IList<>) ||
-                type == typeof(ISet<>))
+            if (resultType == typeof(HashSet<>) ||
+                resultType == typeof(LinkedList<>) ||
+                resultType == typeof(List<>) ||
+                resultType == typeof(Queue<>) ||
+                resultType == typeof(SortedSet<>) ||
+                resultType == typeof(Stack<>) ||
+                resultType == typeof(ObservableCollection<>) ||
+                resultType == typeof(IEnumerable<>) ||
+                resultType == typeof(IList<>) ||
+                resultType == typeof(ISet<>))
             {
-                if (type == typeof(IEnumerable<>) || type == typeof(IList<>))
-                    type = typeof(List<>);
-                if (type == typeof(ISet<>))
-                    type = typeof(SortedSet<>);
+                if (resultType == typeof(IEnumerable<>) || resultType == typeof(IList<>))
+                    resultType = typeof(List<>);
+                if (resultType == typeof(ISet<>))
+                    resultType = typeof(SortedSet<>);
 
-                Type collectionType = type.MakeGenericType(new Type[] { elementType });
+                Type collectionType = resultType.MakeGenericType(new Type[] { elementType });
                 ConstructorInfo collectionConstructor = collectionType.GetConstructor(new Type[] { genericEnumerable.GetType() });
                 object newCollection = collectionConstructor.Invoke(new object[] { genericEnumerable });
-                return (T)newCollection;
+                return newCollection;
             }
 
             // The ReadOnlyObservableCollection<> is a special case, as it only one constructor, which takes a ObservableCollection<> as parameter, so reflection can be used to instantiated instances of it
-            if (type == typeof(ReadOnlyObservableCollection<>))
+            if (resultType == typeof(ReadOnlyObservableCollection<>))
             {
                 Type observableCollectionType = typeof(ObservableCollection<>).MakeGenericType(new Type[] { elementType });
                 ConstructorInfo observableCollectionConstructor = observableCollectionType.GetConstructor(new Type[] { genericEnumerable.GetType() });
@@ -274,28 +250,28 @@ namespace System.CommandLine.ValueConverters
                 Type collectionType = typeof(ReadOnlyObservableCollection<>).MakeGenericType(new Type[] { elementType });
                 ConstructorInfo collectionConstructor = collectionType.GetConstructor(new Type[] { observableCollectionType });
                 object newCollection = collectionConstructor.Invoke(new object[] { observableCollection });
-                return (T)newCollection;
+                return newCollection;
             }
 
             // The Collection<> and ReadOnlyCollection<> are special cases, as they have constructors, which take generic IList values as parameters, so reflection can be used to instantiated instances of them
-            if (type == typeof(Collection<>) ||
-                type == typeof(ReadOnlyCollection<>) ||
-                type == typeof(ICollection<>) ||
-                type == typeof(IReadOnlyCollection<>) ||
-                type == typeof(IReadOnlyList<>))
+            if (resultType == typeof(Collection<>) ||
+                resultType == typeof(ReadOnlyCollection<>) ||
+                resultType == typeof(ICollection<>) ||
+                resultType == typeof(IReadOnlyCollection<>) ||
+                resultType == typeof(IReadOnlyList<>))
             {
-                if (type == typeof(ICollection<>))
-                    type = typeof(Collection<>);
-                if (type == typeof(IReadOnlyCollection<>) || type == typeof(IReadOnlyList<>))
-                    type = typeof(ReadOnlyCollection<>);
+                if (resultType == typeof(ICollection<>))
+                    resultType = typeof(Collection<>);
+                if (resultType == typeof(IReadOnlyCollection<>) || resultType == typeof(IReadOnlyList<>))
+                    resultType = typeof(ReadOnlyCollection<>);
 
                 Type listType = typeof(List<>).MakeGenericType(new Type[] { elementType });
                 ConstructorInfo listConstructor = listType.GetConstructor(new Type[] { genericEnumerable.GetType() });
                 object newList = listConstructor.Invoke(new object[] { genericEnumerable });
-                Type collectionType = type.MakeGenericType(new Type[] { elementType });
+                Type collectionType = resultType.MakeGenericType(new Type[] { elementType });
                 ConstructorInfo collectionConstructor = collectionType.GetConstructor(new Type[] { listType });
                 object newCollection = collectionConstructor.Invoke(new object[] { newList });
-                return (T)newCollection;
+                return newCollection;
             }
 
             throw new InvalidOperationException("The array could not be converted.");
@@ -306,11 +282,11 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="inputCollection">The collection for which the number of elements is to be determined.</param>
         /// <returns>Returns the number of elements that are in the specified collection.</returns>
-        public static int GetCount<T>(T inputCollection)
+        public static int GetCount(object inputCollection)
         {
             // Determines if the specified collection is of a supported type
-            if (!CollectionHelper.IsSupportedCollectionType<T>())
-                throw new InvalidOperationException("The type of the specified collection is not a supported collection type.");
+            if (!CollectionHelper.IsSupportedCollectionType(inputCollection.GetType()))
+                throw new InvalidOperationException("The type of the input collection is not a supported collection type.");
 
             // Checks if the collection implements ICollection, in that case, the length of the collection can directly be accessed
             ICollection collection = inputCollection as ICollection;
@@ -329,7 +305,7 @@ namespace System.CommandLine.ValueConverters
             }
 
             // Since some weird error must have occurred (all supported collection types either implement ICollection or IEnumerator one or the other way), an exception is thrown
-            throw new InvalidOperationException("The specified collection type neither implements ICollection nor IEnumerable.");
+            throw new InvalidOperationException("The input collection type neither implements ICollection nor IEnumerable.");
         }
 
         #endregion
