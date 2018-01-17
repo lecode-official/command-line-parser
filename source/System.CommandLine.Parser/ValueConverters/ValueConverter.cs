@@ -63,7 +63,8 @@ namespace System.CommandLine.ValueConverters
                 new IntegerConverter(),
                 new FloatConverter(),
                 new BooleanConverter(),
-                new EnumerationConverter()
+                new EnumerationConverter(),
+                new StringConverter()
             };
         }
 
