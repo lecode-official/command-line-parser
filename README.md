@@ -10,7 +10,7 @@ structures.
 If you want to you can download and manually build the solution. The project was built using Visual Studio Code and .NET Core 2.0. To build the solution,
 clone the repository and build it using the command line tools of .NET Core:
 
-```batch
+```bash
 git clone https://github.com/lecode-official/command-line-parser
 cd command-line-parser
 dotnet build
