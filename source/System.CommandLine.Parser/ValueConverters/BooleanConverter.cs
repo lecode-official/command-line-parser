@@ -79,10 +79,6 @@ namespace System.CommandLine.ValueConverters
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException(nameof(value));
 
-            // Checks if the specified type is a supported type of the converter, if not, then an exception is thrown
-            if (!BooleanConverter.supportedTypes.Contains(resultType))
-                throw new InvalidOperationException($"The type \"{resultType.Name}\" is not supported.");
-
             // Tries to convert the specified value to the specified type
             if (BooleanConverter.booleanConversionMap.ContainsKey(value.Trim().ToUpperInvariant()))
                 return BooleanConverter.booleanConversionMap[value.Trim().ToUpperInvariant()];
