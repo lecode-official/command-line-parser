@@ -74,7 +74,7 @@ namespace System.CommandLine.ValueConverters
                     return int.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (resultType == typeof(uint))
                     return uint.Parse(value, numberStyles, CultureInfo.InvariantCulture);
-                if (resultType == typeof(long))
+                if (resultType == typeof(long) || resultType == typeof(object))
                     return long.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (resultType == typeof(ulong))
                     return ulong.Parse(value, numberStyles, CultureInfo.InvariantCulture);
