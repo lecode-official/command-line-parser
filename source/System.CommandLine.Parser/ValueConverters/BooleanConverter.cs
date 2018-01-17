@@ -38,10 +38,10 @@ namespace System.CommandLine.ValueConverters
         #region IValueConverter Implementation
 
         /// <summary>
-        /// Determines whether this value converter is able to convert a string to the specified type.
+        /// Determines whether this value converter is able to convert the specified string.
         /// </summary>
-        /// <param name="type">The type which is to be tested.</param>
-        /// <returns>Returns <c>true</c> if the value converter can convert to the specified type and <c>false</c> otherwise.</returns>
+        /// <param name="value">The value that is to be tested.</param>
+        /// <returns>Returns <c>true</c> if the value converter is able to convert the specified type and <c>false</c> otherwise.</returns>
         public bool CanConvertFrom(string value)
         {
             // Checks if the value is one of the well-known strings that the value converter can convert to boolean
@@ -57,31 +57,31 @@ namespace System.CommandLine.ValueConverters
         }
 
         /// <summary>
-        /// Determines whether this value converter is able to convert the specified string.
+        /// Determines whether this value converter is able to convert a string to the specified type.
         /// </summary>
-        /// <param name="value">The value that is to be tested.</param>
-        /// <returns>Returns <c>true</c> if the value converter is able to convert the specified type and <c>false</c> otherwise.</returns>
-        public bool CanConvertTo(Type type) => BooleanConverter.supportedTypes.Contains(type);
+        /// <param name="resultType">The type which is to be tested.</param>
+        /// <returns>Returns <c>true</c> if the value converter can convert to the specified type and <c>false</c> otherwise.</returns>
+        public bool CanConvertTo(Type resultType) => BooleanConverter.supportedTypes.Contains(resultType);
 
         /// <summary>
         /// Converts the specified value to the specified destination type.
         /// </summary>
         /// <param name="value">The value that is to be converted to the specified destination type.</param>
-        /// <param name="type">The type to which the value is to be converted.</param>
+        /// <param name="resultType">The type to which the value is to be converted.</param>
         /// <exception cref="ArgumentNullException">If the type or the value is <c>null</c>, empty, or only consists of white spaces, then an <see cref="ArgumentNullException"/> is thrown.
         /// <exception cref="InvalidOperationException">If the specified type is not supported or the value could not be converted, then an <see cref="InvalidOperationException"/> is thrown.
         /// <returns>Returns a new instance of the specified type, that contains the converted value.</returns>
-        public object Convert(Type type, string value)
+        public object Convert(Type resultType, string value)
         {
             // Validates the arguments
-            if (type == null)
-                throw new ArgumentNullException(nameof(type));
+            if (resultType == null)
+                throw new ArgumentNullException(nameof(resultType));
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException(nameof(value));
 
             // Checks if the specified type is a supported type of the converter, if not, then an exception is thrown
-            if (!BooleanConverter.supportedTypes.Contains(type))
-                throw new InvalidOperationException($"The type \"{type.Name}\" is not supported.");
+            if (!BooleanConverter.supportedTypes.Contains(resultType))
+                throw new InvalidOperationException($"The type \"{resultType.Name}\" is not supported.");
 
             // Tries to convert the specified value to the specified type
             if (BooleanConverter.booleanConversionMap.ContainsKey(value.Trim().ToUpperInvariant()))
@@ -90,7 +90,7 @@ namespace System.CommandLine.ValueConverters
                 return integerValue != 0;
 
             // If this code is reached it means, that either the specified type is not supported or the value could not be converted, in that case an exception is thrown
-            throw new InvalidOperationException($"The value \"{value}\" cannot be converted to \"{type.Name}\".");
+            throw new InvalidOperationException($"The value \"{value}\" cannot be converted to \"{resultType.Name}\".");
         }
 
         #endregion
