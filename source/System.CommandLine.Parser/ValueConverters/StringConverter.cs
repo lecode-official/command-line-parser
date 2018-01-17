@@ -59,11 +59,7 @@ namespace System.CommandLine.ValueConverters
             // Tries to convert the specified value to the specified type
             if (resultType == typeof(StringBuilder))
                 return new StringBuilder(value);
-            if (resultType == typeof(string))
-                return value;
-
-            // If this code is reached it means, that either the specified type is not supported or the value could not be converted, in that case an exception is thrown
-            throw new InvalidOperationException($"The value \"{value}\" cannot be converted to \"{resultType.Name}\".");
+            return value;
         }
 
         #endregion

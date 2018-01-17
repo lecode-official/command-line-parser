@@ -66,7 +66,7 @@ namespace System.CommandLine.ValueConverters
                     return float.Parse(value, numberStyles, CultureInfo.InvariantCulture);
                 if (resultType == typeof(double))
                     return double.Parse(value, numberStyles, CultureInfo.InvariantCulture);
-                if (resultType == typeof(decimal))
+                if (resultType == typeof(decimal) || resultType == typeof(object))
                     return decimal.Parse(value, numberStyles, CultureInfo.InvariantCulture);
             }
             catch (FormatException) {}
