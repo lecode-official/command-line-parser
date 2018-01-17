@@ -45,7 +45,7 @@ namespace System.CommandLine.ValueConverters
         public bool CanConvertFrom(string value)
         {
             // Checks if the value is one of the well-known strings that the value converter can convert to boolean
-            if (BooleanConverter.booleanConversionMap.ContainsKey(value.ToUpperInvariant()))
+            if (BooleanConverter.booleanConversionMap.ContainsKey(value.Trim().ToUpperInvariant()))
                 return true;
 
             // Checks if the value is numeric, in that case the value can also be converted
@@ -82,8 +82,8 @@ namespace System.CommandLine.ValueConverters
                 throw new InvalidOperationException($"The type \"{type.Name}\" is not supported.");
 
             // Tries to convert the specified value to the specified type
-            if (BooleanConverter.booleanConversionMap.ContainsKey(value.ToUpperInvariant()))
-                return BooleanConverter.booleanConversionMap[value.ToUpperInvariant()];
+            if (BooleanConverter.booleanConversionMap.ContainsKey(value.Trim().ToUpperInvariant()))
+                return BooleanConverter.booleanConversionMap[value.Trim().ToUpperInvariant()];
             if (long.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out long integerValue))
                 return integerValue != 0;
 
