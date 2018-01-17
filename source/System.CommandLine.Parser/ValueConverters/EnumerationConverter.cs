@@ -35,12 +35,14 @@ namespace System.CommandLine.ValueConverters
         /// </summary>
         /// <param name="value">The value that is to be converted to the specified destination type.</param>
         /// <param name="type">The type to which the value is to be converted.</param>
-        /// <exception cref="ArgumentNullException">If the value is <c>null</c>, empty, or only consists of white spaces, then an <see cref="ArgumentNullException"/> is thrown.
+        /// <exception cref="ArgumentNullException">If the type or the value is <c>null</c>, empty, or only consists of white spaces, then an <see cref="ArgumentNullException"/> is thrown.
         /// <exception cref="InvalidOperationException">If the specified type is not supported or the value could not be converted, then an <see cref="InvalidOperationException"/> is thrown.
         /// <returns>Returns a new instance of the specified type, that contains the converted value.</returns>
         public object Convert(Type type, string value)
         {
-            // Validates the argument
+            // Validates the arguments
+            if (type == null)
+                throw new ArgumentNullException(nameof(type));
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException(nameof(value));
 
