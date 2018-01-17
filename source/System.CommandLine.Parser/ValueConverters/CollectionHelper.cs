@@ -75,6 +75,23 @@ namespace System.CommandLine.ValueConverters
         }
 
         /// <summary>
+        /// Retrieves the element type of the specified collection.
+        /// </summary>
+        /// <param name="type">The collection type for which the element type is to be determined.</param>
+        /// <returns>Returns the type of the elements of the specified collection type. If the collection type is not generic <c>typeof(object)</c> is returned.</returns>
+        public static Type GetCollectionElementType(Type type)
+        {
+            if (!CollectionHelper.IsSupportedCollectionType(type))
+                throw new InvalidOperationException("The specified type is not a supported collection type.");
+
+            if (type.IsArray)
+                return type.GetElementType();
+            if (type.IsConstructedGenericType)
+                return type.GetGenericArguments()[0];
+            return typeof(object);
+        }
+
+        /// <summary>
         /// Merges two collection into one collection of the same type.
         /// </summary>
         /// <param name="resultType">The type of collection into which the result is to be converted.</param>
