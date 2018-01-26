@@ -16,7 +16,7 @@
         {
           "label": "test",
           "args": [
-            "${workspaceRoot}/test/System.CommandLine.Parser.Tests/System.CommandLine.Parser.Tests.csproj"
+            "${workspaceRoot}/test/System.CommandLine.Parser.Tests.csproj"
           ],
           "group": "test",
           "problemMatcher": "$msCompile",
