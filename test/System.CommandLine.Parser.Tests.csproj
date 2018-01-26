@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\source\System.CommandLine.Parser\System.CommandLine.Parser.csproj" />
+    <ProjectReference Include="..\source\System.CommandLine.Parser.csproj" />
   </ItemGroup>
 
 </Project>
