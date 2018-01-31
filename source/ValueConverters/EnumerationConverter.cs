@@ -46,13 +46,17 @@ namespace System.CommandLine.ValueConverters
             if (string.IsNullOrWhiteSpace(value))
                 throw new ArgumentNullException(nameof(value));
 
-            // Tries to convert the specified value to the specified type
+            // Checks if the result type is an enumeration, if not, then an exception is thrown
             if (!resultType.IsEnum)
                 throw new InvalidOperationException($"The {resultType.Name} type is not an enumeration type.");
+
+            // Tries to parse the enumeration by integer value
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int integerValue))
+                return Enum.ToObject(resultType, integerValue);
+
+            // Tries to parse the enumeration by name
             if (!Enum.GetNames(resultType).Contains(value))
                 throw new InvalidOperationException($"The value \"{value}\" cannot be converted to \"{resultType.Name}\".");
-
-            // Parses the enumeration value and returns it
             return Enum.Parse(resultType, value);
         }
 
