@@ -122,6 +122,67 @@ namespace System.CommandLine.Parser.Tests
             Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(object), "   3e4E-1   "));
         }
 
+        /// <summary>
+        /// Tests the value converter that can convert string to integer values.
+        /// </summary>
+        [Fact]
+        public void TestIntegerConverter()
+        {
+            IntegerConverter integerConverter = new IntegerConverter();
+
+            Assert.True(integerConverter.CanConvertTo(typeof(byte)));
+            Assert.True(integerConverter.CanConvertTo(typeof(sbyte)));
+            Assert.True(integerConverter.CanConvertTo(typeof(short)));
+            Assert.True(integerConverter.CanConvertTo(typeof(ushort)));
+            Assert.True(integerConverter.CanConvertTo(typeof(int)));
+            Assert.True(integerConverter.CanConvertTo(typeof(uint)));
+            Assert.True(integerConverter.CanConvertTo(typeof(long)));
+            Assert.True(integerConverter.CanConvertTo(typeof(ulong)));
+
+            Assert.False(integerConverter.CanConvertTo(typeof(string)));
+            Assert.False(integerConverter.CanConvertTo(typeof(float)));
+            Assert.False(integerConverter.CanConvertTo(typeof(double)));
+            Assert.False(integerConverter.CanConvertTo(typeof(decimal)));
+            Assert.False(integerConverter.CanConvertTo(typeof(Enum)));
+
+            Assert.True(integerConverter.CanConvertFrom(" 10  "));
+            Assert.True(integerConverter.CanConvertFrom("123"));
+            Assert.True(integerConverter.CanConvertFrom("1,2,3,4   "));
+            Assert.True(integerConverter.CanConvertFrom("   1,234,567  "));
+            Assert.True(integerConverter.CanConvertFrom(" 000,000"));
+            Assert.True(integerConverter.CanConvertFrom(" 3e7  "));
+            Assert.True(integerConverter.CanConvertFrom("500e-2"));
+            Assert.True(integerConverter.CanConvertFrom("    6E4  "));
+            Assert.True(integerConverter.CanConvertFrom(" 2E+5"));
+
+            Assert.False(integerConverter.CanConvertFrom("abc"));
+            Assert.False(integerConverter.CanConvertFrom(""));
+            Assert.False(integerConverter.CanConvertFrom("   "));
+            Assert.False(integerConverter.CanConvertFrom("."));
+            Assert.False(integerConverter.CanConvertFrom("  abc123"));
+            Assert.False(integerConverter.CanConvertFrom("0x   "));
+            Assert.False(integerConverter.CanConvertFrom("  e4  "));
+            Assert.False(integerConverter.CanConvertFrom("23e  "));
+            Assert.False(integerConverter.CanConvertFrom(" 1 2 3"));
+            Assert.False(integerConverter.CanConvertFrom(" 1E-4 "));
+            Assert.False(integerConverter.CanConvertFrom(" --4"));
+
+            Assert.Equal((byte)1, integerConverter.Convert(typeof(byte), "1"));
+            Assert.Equal((sbyte)123, integerConverter.Convert(typeof(sbyte), " 123"));
+            Assert.Equal((short)-23, integerConverter.Convert(typeof(short), "-23    "));
+            Assert.Equal((ushort)5000, integerConverter.Convert(typeof(ushort), "   5,0,0,0   "));
+            Assert.Equal(-20000, integerConverter.Convert(typeof(int), " -2e4 "));
+            Assert.Equal(2300000u, integerConverter.Convert(typeof(uint), "23e5"));
+            Assert.Equal(1234567890L, integerConverter.Convert(typeof(long), "1,234,567,890  "));
+            Assert.Equal(123456789UL, integerConverter.Convert(typeof(ulong), "  1,2,3,4,5,6,7,8,9"));
+            Assert.Equal(123400L, integerConverter.Convert(typeof(object), "    1,234E2    "));
+
+            Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(byte), ","));
+            Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(sbyte), "256"));
+            Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(short), "1234567890"));
+            Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(object), "123e-2"));
+        }
+
         #endregion
     }
 }
