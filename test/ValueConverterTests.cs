@@ -2,6 +2,7 @@
 #region Using Directives
 
 using System;
+using System.Text;
 using System.CommandLine.Arguments;
 using System.CommandLine.ValueConverters;
 using Xunit;
@@ -18,7 +19,7 @@ namespace System.CommandLine.Parser.Tests
         #region Unit Tests
 
         /// <summary>
-        /// Tests the value converter that can convert string to boolean values.
+        /// Tests the value converter that can convert strings to boolean values.
         /// </summary>
         [Fact]
         public void TestBooleanConverter()
@@ -64,7 +65,7 @@ namespace System.CommandLine.Parser.Tests
         private enum Animal { Cat, Dog, Bird }
 
         /// <summary>
-        /// Tests the value converter that can convert string to enumeration values.
+        /// Tests the value converter that can convert strings to enumeration values.
         /// </summary>
         [Fact]
         public void TestEnumerationConverter()
@@ -94,71 +95,7 @@ namespace System.CommandLine.Parser.Tests
         }
 
         /// <summary>
-        /// Tests the value converter that can convert string to float values.
-        /// </summary>
-        [Fact]
-        public void TestFloatConverter()
-        {
-            FloatConverter floatConverter = new FloatConverter();
-
-            Assert.True(floatConverter.CanConvertTo(typeof(float)));
-            Assert.True(floatConverter.CanConvertTo(typeof(double)));
-            Assert.True(floatConverter.CanConvertTo(typeof(decimal)));
-
-            Assert.False(floatConverter.CanConvertTo(typeof(string)));
-            Assert.False(floatConverter.CanConvertTo(typeof(int)));
-            Assert.False(floatConverter.CanConvertTo(typeof(Enum)));
-
-            Assert.True(floatConverter.CanConvertFrom(" 10  "));
-            Assert.True(floatConverter.CanConvertFrom("1.0"));
-            Assert.True(floatConverter.CanConvertFrom(" .2"));
-            Assert.True(floatConverter.CanConvertFrom(" 0      "));
-            Assert.True(floatConverter.CanConvertFrom(" 1,000,000"));
-            Assert.True(floatConverter.CanConvertFrom(" 123.456  "));
-            Assert.True(floatConverter.CanConvertFrom(".123"));
-            Assert.True(floatConverter.CanConvertFrom(" 1,234,567.89  "));
-            Assert.True(floatConverter.CanConvertFrom("1e2"));
-            Assert.True(floatConverter.CanConvertFrom("12E-3"));
-            Assert.True(floatConverter.CanConvertFrom("1.2E4"));
-
-            Assert.False(floatConverter.CanConvertFrom("abc"));
-            Assert.False(floatConverter.CanConvertFrom(""));
-            Assert.False(floatConverter.CanConvertFrom("   "));
-            Assert.False(floatConverter.CanConvertFrom("."));
-            Assert.False(floatConverter.CanConvertFrom("abc123"));
-            Assert.False(floatConverter.CanConvertFrom("1 2 3"));
-            Assert.False(floatConverter.CanConvertFrom("123e"));
-            Assert.False(floatConverter.CanConvertFrom("e123"));
-
-            Assert.Equal(1.0f, floatConverter.Convert(typeof(float), "1"));
-            Assert.Equal(0.123d, floatConverter.Convert(typeof(double), " .123"));
-            Assert.Equal(1234567m, floatConverter.Convert(typeof(decimal), "1,234,567  "));
-            Assert.Equal(123.0m, floatConverter.Convert(typeof(object), "  123"));
-            Assert.Equal(12.3f, floatConverter.Convert(typeof(float), "   1,2.3"));
-            Assert.Equal(123.456d, floatConverter.Convert(typeof(double), "123.456  "));
-            Assert.Equal(1.00001m, floatConverter.Convert(typeof(decimal), "00001.00001"));
-            Assert.Equal(0.123m, floatConverter.Convert(typeof(object), ".123  "));
-            Assert.Equal(1234567.89f, floatConverter.Convert(typeof(float), "1,234,567.89  "));
-            Assert.Equal(123456789.0d, floatConverter.Convert(typeof(double), "  1,2,3,4,5,6,7,8,9"));
-            Assert.Equal(0.0m, floatConverter.Convert(typeof(decimal), "  00000  "));
-            Assert.Equal(1234.0m, floatConverter.Convert(typeof(object), "1,234"));
-            Assert.Equal(12000.0f, floatConverter.Convert(typeof(float), "12e3"));
-            Assert.Equal(0.01d, floatConverter.Convert(typeof(double), "10e-3"));
-            Assert.Equal(10000000000000000.0m, floatConverter.Convert(typeof(decimal), "  10E+15  "));
-            Assert.Equal(0.00035m, floatConverter.Convert(typeof(object), "3.5E-4"));
-
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(float), "."));
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(double), "122abc"));
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(decimal), " 1 2 3 4 "));
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(object), "123..123"));
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(float), "e"));
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(double), "1E"));
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(decimal), " 3E"));
-            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(object), "   3e4E-1   "));
-        }
-
-        /// <summary>
-        /// Tests the value converter that can convert string to integer values.
+        /// Tests the value converter that can convert strings to integer values.
         /// </summary>
         [Fact]
         public void TestIntegerConverter()
@@ -233,6 +170,106 @@ namespace System.CommandLine.Parser.Tests
             Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(short), "1234567890"));
             Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(object), "123e-2"));
             Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(uint), "-0xF"));
+        }
+
+        /// <summary>
+        /// Tests the value converter that can convert strings to float values.
+        /// </summary>
+        [Fact]
+        public void TestFloatConverter()
+        {
+            FloatConverter floatConverter = new FloatConverter();
+
+            Assert.True(floatConverter.CanConvertTo(typeof(float)));
+            Assert.True(floatConverter.CanConvertTo(typeof(double)));
+            Assert.True(floatConverter.CanConvertTo(typeof(decimal)));
+
+            Assert.False(floatConverter.CanConvertTo(typeof(string)));
+            Assert.False(floatConverter.CanConvertTo(typeof(int)));
+            Assert.False(floatConverter.CanConvertTo(typeof(Enum)));
+
+            Assert.True(floatConverter.CanConvertFrom(" 10  "));
+            Assert.True(floatConverter.CanConvertFrom("1.0"));
+            Assert.True(floatConverter.CanConvertFrom(" .2"));
+            Assert.True(floatConverter.CanConvertFrom(" 0      "));
+            Assert.True(floatConverter.CanConvertFrom(" 1,000,000"));
+            Assert.True(floatConverter.CanConvertFrom(" 123.456  "));
+            Assert.True(floatConverter.CanConvertFrom(".123"));
+            Assert.True(floatConverter.CanConvertFrom(" 1,234,567.89  "));
+            Assert.True(floatConverter.CanConvertFrom("1e2"));
+            Assert.True(floatConverter.CanConvertFrom("12E-3"));
+            Assert.True(floatConverter.CanConvertFrom("1.2E4"));
+
+            Assert.False(floatConverter.CanConvertFrom("abc"));
+            Assert.False(floatConverter.CanConvertFrom(""));
+            Assert.False(floatConverter.CanConvertFrom("   "));
+            Assert.False(floatConverter.CanConvertFrom("."));
+            Assert.False(floatConverter.CanConvertFrom("abc123"));
+            Assert.False(floatConverter.CanConvertFrom("1 2 3"));
+            Assert.False(floatConverter.CanConvertFrom("123e"));
+            Assert.False(floatConverter.CanConvertFrom("e123"));
+
+            Assert.Equal(1.0f, floatConverter.Convert(typeof(float), "1"));
+            Assert.Equal(0.123d, floatConverter.Convert(typeof(double), " .123"));
+            Assert.Equal(1234567m, floatConverter.Convert(typeof(decimal), "1,234,567  "));
+            Assert.Equal(123.0m, floatConverter.Convert(typeof(object), "  123"));
+            Assert.Equal(12.3f, floatConverter.Convert(typeof(float), "   1,2.3"));
+            Assert.Equal(123.456d, floatConverter.Convert(typeof(double), "123.456  "));
+            Assert.Equal(1.00001m, floatConverter.Convert(typeof(decimal), "00001.00001"));
+            Assert.Equal(0.123m, floatConverter.Convert(typeof(object), ".123  "));
+            Assert.Equal(1234567.89f, floatConverter.Convert(typeof(float), "1,234,567.89  "));
+            Assert.Equal(123456789.0d, floatConverter.Convert(typeof(double), "  1,2,3,4,5,6,7,8,9"));
+            Assert.Equal(0.0m, floatConverter.Convert(typeof(decimal), "  00000  "));
+            Assert.Equal(1234.0m, floatConverter.Convert(typeof(object), "1,234"));
+            Assert.Equal(12000.0f, floatConverter.Convert(typeof(float), "12e3"));
+            Assert.Equal(0.01d, floatConverter.Convert(typeof(double), "10e-3"));
+            Assert.Equal(10000000000000000.0m, floatConverter.Convert(typeof(decimal), "  10E+15  "));
+            Assert.Equal(0.00035m, floatConverter.Convert(typeof(object), "3.5E-4"));
+
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(float), "."));
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(double), "122abc"));
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(decimal), " 1 2 3 4 "));
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(object), "123..123"));
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(float), "e"));
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(double), "1E"));
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(decimal), " 3E"));
+            Assert.Throws<InvalidOperationException>(() => floatConverter.Convert(typeof(object), "   3e4E-1   "));
+        }
+
+        /// <summary>
+        /// Tests the value converter that can convert strings to string values.
+        /// </summary>
+        [Fact]
+        public void TestStringConverter()
+        {
+            StringConverter stringConverter = new StringConverter();
+
+            Assert.True(stringConverter.CanConvertTo(typeof(string)));
+            Assert.True(stringConverter.CanConvertTo(typeof(StringBuilder)));
+
+            Assert.False(stringConverter.CanConvertTo(typeof(float)));
+            Assert.False(stringConverter.CanConvertTo(typeof(double)));
+            Assert.False(stringConverter.CanConvertTo(typeof(decimal)));
+            Assert.False(stringConverter.CanConvertTo(typeof(Enum)));
+
+            Assert.True(stringConverter.CanConvertFrom(" 123  "));
+            Assert.True(stringConverter.CanConvertFrom("1.0"));
+            Assert.True(stringConverter.CanConvertFrom(" Dog"));
+            Assert.True(stringConverter.CanConvertFrom(" True      "));
+            Assert.True(stringConverter.CanConvertFrom(" abc"));
+            Assert.True(stringConverter.CanConvertFrom("1.2E3"));
+            Assert.True(stringConverter.CanConvertFrom("    0xFF"));
+            Assert.True(stringConverter.CanConvertFrom("Hello, World!"));
+            Assert.True(stringConverter.CanConvertFrom("The quick brown fox jumps over the lazy dog."));
+
+            Assert.Equal("Hello, World!", stringConverter.Convert(typeof(string), "Hello, World!"));
+            Assert.Equal("The quick brown fox jumps over the lazy dog.", stringConverter.Convert(typeof(object), "The quick brown fox jumps over the lazy dog."));
+
+            StringBuilder stringBuilder = new StringBuilder("Hello, World!");
+            Assert.True(stringBuilder.Equals(stringConverter.Convert(typeof(StringBuilder), "Hello, World!") as StringBuilder));
+            stringBuilder = new StringBuilder("The quick brown fox");
+            stringBuilder.Append(" jumps over the lazy dog.");
+            Assert.True(stringBuilder.Equals(stringConverter.Convert(typeof(StringBuilder), "The quick brown fox jumps over the lazy dog.") as StringBuilder));
         }
 
         #endregion
