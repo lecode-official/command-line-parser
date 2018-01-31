@@ -23,7 +23,7 @@ namespace System.CommandLine.ValueConverters
         /// <summary>
         /// Contains the number style that is used to parse the integer literals.
         /// </summary>
-        private static readonly NumberStyles numberStyles = NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent | NumberStyles.AllowHexSpecifier;
+        private static readonly NumberStyles numberStyles = NumberStyles.Integer | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
 
         #endregion
 
@@ -80,6 +80,7 @@ namespace System.CommandLine.ValueConverters
                     return ulong.Parse(value, numberStyles, CultureInfo.InvariantCulture);
             }
             catch (FormatException) {}
+            catch (OverflowException) {}
 
             // If this code is reached it means, that either the specified type is not supported or the value could not be converted, in that case an exception is thrown
             throw new InvalidOperationException($"The value \"{value}\" cannot be converted to \"{resultType.Name}\".");
