@@ -154,6 +154,10 @@ namespace System.CommandLine.Parser.Tests
             Assert.True(integerConverter.CanConvertFrom("500e-2"));
             Assert.True(integerConverter.CanConvertFrom("    6E4  "));
             Assert.True(integerConverter.CanConvertFrom(" 2E+5"));
+            Assert.True(integerConverter.CanConvertFrom("    0xFF"));
+            Assert.True(integerConverter.CanConvertFrom("0X123   "));
+            Assert.True(integerConverter.CanConvertFrom(" 0x1F2A   "));
+            Assert.True(integerConverter.CanConvertFrom("-0X1"));
 
             Assert.False(integerConverter.CanConvertFrom("abc"));
             Assert.False(integerConverter.CanConvertFrom(""));
@@ -166,6 +170,8 @@ namespace System.CommandLine.Parser.Tests
             Assert.False(integerConverter.CanConvertFrom(" 1 2 3"));
             Assert.False(integerConverter.CanConvertFrom(" 1E-4 "));
             Assert.False(integerConverter.CanConvertFrom(" --4"));
+            Assert.False(integerConverter.CanConvertFrom("ABCDEF"));
+            Assert.False(integerConverter.CanConvertFrom("0x0X1"));
 
             Assert.Equal((byte)1, integerConverter.Convert(typeof(byte), "1"));
             Assert.Equal((sbyte)123, integerConverter.Convert(typeof(sbyte), " 123"));
@@ -177,10 +183,21 @@ namespace System.CommandLine.Parser.Tests
             Assert.Equal(123456789UL, integerConverter.Convert(typeof(ulong), "  1,2,3,4,5,6,7,8,9"));
             Assert.Equal(123400L, integerConverter.Convert(typeof(object), "    1,234E2    "));
 
+            Assert.Equal((byte)3, integerConverter.Convert(typeof(byte), "+0x3"));
+            Assert.Equal((sbyte)123, integerConverter.Convert(typeof(sbyte), " 0X7B   "));
+            Assert.Equal((short)-35, integerConverter.Convert(typeof(short), "-0x23  "));
+            Assert.Equal((ushort)2748, integerConverter.Convert(typeof(ushort), "   +0xABC   "));
+            Assert.Equal(-11259375, integerConverter.Convert(typeof(int), " -0xAbCdEf "));
+            Assert.Equal(65535u, integerConverter.Convert(typeof(uint), "0XFFFF"));
+            Assert.Equal(-78187493520L, integerConverter.Convert(typeof(long), "-0x1234567890  "));
+            Assert.Equal(0UL, integerConverter.Convert(typeof(ulong), "  0x0 "));
+            Assert.Equal(3735928559L, integerConverter.Convert(typeof(object), "    0XDEADBEEF    "));
+
             Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(byte), ","));
             Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(sbyte), "256"));
             Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(short), "1234567890"));
             Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(object), "123e-2"));
+            Assert.Throws<InvalidOperationException>(() => integerConverter.Convert(typeof(uint), "-0xF"));
         }
 
         #endregion
