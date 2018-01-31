@@ -23,7 +23,7 @@ namespace System.CommandLine.ValueConverters
         /// <summary>
         /// Contains the number style that is used to parse the floating point literals.
         /// </summary>
-        private static readonly NumberStyles numberStyles = NumberStyles.Float | NumberStyles.AllowThousands;
+        private static readonly NumberStyles numberStyles = NumberStyles.Float | NumberStyles.AllowThousands | NumberStyles.AllowExponent;
 
         #endregion
 
