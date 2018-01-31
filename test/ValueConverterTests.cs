@@ -2,7 +2,9 @@
 #region Using Directives
 
 using System;
+using System.Net;
 using System.Text;
+using System.Collections.Generic;
 using System.CommandLine.Arguments;
 using System.CommandLine.ValueConverters;
 using Xunit;
@@ -109,6 +111,43 @@ namespace System.CommandLine.Parser.Tests
             Assert.Equal(0.01d, ValueConverter.Convert(typeof(double), "10e-3"));
             Assert.Equal(10000000000000000.0m, ValueConverter.Convert(typeof(decimal), "10E+15"));
             Assert.Equal(0.00035m, ValueConverter.Convert(typeof(object), "3.5E-4"));
+        }
+
+        /// <summary>
+        /// Tests how the <see ref="ValueConverter"/> handles the conversion of any values to collections.
+        /// </summary>
+        [Fact]
+        public void TestCollectionConversion()
+        {
+            Assert.Equal(new Color[] { Color.Red }, ValueConverter.Convert(typeof(Color[]), "Red"));
+            Assert.Equal(new Color[] { Color.Red | Color.Blue }, ValueConverter.Convert(typeof(Color[]), "5"));
+            Assert.Equal(new int[] { -255 }, ValueConverter.Convert(typeof(int[]), "-0xff"));
+
+            Assert.Equal(new List<int> { 1 }, ValueConverter.Convert(typeof(List<int>), "1"));
+            Assert.Equal(new List<object> { false }, ValueConverter.Convert(typeof(List<object>), "False"));
+        }
+
+        /// <summary>
+        /// Represents a very simple value converter for IP addresses, which is used to test custom value converters.
+        /// </summary>
+        private class IPAddressConverter : IValueConverter
+        {
+            public bool CanConvertFrom(string value) => IPAddress.TryParse(value, out _);
+            public bool CanConvertTo(Type resultType) => resultType == typeof(IPAddress);
+            public object Convert(Type resultType, string value) => IPAddress.Parse(value);
+        }
+
+        /// <summary>
+        /// Tests how the <see ref="ValueConverter"/> handles custom value converters.
+        /// </summary>
+        [Fact]
+        public void TestCustomValueConverters()
+        {
+            ValueConverter.AddValueConverter(new IPAddressConverter());
+            Assert.Equal(IPAddress.Loopback, ValueConverter.Convert(typeof(IPAddress), "127.0.0.1"));
+            Assert.Equal(IPAddress.IPv6Loopback, ValueConverter.Convert(typeof(IPAddress), "::1"));
+            Assert.Equal(new IPAddress(new byte[] { 0, 0, 0, 0 }), ValueConverter.Convert(typeof(object), "0.0.0.0"));
+            ValueConverter.ResetValueConverters();
         }
 
         #endregion
