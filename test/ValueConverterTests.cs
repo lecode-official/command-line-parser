@@ -59,6 +59,41 @@ namespace System.CommandLine.Parser.Tests
         }
 
         /// <summary>
+        /// Represents an enumeration used for testing the enumeration converter.
+        /// </summary>
+        private enum Animal { Cat, Dog, Bird }
+
+        /// <summary>
+        /// Tests the value converter that can convert string to enumeration values.
+        /// </summary>
+        [Fact]
+        public void TestEnumerationConverter()
+        {
+            EnumerationConverter enumerationConverter = new EnumerationConverter();
+
+            Assert.True(enumerationConverter.CanConvertTo(typeof(DayOfWeek)));
+            Assert.True(enumerationConverter.CanConvertTo(typeof(Animal)));
+            Assert.True(enumerationConverter.CanConvertTo(typeof(PlatformID)));
+
+            Assert.False(enumerationConverter.CanConvertTo(typeof(string)));
+            Assert.False(enumerationConverter.CanConvertTo(typeof(int)));
+            Assert.False(enumerationConverter.CanConvertTo(typeof(bool)));
+            Assert.False(enumerationConverter.CanConvertTo(typeof(float)));
+            Assert.False(enumerationConverter.CanConvertTo(typeof(Enum)));
+
+            Assert.False(enumerationConverter.CanConvertFrom("abc"));
+            Assert.False(enumerationConverter.CanConvertFrom("123"));
+            Assert.False(enumerationConverter.CanConvertFrom(""));
+
+            Assert.Equal(Animal.Cat, enumerationConverter.Convert(typeof(Animal), "Cat"));
+            Assert.Equal(Animal.Dog, enumerationConverter.Convert(typeof(Animal), "Dog"));
+            Assert.Equal(Animal.Bird, enumerationConverter.Convert(typeof(Animal), "Bird"));
+
+            Assert.Throws<InvalidOperationException>(() => enumerationConverter.Convert(typeof(object), "Dog"));
+            Assert.Throws<InvalidOperationException>(() => enumerationConverter.Convert(typeof(Animal), "Fish"));
+        }
+
+        /// <summary>
         /// Tests the value converter that can convert string to float values.
         /// </summary>
         [Fact]
