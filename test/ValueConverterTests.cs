@@ -60,6 +60,57 @@ namespace System.CommandLine.Parser.Tests
             Assert.Equal(DayOfWeek.Sunday, ValueConverter.Convert(typeof(DayOfWeek), "Sunday"));
         }
 
+        /// <summary>
+        /// Tests how the <see ref="ValueConverter"/> handles the conversion of integer values.
+        /// </summary>
+        [Fact]
+        public void TestIntegerValueConversion()
+        {
+            Assert.Equal((byte)1, ValueConverter.Convert(typeof(byte), "1"));
+            Assert.Equal((sbyte)123, ValueConverter.Convert(typeof(sbyte), "123"));
+            Assert.Equal((short)-23, ValueConverter.Convert(typeof(short), "-23"));
+            Assert.Equal((ushort)5000, ValueConverter.Convert(typeof(ushort), "5,0,0,0"));
+            Assert.Equal(-20000, ValueConverter.Convert(typeof(int), "-2e4"));
+            Assert.Equal(2300000u, ValueConverter.Convert(typeof(uint), "23e5"));
+            Assert.Equal(1234567890L, ValueConverter.Convert(typeof(long), "1,234,567,890"));
+            Assert.Equal(123456789UL, ValueConverter.Convert(typeof(ulong), "1,2,3,4,5,6,7,8,9"));
+            Assert.Equal(123400L, ValueConverter.Convert(typeof(object), "1,234E2"));
+
+            Assert.Equal((byte)3, ValueConverter.Convert(typeof(byte), "+0x3"));
+            Assert.Equal((sbyte)123, ValueConverter.Convert(typeof(sbyte), "0X7B"));
+            Assert.Equal((short)-35, ValueConverter.Convert(typeof(short), "-0x23"));
+            Assert.Equal((ushort)2748, ValueConverter.Convert(typeof(ushort), "+0xABC"));
+            Assert.Equal(-11259375, ValueConverter.Convert(typeof(int), "-0xAbCdEf"));
+            Assert.Equal(65535u, ValueConverter.Convert(typeof(uint), "0XFFFF"));
+            Assert.Equal(-78187493520L, ValueConverter.Convert(typeof(long), "-0x1234567890"));
+            Assert.Equal(0UL, ValueConverter.Convert(typeof(ulong), "0x0"));
+            Assert.Equal(3735928559L, ValueConverter.Convert(typeof(object), "0XDEADBEEF"));
+        }
+
+        /// <summary>
+        /// Tests how the <see ref="ValueConverter"/> handles the conversion of float values.
+        /// </summary>
+        [Fact]
+        public void TestFloatValueConversion()
+        {
+            Assert.Equal(1.0f, ValueConverter.Convert(typeof(float), "1"));
+            Assert.Equal(0.123d, ValueConverter.Convert(typeof(double), ".123"));
+            Assert.Equal(1234567m, ValueConverter.Convert(typeof(decimal), "1,234,567"));
+            Assert.Equal(123L, ValueConverter.Convert(typeof(object), "123"));
+            Assert.Equal(12.3f, ValueConverter.Convert(typeof(float), "1,2.3"));
+            Assert.Equal(123.456d, ValueConverter.Convert(typeof(double), "123.456"));
+            Assert.Equal(1.00001m, ValueConverter.Convert(typeof(decimal), "00001.00001"));
+            Assert.Equal(0.123m, ValueConverter.Convert(typeof(object), ".123"));
+            Assert.Equal(1234567.89f, ValueConverter.Convert(typeof(float), "1,234,567.89"));
+            Assert.Equal(123456789.0d, ValueConverter.Convert(typeof(double), "1,2,3,4,5,6,7,8,9"));
+            Assert.Equal(0.0m, ValueConverter.Convert(typeof(decimal), "00000"));
+            Assert.Equal(1234L, ValueConverter.Convert(typeof(object), "1,234"));
+            Assert.Equal(12000.0f, ValueConverter.Convert(typeof(float), "12e3"));
+            Assert.Equal(0.01d, ValueConverter.Convert(typeof(double), "10e-3"));
+            Assert.Equal(10000000000000000.0m, ValueConverter.Convert(typeof(decimal), "10E+15"));
+            Assert.Equal(0.00035m, ValueConverter.Convert(typeof(object), "3.5E-4"));
+        }
+
         #endregion
     }
 }

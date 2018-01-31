@@ -89,6 +89,7 @@ namespace System.CommandLine.Parser.Tests
             Assert.Equal(Animal.Cat, enumerationConverter.Convert(typeof(Animal), "Cat"));
             Assert.Equal(Animal.Dog, enumerationConverter.Convert(typeof(Animal), "Dog"));
             Assert.Equal(Animal.Bird, enumerationConverter.Convert(typeof(Animal), "Bird"));
+            Assert.Equal(Animal.Bird, enumerationConverter.Convert(typeof(Animal), "2"));
 
             Assert.Throws<InvalidOperationException>(() => enumerationConverter.Convert(typeof(object), "Dog"));
             Assert.Throws<InvalidOperationException>(() => enumerationConverter.Convert(typeof(Animal), "Fish"));
