@@ -11,7 +11,7 @@ using Xunit;
 
 #endregion
 
-namespace System.CommandLine.Parser.Tests
+namespace System.CommandLine.Tests
 {
     /// <summary>
     /// Represents a set of unit tests for the <see ref="ValueConverter"/> class.
