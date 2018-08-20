@@ -49,42 +49,38 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(options));
 
             // Stores the arguments for later use
-            this.description = description;
+            this.Description = description;
             this.Options = options;
         }
 
         #endregion
 
-        #region Private Fields
-
-        /// <summary>
-        /// Contains the description of the parser. If this is a root parser, then this is the description of the application. Otherwise this it the description for the command.
-        /// </summary>
-        private readonly string description;
-
-        /// <summary>
-        /// Contains the positional arguments of the parser.
-        /// </summary>
-        private readonly List<Argument> positionalArguments = new List<Argument>();
-
-        /// <summary>
-        /// Contains the named arguments of the parser.
-        /// </summary>
-        private readonly List<Argument> namedArguments = new List<Argument>();
-
-        /// <summary>
-        /// Contains the flag arguments of the parser.
-        /// </summary>
-        private readonly List<Argument> flagArguments = new List<Argument>();
-
-        /// <summary>
-        /// Contains the commands of the parser (which in turn consist of a sub-parser, which is able to parse the arguments of the command).
-        /// </summary>
-        private readonly List<Command> commands = new List<Command>();
-
-        #endregion
-
         #region Public Properties
+
+        /// <summary>
+        /// Gets the description of the parser. If this is a root parser, then this is the description of the application. Otherwise this it the description for the command.
+        /// </summary>
+        public string Description { get; private set; }
+
+        /// <summary>
+        /// Gets the positional arguments of the parser.
+        /// </summary>
+        public IEnumerable<Argument> PositionalArguments { get; private set; } = new List<Argument>();
+
+        /// <summary>
+        /// Gets the named arguments of the parser.
+        /// </summary>
+        public IEnumerable<Argument> NamedArguments { get; private set; } = new List<Argument>();
+
+        /// <summary>
+        /// Gets the flag arguments of the parser.
+        /// </summary>
+        public IEnumerable<Argument> FlagArguments { get; private set; } = new List<Argument>();
+
+        /// <summary>
+        /// Gets the commands of the parser (which in turn consist of a sub-parser, which is able to parse the arguments of the command).
+        /// </summary>
+        public IEnumerable<Command> Commands { get; private set; } = new List<Command>();
 
         /// <summary>
         /// Gets or sets the options of the command line parser.
@@ -104,19 +100,19 @@ namespace System.CommandLine
         private void AssertArgumentIsUnique(Argument argument)
         {
             // Checks if there are any arguments with the same name
-            if (this.namedArguments.Any(namedArgument => namedArgument.Name == argument.Name))
+            if (this.NamedArguments.Any(namedArgument => namedArgument.Name == argument.Name))
                 throw new InvalidOperationException($"There already is a named argument with the name {argument.Name}.");
-            if (this.flagArguments.Any(flagArgument => flagArgument.Name == argument.Name))
+            if (this.FlagArguments.Any(flagArgument => flagArgument.Name == argument.Name))
                 throw new InvalidOperationException($"There already is a flag argument with the name {argument.Name}.");
-            if (this.positionalArguments.Any(positionalArgument => positionalArgument.Name == argument.Name))
+            if (this.PositionalArguments.Any(positionalArgument => positionalArgument.Name == argument.Name))
                 throw new InvalidOperationException($"There already is a positional argument with the name {argument.Name}.");
 
             // Checks if there are any other arguments with the same alias
             if (!string.IsNullOrWhiteSpace(argument.Alias))
             {
-                if (this.namedArguments.Any(namedArgument => namedArgument.Alias == argument.Alias))
+                if (this.NamedArguments.Any(namedArgument => namedArgument.Alias == argument.Alias))
                     throw new InvalidOperationException($"There already is a named argument with the alias {argument.Alias}.");
-                if (this.flagArguments.Any(flagArgument => flagArgument.Alias == argument.Alias))
+                if (this.FlagArguments.Any(flagArgument => flagArgument.Alias == argument.Alias))
                     throw new InvalidOperationException($"There already is a flag argument with the alias {argument.Alias}.");
             }
         }
@@ -171,7 +167,7 @@ namespace System.CommandLine
             this.AssertArgumentIsUnique(newPositionalArgument);
 
             // Adds the positional argument to the parser
-            this.positionalArguments.Add(newPositionalArgument);
+            (this.PositionalArguments as List<Argument>).Add(newPositionalArgument);
 
             // Returns this parser, so that method invocations can be chained
             return this;
@@ -263,7 +259,7 @@ namespace System.CommandLine
             this.AssertArgumentIsUnique(newNamedArgument);
 
             // Adds the argument to the parser
-            this.namedArguments.Add(newNamedArgument);
+            (this.NamedArguments as List<Argument>).Add(newNamedArgument);
 
             // Returns this parser, so that method invocations can be chained
             return this;
@@ -326,7 +322,7 @@ namespace System.CommandLine
             this.AssertArgumentIsUnique(newFlagArgument);
 
             // Adds the argument to the parser
-            this.flagArguments.Add(newFlagArgument);
+            (this.FlagArguments as List<Argument>).Add(newFlagArgument);
 
             // Returns this parser, so that method invocations can be chained
             return this;
@@ -392,14 +388,14 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(parserOptions));
 
             // Checks if there is already a command with the same name or alias
-            if (this.commands.Any(command => command.Name == name))
+            if (this.Commands.Any(command => command.Name == name))
                 throw new InvalidOperationException($"There already is a command with the name {name}.");
-            if (!string.IsNullOrWhiteSpace(alias) && this.commands.Any(command => command.Alias == alias))
+            if (!string.IsNullOrWhiteSpace(alias) && this.Commands.Any(command => command.Alias == alias))
                 throw new InvalidOperationException($"There already is a command with the alias {alias}.");
 
             // Creates the parser for the new command and adds it to the list of commands
             Command newCommand = new Command(name, alias, description, parserOptions);
-            this.commands.Add(newCommand);
+            (this.Commands as List<Command>).Add(newCommand);
 
             // Returns the created parser
             return newCommand.SubParser;
@@ -433,14 +429,14 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(subParser));
 
             // Checks if there is already a command with the same name or alias
-            if (this.commands.Any(command => command.Name == name))
+            if (this.Commands.Any(command => command.Name == name))
                 throw new InvalidOperationException($"There already is a command with the name {name}.");
-            if (!string.IsNullOrWhiteSpace(alias) && this.commands.Any(command => command.Alias == alias))
+            if (!string.IsNullOrWhiteSpace(alias) && this.Commands.Any(command => command.Alias == alias))
                 throw new InvalidOperationException($"There already is a command with the alias {alias}.");
 
             // Adds the new command to the list of commands
             Command newCommand = new Command(name, alias, subParser);
-            this.commands.Add(newCommand);
+            (this.Commands as List<Command>).Add(newCommand);
 
             // Returns the sub-parser
             return subParser;
@@ -460,13 +456,13 @@ namespace System.CommandLine
                 throw new ArgumentNullException(nameof(command));
 
             // Checks if there is already a command with the same name or alias
-            if (this.commands.Any(otherCommand => otherCommand.Name == command.Name))
+            if (this.Commands.Any(otherCommand => otherCommand.Name == command.Name))
                 throw new InvalidOperationException($"There already is a command with the name {command.Name}.");
-            if (!string.IsNullOrWhiteSpace(command.Alias) && this.commands.Any(otherCommand => otherCommand.Alias == command.Alias))
+            if (!string.IsNullOrWhiteSpace(command.Alias) && this.Commands.Any(otherCommand => otherCommand.Alias == command.Alias))
                 throw new InvalidOperationException($"There already is a command with the alias {command.Alias}.");
 
             // Adds the command to the list of commands
-            this.commands.Add(command);
+            (this.Commands as List<Command>).Add(command);
 
             // Returns the sub-parser
             return command.SubParser;
