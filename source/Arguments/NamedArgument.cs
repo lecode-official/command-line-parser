@@ -40,7 +40,7 @@ namespace System.CommandLine.Arguments
             this.Destination = destination;
             this.Help = help;
             this.DefaultValue = defaultValue;
-            this.DuplicateResolutionPolicy = duplicateResolutionPolicy == null ? this.ResolveDuplicateValues : duplicateResolutionPolicy;
+            this.DuplicateResolutionPolicy = duplicateResolutionPolicy ?? this.ResolveDuplicateValues;
             this.Type = typeof(T);
         }
 
