@@ -20,7 +20,7 @@ namespace System.CommandLine
         /// Initializes a new <see cref="Parser"/> instance.
         /// </summary>
         public Parser()
-            : this(null)
+            : this(null, ParserOptions.Default)
         {
         }
 
@@ -30,6 +30,16 @@ namespace System.CommandLine
         /// <param name="description">The description of the parser. If this is a root parser, then this is the description of the application. Otherwise this it the description for the command.</param>
         public Parser(string description)
             : this(description, ParserOptions.Default)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new <see cref="Parser"/> instance.
+        /// </summary>
+        /// <param name="options">The options of the command line parser.</param>
+        /// <exception cref="ArgumentNullException">If the options are <c>null</c>, then an <see cref="ArgumentNullException"/> is thrown.</exception>
+        public Parser(ParserOptions options)
+            : this(null, options)
         {
         }
 
