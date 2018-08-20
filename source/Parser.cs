@@ -104,6 +104,14 @@ namespace System.CommandLine
             if (this.PositionalArguments.Any(positionalArgument => positionalArgument.Name == argument.Name))
                 throw new InvalidOperationException($"There already is a positional argument with the name {argument.Name}.");
 
+            // Checks if there are any arguments with the same destination
+            if (this.NamedArguments.Any(namedArgument => namedArgument.Destination == argument.Destination))
+                throw new InvalidOperationException($"There already is a named argument with the destination {argument.Destination}.");
+            if (this.FlagArguments.Any(flagArgument => flagArgument.Destination == argument.Destination))
+                throw new InvalidOperationException($"There already is a flag argument with the destination {argument.Destination}.");
+            if (this.PositionalArguments.Any(positionalArgument => positionalArgument.Destination == argument.Destination))
+                throw new InvalidOperationException($"There already is a positional argument with the destination {argument.Destination}.");
+
             // Checks if there are any other arguments with the same alias
             if (!string.IsNullOrWhiteSpace(argument.Alias))
             {
