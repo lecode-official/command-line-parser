@@ -3,10 +3,7 @@
 
 using System.Collections.Generic;
 using System.CommandLine.Arguments;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 
 #endregion
 
