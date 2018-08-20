@@ -106,28 +106,29 @@ namespace System.CommandLine
         /// </exception>
         private void AssertArgumentIsUnique(Argument argument)
         {
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
             // Checks if there are any arguments with the same name
-            if (this.NamedArguments.Any(namedArgument => namedArgument.Name == argument.Name))
+            if (this.NamedArguments.Any(namedArgument => string.Equals(namedArgument.Name, argument.Name, stringComparison)))
                 throw new InvalidOperationException($"There already is a named argument with the name {argument.Name}.");
-            if (this.FlagArguments.Any(flagArgument => flagArgument.Name == argument.Name))
+            if (this.FlagArguments.Any(flagArgument => string.Equals(flagArgument.Name, argument.Name, stringComparison)))
                 throw new InvalidOperationException($"There already is a flag argument with the name {argument.Name}.");
-            if (this.PositionalArguments.Any(positionalArgument => positionalArgument.Name == argument.Name))
+            if (this.PositionalArguments.Any(positionalArgument => string.Equals(positionalArgument.Name, argument.Name, stringComparison)))
                 throw new InvalidOperationException($"There already is a positional argument with the name {argument.Name}.");
 
             // Checks if there are any arguments with the same destination
-            if (this.NamedArguments.Any(namedArgument => namedArgument.Destination == argument.Destination))
+            if (this.NamedArguments.Any(namedArgument => string.Equals(namedArgument.Destination, argument.Destination, stringComparison)))
                 throw new InvalidOperationException($"There already is a named argument with the destination {argument.Destination}.");
-            if (this.FlagArguments.Any(flagArgument => flagArgument.Destination == argument.Destination))
+            if (this.FlagArguments.Any(flagArgument => string.Equals(flagArgument.Destination, argument.Destination, stringComparison)))
                 throw new InvalidOperationException($"There already is a flag argument with the destination {argument.Destination}.");
-            if (this.PositionalArguments.Any(positionalArgument => positionalArgument.Destination == argument.Destination))
+            if (this.PositionalArguments.Any(positionalArgument => string.Equals(positionalArgument.Destination, argument.Destination, stringComparison)))
                 throw new InvalidOperationException($"There already is a positional argument with the destination {argument.Destination}.");
 
             // Checks if there are any other arguments with the same alias
             if (!string.IsNullOrWhiteSpace(argument.Alias))
             {
-                if (this.NamedArguments.Any(namedArgument => namedArgument.Alias == argument.Alias))
+                if (this.NamedArguments.Any(namedArgument => string.Equals(namedArgument.Alias, argument.Alias, stringComparison)))
                     throw new InvalidOperationException($"There already is a named argument with the alias {argument.Alias}.");
-                if (this.FlagArguments.Any(flagArgument => flagArgument.Alias == argument.Alias))
+                if (this.FlagArguments.Any(flagArgument => string.Equals(flagArgument.Alias, argument.Alias, stringComparison)))
                     throw new InvalidOperationException($"There already is a flag argument with the alias {argument.Alias}.");
             }
         }
