@@ -106,7 +106,9 @@ namespace System.CommandLine
         /// </exception>
         private void AssertArgumentIsUnique(Argument argument)
         {
+            // Determines the string comparison type based on whether the casing should be ignored or not
             StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
             // Checks if there are any arguments with the same name
             if (this.NamedArguments.Any(namedArgument => string.Equals(namedArgument.Name, argument.Name, stringComparison)))
                 throw new InvalidOperationException($"There already is a named argument with the name {argument.Name}.");
@@ -403,10 +405,13 @@ namespace System.CommandLine
             if (parserOptions == null)
                 throw new ArgumentNullException(nameof(parserOptions));
 
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
             // Checks if there is already a command with the same name or alias
-            if (this.Commands.Any(command => command.Name == name))
+            if (this.Commands.Any(command => string.Equals(command.Name, name, stringComparison)))
                 throw new InvalidOperationException($"There already is a command with the name {name}.");
-            if (!string.IsNullOrWhiteSpace(alias) && this.Commands.Any(command => command.Alias == alias))
+            if (!string.IsNullOrWhiteSpace(alias) && this.Commands.Any(command => string.Equals(command.Alias, alias, stringComparison)))
                 throw new InvalidOperationException($"There already is a command with the alias {alias}.");
 
             // Creates the parser for the new command and adds it to the list of commands
@@ -444,10 +449,13 @@ namespace System.CommandLine
             if (subParser == null)
                 throw new ArgumentNullException(nameof(subParser));
 
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
             // Checks if there is already a command with the same name or alias
-            if (this.Commands.Any(command => command.Name == name))
+            if (this.Commands.Any(command => string.Equals(command.Name, name, stringComparison)))
                 throw new InvalidOperationException($"There already is a command with the name {name}.");
-            if (!string.IsNullOrWhiteSpace(alias) && this.Commands.Any(command => command.Alias == alias))
+            if (!string.IsNullOrWhiteSpace(alias) && this.Commands.Any(command => string.Equals(command.Alias, alias, stringComparison)))
                 throw new InvalidOperationException($"There already is a command with the alias {alias}.");
 
             // Adds the new command to the list of commands
@@ -471,10 +479,13 @@ namespace System.CommandLine
             if (command == null)
                 throw new ArgumentNullException(nameof(command));
 
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
             // Checks if there is already a command with the same name or alias
-            if (this.Commands.Any(otherCommand => otherCommand.Name == command.Name))
+            if (this.Commands.Any(otherCommand => string.Equals(otherCommand.Name, command.Name, stringComparison)))
                 throw new InvalidOperationException($"There already is a command with the name {command.Name}.");
-            if (!string.IsNullOrWhiteSpace(command.Alias) && this.Commands.Any(otherCommand => otherCommand.Alias == command.Alias))
+            if (!string.IsNullOrWhiteSpace(command.Alias) && this.Commands.Any(otherCommand => string.Equals(otherCommand.Alias, command.Alias, stringComparison)))
                 throw new InvalidOperationException($"There already is a command with the alias {command.Alias}.");
 
             // Adds the command to the list of commands
