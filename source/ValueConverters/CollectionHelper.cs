@@ -92,7 +92,7 @@ namespace System.CommandLine.ValueConverters
         }
 
         /// <summary>
-        /// Merges two collection into one collection of the same type.
+        /// Merges two collections into one collection of the same type.
         /// </summary>
         /// <param name="resultType">The type of collection into which the result is to be converted.</param>
         /// <param name="firstCollection">The first collection.</param>
@@ -103,7 +103,7 @@ namespace System.CommandLine.ValueConverters
             // Validates that the two collections are of a supported collection type
             if (!CollectionHelper.IsSupportedCollectionType(firstCollection.GetType()))
                 throw new InvalidOperationException("The type of the first collection is not a supported collection type.");
-            if (!CollectionHelper.IsSupportedCollectionType(firstCollection.GetType()))
+            if (!CollectionHelper.IsSupportedCollectionType(secondCollection.GetType()))
                 throw new InvalidOperationException("The type of the second collection is not a supported collection type.");
             if (!CollectionHelper.IsSupportedCollectionType(resultType))
                 throw new InvalidOperationException("The result type is not a supported collection type.");
@@ -258,7 +258,7 @@ namespace System.CommandLine.ValueConverters
                 return newCollection;
             }
 
-            // The ReadOnlyObservableCollection<> is a special case, as it only one constructor, which takes a ObservableCollection<> as parameter, so reflection can be used to instantiated instances of it
+            // The ReadOnlyObservableCollection<> is a special case, as it only has one constructor, which takes a ObservableCollection<> as parameter, so reflection can be used to instantiated instances of it
             if (resultType == typeof(ReadOnlyObservableCollection<>))
             {
                 Type observableCollectionType = typeof(ObservableCollection<>).MakeGenericType(new Type[] { elementType });
