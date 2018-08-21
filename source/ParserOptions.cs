@@ -19,7 +19,7 @@ namespace System.CommandLine
         /// </summary>
         private static ParserOptions defaultOptions = new ParserOptions
         {
-            IgnoreCase = true,
+            IgnoreCase = false,
             ArgumentPrefix = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "--",
             ArgumentAliasPrefix = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "-",
             AllowMultiCharacterFlags = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
