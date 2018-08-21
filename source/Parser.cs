@@ -167,6 +167,11 @@ namespace System.CommandLine
                 parsingResults.Add(positionalArgument, ValueConverter.Convert(positionalArgument.Type, tokenQueue.Dequeue()));
             }
 
+            // Since flag arguments get their value from being present or absent, all flag values get a value (missing flags just get their "absent" value, e.g. false), there number of occurrences have to be recorded
+            Dictionary<Argument, ulong> numberOfFlagOccurrencesMap = new Dictionary<Argument, ulong>();
+            foreach (Argument flagArgument in this.FlagArguments)
+                numberOfFlagOccurrencesMap.Add(flagArgument, 0);
+
             // While there are still token in the queue, the named arguments, flag arguments, and commands have to be parsed
             while (tokenQueue.Any())
             {
@@ -180,25 +185,24 @@ namespace System.CommandLine
                     // Checks if the token is the name or alias of a named argument
                     foreach (Argument namedArgument in this.NamedArguments)
                     {
-                        // Checks if the token is a reference to the current argument, if not, then the next is tried
-                        if (!argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, namedArgument.Name), stringComparison) &&
-                            !argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, namedArgument.Alias), stringComparison))
+                        // Checks if the token is a reference to the current argument, if so then the value is parsed and added to the parsing results
+                        if (argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, namedArgument.Name), stringComparison) ||
+                            argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, namedArgument.Alias), stringComparison))
                         {
-                            continue;
+                            parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                            break;
                         }
-
-                        // Parses the value of the argument and adds it to the parsing results
-                        parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
                     }
 
                     // Checks if the token is the name or alias of a flag argument
                     foreach (Argument flagArgument in this.FlagArguments)
                     {
-                        // Checks if the token is a reference to the current argument, if not, then the next is tried
-                        if (!argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, flagArgument.Name), stringComparison) &&
-                            !argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, flagArgument.Alias), stringComparison))
+                        // Checks if the current token is the name of the current argument, if so then the value of the flag is updated
+                        if (argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, flagArgument.Name), stringComparison) ||
+                            argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, flagArgument.Alias), stringComparison))
                         {
-                            continue;
+                            numberOfFlagOccurrencesMap[flagArgument] += 1;
+                            break;
                         }
                     }
                 }
@@ -217,6 +221,10 @@ namespace System.CommandLine
                     throw new InvalidOperationException($"Unexpected token {nextToken}. This token is neither an argument nor a command.");
                 }
             }
+
+            // Adds the value of the flag arguments
+            foreach (Argument flagArgument in numberOfFlagOccurrencesMap.Keys)
+                parsingResults.Add(flagArgument, ValueConverter.Convert(flagArgument.Type, numberOfFlagOccurrencesMap[flagArgument].ToString()));
 
             // Returns the result of the parsing
             return parsingResults;

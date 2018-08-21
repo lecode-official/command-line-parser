@@ -205,6 +205,65 @@ namespace System.CommandLine.Tests
         }
 
         /// <summary>
+        /// Tests whether the parser can handle one flag argument.
+        /// </summary>
+        [Fact]
+        public void TestOneFlagArgument()
+        {
+            // Sets up the parser
+            Parser parser = new Parser(new ParserOptions
+            {
+                ArgumentPrefix = "--",
+                ArgumentAliasPrefix = "-"
+            });
+            parser.AddFlagArgument<int>("number", "n");
+
+            // Parses the command line arguments
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "--number" });
+            ParsingResults thirdParsingResults = parser.Parse(new string[] { "test.exe", "--number", "--number" });
+            ParsingResults fourthParsingResults = parser.Parse(new string[] { "test.exe", "-n", "-n", "-n" });
+
+            // Validates that the parsed values are correct
+            Assert.Equal(0, firstParsingResults.GetParsedValue<int>("Number"));
+            Assert.Equal(1, secondParsingResults.GetParsedValue<int>("Number"));
+            Assert.Equal(2, thirdParsingResults.GetParsedValue<int>("Number"));
+            Assert.Equal(3, fourthParsingResults.GetParsedValue<int>("Number"));
+        }
+
+        /// <summary>
+        /// Tests whether the parser can handle multiple flag arguments.
+        /// </summary>
+        [Fact]
+        public void TestMultipleFlagArgument()
+        {
+            // Sets up the parser
+            Parser parser = new Parser(new ParserOptions
+            {
+                ArgumentPrefix = "--",
+                ArgumentAliasPrefix = "-"
+            });
+            parser.AddFlagArgument<DayOfWeek>("day", "d");
+            parser.AddFlagArgument<bool>("verbose", "v");
+
+            // Parses the command line arguments
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "--verbose", "--day" });
+            ParsingResults thirdParsingResults = parser.Parse(new string[] { "test.exe", "--day", "--day" });
+            ParsingResults fourthParsingResults = parser.Parse(new string[] { "test.exe", "-d", "-v", "-d", "-v", "-d" });
+
+            // Validates that the parsed values are correct
+            Assert.Equal(DayOfWeek.Sunday, firstParsingResults.GetParsedValue<DayOfWeek>("Day"));
+            Assert.Equal(false, firstParsingResults.GetParsedValue<bool>("Verbose"));
+            Assert.Equal(DayOfWeek.Monday, secondParsingResults.GetParsedValue<DayOfWeek>("Day"));
+            Assert.Equal(true, secondParsingResults.GetParsedValue<bool>("Verbose"));
+            Assert.Equal(DayOfWeek.Tuesday, thirdParsingResults.GetParsedValue<DayOfWeek>("Day"));
+            Assert.Equal(false, thirdParsingResults.GetParsedValue<bool>("Verbose"));
+            Assert.Equal(DayOfWeek.Wednesday, fourthParsingResults.GetParsedValue<DayOfWeek>("Day"));
+            Assert.Equal(true, fourthParsingResults.GetParsedValue<bool>("Verbose"));
+        }
+
+        /// <summary>
         /// Tests how the parser handles a situation where it parses a named argument that was not declared.
         /// </summary>
         [Fact]
