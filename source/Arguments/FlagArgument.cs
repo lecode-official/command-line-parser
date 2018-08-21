@@ -45,7 +45,7 @@ namespace System.CommandLine.Arguments
             this.Type = typeof(T);
 
             // Checks if the type of the flag argument is allowed
-            if (!FlagArgument<T>.allowedTypes.Contains(this.Type) || this.Type.GetTypeInfo().IsEnum)
+            if (!FlagArgument<T>.allowedTypes.Contains(this.Type) && !this.Type.GetTypeInfo().IsEnum)
                 throw new ArgumentException("The specified type is not allowed for flag arguments.", nameof(T));
         }
 
