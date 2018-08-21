@@ -40,7 +40,7 @@ namespace System.CommandLine.Arguments
             this.Destination = destination;
             this.Help = help;
             this.DefaultValue = defaultValue;
-            this.DuplicateResolutionPolicy = new Func<object, object, object>((oldValue, newValue) => duplicateResolutionPolicy((T)oldValue, (T)newValue)) ?? this.ResolveDuplicateValues;
+            this.DuplicateResolutionPolicy = duplicateResolutionPolicy != null ? new Func<object, object, object>((oldValue, newValue) => duplicateResolutionPolicy((T)oldValue, (T)newValue)) : this.ResolveDuplicateValues;
             this.Type = typeof(T);
         }
 
