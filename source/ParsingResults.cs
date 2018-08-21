@@ -55,11 +55,32 @@ namespace System.CommandLine
         }
 
         /// <summary>
+        /// Adds a new value to the parsing results. If there already is a value for the specified destination, then the duplicate resolution policy is used to determine the new value.
+        /// </summary>
+        /// <param name="destination">The name of the argument.</param>
+        /// <param name="value">The parsed value of the argument.</param>
+        /// <param name="duplicateResolutionPolicy">A callback, which is used when there already is a value for the specified destination.</param>
+        internal void Add(string destination, object value, Func<object, object, object> duplicateResolutionPolicy)
+        {
+            // Checks if there is already a value for the specified destination, if so the duplicate resolution policy is used to determine the new value
+            if (this.ParsedValues.ContainsKey(destination))
+                this.ParsedValues[destination] = duplicateResolutionPolicy(value, this.ParsedValues[destination]);
+            else
+                this.ParsedValues.Add(destination, value);
+        }
+
+        /// <summary>
         /// Adds a new value to the parsing results. If there already is a value for the specified destination, then the value is overwritten.
         /// </summary>
         /// <param name="argument">The argument that was parsed.</param>
         /// <param name="value">The parsed value of the argument.</param>
-        internal void Add(Argument argument, object value) => this.Add(argument.Destination, value);
+        internal void Add(Argument argument, object value)
+        {
+            if (argument.GetType().GetGenericTypeDefinition() == typeof(NamedArgument<>))
+                this.Add(argument.Destination, value, argument.GetType().GetProperty(nameof(NamedArgument<object>.DuplicateResolutionPolicy)).GetValue(argument) as Func<object, object, object>);
+            else
+                this.Add(argument.Destination, value);
+        }
 
         /// <summary>
         /// Adds new sub-results for the specified command.

@@ -40,7 +40,7 @@ namespace System.CommandLine.Arguments
             this.Destination = destination;
             this.Help = help;
             this.DefaultValue = defaultValue;
-            this.DuplicateResolutionPolicy = duplicateResolutionPolicy ?? this.ResolveDuplicateValues;
+            this.DuplicateResolutionPolicy = new Func<object, object, object>((oldValue, newValue) => duplicateResolutionPolicy((T)oldValue, (T)newValue)) ?? this.ResolveDuplicateValues;
             this.Type = typeof(T);
         }
 
@@ -56,7 +56,7 @@ namespace System.CommandLine.Arguments
         /// <summary>
         /// Gets a callback function, which is invoked when the same argument was specified more than once.
         /// </summary>
-        public Func<T, T, T> DuplicateResolutionPolicy { get; private set; }
+        public Func<object, object, object> DuplicateResolutionPolicy { get; private set; }
 
         #endregion
 
@@ -69,10 +69,10 @@ namespace System.CommandLine.Arguments
         /// <param name="oldValue">The old value.</param>
         /// <param name="newValue">The new value.</param>
         /// <returns>Returns the resolved value.</returns>
-        private T ResolveDuplicateValues(T oldValue, T newValue)
+        private object ResolveDuplicateValues(object oldValue, object newValue)
         {
-            if (CollectionHelper.IsSupportedCollectionType(typeof(T)))
-                return (T)CollectionHelper.Merge(typeof(T), oldValue, newValue);
+            if (CollectionHelper.IsSupportedCollectionType(oldValue.GetType()) && CollectionHelper.IsSupportedCollectionType(newValue.GetType()))
+                return CollectionHelper.Merge(oldValue.GetType(), oldValue, newValue);
             return newValue;
         }
 
