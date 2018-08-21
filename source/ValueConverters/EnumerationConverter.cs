@@ -55,9 +55,9 @@ namespace System.CommandLine.ValueConverters
                 return Enum.ToObject(resultType, integerValue);
 
             // Tries to parse the enumeration by name
-            if (!Enum.GetNames(resultType).Contains(value))
+            if (!Enum.GetNames(resultType).Any(name => string.Equals(value, name, StringComparison.OrdinalIgnoreCase)))
                 throw new InvalidOperationException($"The value \"{value}\" cannot be converted to \"{resultType.Name}\".");
-            return Enum.Parse(resultType, value);
+            return Enum.Parse(resultType, Enum.GetNames(resultType).First(name => string.Equals(value, name, StringComparison.OrdinalIgnoreCase)));
         }
 
         #endregion
