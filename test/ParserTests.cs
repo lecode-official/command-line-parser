@@ -461,7 +461,11 @@ namespace System.CommandLine.Tests
         public void TestNestedCommands()
         {
             // Sets up the parser
-            Parser parser = new Parser();
+            Parser parser = new Parser(new ParserOptions
+            {
+                ArgumentPrefix = "--",
+                ArgumentAliasPrefix = "-"
+            });
             Parser subParser = parser.AddCommand("add");
             subParser.AddCommand("package");
 
@@ -477,6 +481,57 @@ namespace System.CommandLine.Tests
             Assert.Equal("add", thirdParsingResults.SubResults.Command);
             Assert.Equal("package", thirdParsingResults.SubResults.SubResults.Command);
             Assert.False(thirdParsingResults.SubResults.SubResults.HasSubResults);
+        }
+
+        /// <summary>
+        /// Tests how the parser handles situations where arguments have the same names or aliases as commands.
+        /// </summary>
+        [Fact]
+        public void TestArgumentCommandNameCollision()
+        {
+            // Sets up the parser
+            Parser parser = new Parser();
+            parser.AddNamedArgument<string>("test", "t");
+            parser.AddCommand("test", "t", string.Empty);
+
+            // Parses the command line arguments
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe", "--test", "test", "test" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "-t", "t", "t" });
+
+            // Validates that the parsed values are correct
+            Assert.Equal("test", firstParsingResults.GetParsedValue<string>("Test"));
+            Assert.True(firstParsingResults.HasSubResults);
+            Assert.Equal("test", firstParsingResults.SubResults.Command);
+            Assert.Equal("t", secondParsingResults.GetParsedValue<string>("Test"));
+            Assert.True(secondParsingResults.HasSubResults);
+            Assert.Equal("test", secondParsingResults.SubResults.Command);
+        }
+
+        /// <summary>
+        /// Tests how the parser handles name collisions in a parser and a sub parser.
+        /// </summary>
+        [Fact]
+        public void TestArgumentNameCollisionInCommands()
+        {
+            // Sets up the parser
+            Parser parser = new Parser();
+            parser.AddNamedArgument<DayOfWeek>("day-of-week", "d");
+            Parser subParser = parser.AddCommand("test", "t", string.Empty);
+            subParser.AddNamedArgument<DayOfWeek>("day-of-week", "d");
+
+            // Parses the command line arguments
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe", "--day-of-week", "thursday", "test", "--day-of-week", "wednesday" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "-d", "Tuesday", "t", "-d", "Saturday" });
+
+            // Validates that the parsed values are correct
+            Assert.Equal(DayOfWeek.Thursday, firstParsingResults.GetParsedValue<DayOfWeek>("DayOfWeek"));
+            Assert.True(firstParsingResults.HasSubResults);
+            Assert.Equal("test", firstParsingResults.SubResults.Command);
+            Assert.Equal(DayOfWeek.Wednesday, firstParsingResults.SubResults.GetParsedValue<DayOfWeek>("DayOfWeek"));
+            Assert.Equal(DayOfWeek.Tuesday, secondParsingResults.GetParsedValue<DayOfWeek>("DayOfWeek"));
+            Assert.True(secondParsingResults.HasSubResults);
+            Assert.Equal("test", secondParsingResults.SubResults.Command);
+            Assert.Equal(DayOfWeek.Saturday, secondParsingResults.SubResults.GetParsedValue<DayOfWeek>("DayOfWeek"));
         }
 
         #endregion
