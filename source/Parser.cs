@@ -3,6 +3,7 @@
 
 using System.Collections.Generic;
 using System.CommandLine.Arguments;
+using System.CommandLine.ValueConverters;
 using System.Linq;
 
 #endregion
@@ -133,6 +134,85 @@ namespace System.CommandLine
                 if (this.FlagArguments.Any(flagArgument => string.Equals(flagArgument.Alias, argument.Alias, stringComparison)))
                     throw new InvalidOperationException($"There already is a flag argument with the alias {argument.Alias}.");
             }
+        }
+
+        /// <summary>
+        /// Parses the command line arguments by matching them to the declared arguments and commands.
+        /// </summary>
+        /// <param name="tokenQueue">A queue, which contains the tokens.</param>
+        /// <returns>Returns the parsing results, which is a bag of arguments.</returns>
+        private ParsingResults Parse(Queue<string> tokenQueue)
+        {
+            // Creates new parsing results, which will hold the parsed argument values
+            ParsingResults parsingResults = new ParsingResults();
+
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            // At first the positional arguments have to be parsed, because they are non-optional and have to be there
+            foreach (Argument positionalArgument in this.PositionalArguments)
+            {
+                // Checks if there are still enough tokens left in the command line arguments
+                if (!tokenQueue.Any())
+                    throw new InvalidOperationException($"The non-optional positional argument {positionalArgument.Name} is missing.");
+
+                // Adds the value of the positional argument to the parsing results
+                parsingResults.Add(positionalArgument, ValueConverter.Convert(positionalArgument.Type, tokenQueue.Dequeue()));
+            }
+
+            // While there are still token in the queue, the named arguments, flag arguments, and commands have to be parsed
+            while (tokenQueue.Any())
+            {
+                // Checks if the next token in the queue is a named parameter or a flag, or a command
+                string nextToken = tokenQueue.Peek();
+                if (nextToken.StartsWith(this.Options.ArgumentPrefix) || nextToken.StartsWith(this.Options.ArgumentAliasPrefix))
+                {
+                    // Consumes the next token
+                    string argumentReference = tokenQueue.Dequeue();
+
+                    // Checks if the token is the name or alias of a named argument
+                    foreach (Argument namedArgument in this.NamedArguments)
+                    {
+                        // Checks if the token is a reference to the current argument, if not, then the next is tried
+                        if (!argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, namedArgument.Name), stringComparison) &&
+                            !argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, namedArgument.Alias), stringComparison))
+                        {
+                            continue;
+                        }
+
+                        // Parses the value of the argument and adds it to the parsing results
+                        parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                    }
+
+                    // Checks if the token is the name or alias of a flag argument
+                    foreach (Argument flagArgument in this.FlagArguments)
+                    {
+                        // Checks if the token is a reference to the current argument, if not, then the next is tried
+                        if (!argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, flagArgument.Name), stringComparison) &&
+                            !argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, flagArgument.Alias), stringComparison))
+                        {
+                            continue;
+                        }
+                    }
+                }
+                else if (this.Commands.Any(c => string.Equals(c.Name, nextToken, stringComparison) || string.Equals(c.Alias, nextToken, stringComparison)))
+                {
+                    // Gets the command and parses it
+                    string commandName = tokenQueue.Dequeue();
+                    Command command = this.Commands.First(c => string.Equals(c.Name, commandName, stringComparison) || string.Equals(c.Alias, nextToken, stringComparison));
+                    ParsingResults subResults = command.SubParser.Parse(tokenQueue);
+                    parsingResults.AddCommand(command, subResults);
+                    break;
+                }
+                else
+                {
+                    // Since the next token in the queue is neither a named argument or flag argument, nor a command, the token is erroneous and an exception is thrown
+                    throw new InvalidOperationException($"Unexpected token {nextToken}. This token is neither an argument nor a command.");
+                }
+            }
+
+            // Returns the result of the parsing
+            return parsingResults;
         }
 
         #endregion
@@ -493,6 +573,21 @@ namespace System.CommandLine
 
             // Returns the sub-parser
             return command.SubParser;
+        }
+
+        /// <summary>
+        /// Parses the command line arguments by matching them to the declared arguments and commands.
+        /// </summary>
+        /// <param name="commandLineArguments">The command line arguments that were retrieved by the application.</param>
+        /// <returns>Returns the parsing results, which is a bag of arguments.</returns>
+        public ParsingResults Parse(string[] commandLineArguments)
+        {
+            // Copies the command line arguments into a queue so that they are easier to parse without having to do fancy indexing, the first token is dequeued right away, because it is the file name of the executable
+            Queue<string> tokenQueue = new Queue<string>(commandLineArguments);
+            tokenQueue.Dequeue();
+
+            // Parses the command line arguments and returns the result
+            return this.Parse(tokenQueue);
         }
 
         #endregion
