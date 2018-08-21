@@ -64,7 +64,7 @@ namespace System.CommandLine
         {
             // Checks if there is already a value for the specified destination, if so the duplicate resolution policy is used to determine the new value
             if (this.ParsedValues.ContainsKey(destination))
-                this.ParsedValues[destination] = duplicateResolutionPolicy(value, this.ParsedValues[destination]);
+                this.ParsedValues[destination] = duplicateResolutionPolicy(this.ParsedValues[destination], value);
             else
                 this.ParsedValues.Add(destination, value);
         }
