@@ -86,15 +86,17 @@ namespace System.CommandLine
         /// Adds new sub-results for the specified command.
         /// </summary>
         /// <param name="name">The name of the command for which the sub-results are to be added.</param>
+        /// <param name="subResults">The parsing results that were parsed for the command.</param>
         /// <returns>Returns the created sub-results.</returns>
-        internal ParsingResults AddCommand(string name)
+        internal ParsingResults AddCommand(string name, ParsingResults subResults)
         {
             // Checks if there already are sub-results, if so, an exception is thrown
             if (this.HasSubResults)
                 throw new InvalidOperationException("There already is a sub result for a command.");
 
             // Adds the sub-results for the command and returns them
-            this.SubResults = new ParsingResults { Command = name };
+            this.SubResults = subResults;
+            this.SubResults.Command = name;
             return this.SubResults;
         }
 
@@ -102,8 +104,9 @@ namespace System.CommandLine
         /// Adds new sub-results for the specified command.
         /// </summary>
         /// <param name="command">The command for which the sub-results are to be added.</param>
+        /// <param name="subResults">The parsing results that were parsed for the command.</param>
         /// <returns>Returns the created sub-results.</returns>
-        internal ParsingResults AddCommand(Command command) => this.AddCommand(command.Name);
+        internal ParsingResults AddCommand(Command command, ParsingResults subResults) => this.AddCommand(command.Name, subResults);
 
         #endregion
 
