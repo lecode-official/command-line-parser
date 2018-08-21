@@ -12,26 +12,77 @@ namespace System.CommandLine
     /// </summary>
     public class ParserOptions
     {
-        #region Public Static Properties
+        #region Constructors
 
         /// <summary>
-        /// Contains some sensible default options for the command line parser.
+        /// Initializes a new <see cref="ParserOptions"/> instance. It uses some sensible default options for the command line parser. The default options are operating-system-aware, so for example
+        /// <see cref="NamedArgumentPrefix"/> is set to "/" when being used under Windows, but set to "--" when used under Linux or macOS.
         /// </summary>
-        private static ParserOptions defaultOptions = new ParserOptions
-        {
-            IgnoreCase = false,
-            ArgumentPrefix = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "--",
-            ArgumentAliasPrefix = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "-",
-            AllowMultiCharacterFlags = !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
-        };
+        public ParserOptions()
+            : this(
+                false,
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "--",
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "-",
+                !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            )
+        { }
 
         /// <summary>
-        /// Gets some sensible default options for the command line parser. The default options are operating-system-aware, so for example <see cref="NamedArgumentPrefix"/> is set to "/" when being used under Windows,
-        /// but set to "--" when used under Linux or macOS.
+        /// Initializes a new <see cref="ParserOptions"/> instance. It uses some sensible default options for the command line parser. The default options are operating-system-aware, so for example
+        /// <see cref="NamedArgumentPrefix"/> is set to "/" when being used under Windows, but set to "--" when used under Linux or macOS.
         /// </summary>
-        public static ParserOptions Default
+        /// <param name="ignoreCase">A value that determines whether the parser ignores case or not when parsing argument names.</param>
+        public ParserOptions(bool ignoreCase)
+            : this(
+                ignoreCase,
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "--",
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "-",
+                !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+            )
+        { }
+
+        /// <summary>
+        /// Initializes a new <see cref="ParserOptions"/> instance.
+        /// </summary>
+        /// <param name="argumentPrefix">The prefix that is used for arguments.</param>
+        /// <param name="argumentAliasPrefix">The prefix that is used for the aliases of arguments.</param>
+        public ParserOptions(string argumentPrefix, string argumentAliasPrefix)
+            : this(
+                false,
+                argumentPrefix,
+                argumentAliasPrefix,
+                argumentPrefix != argumentAliasPrefix
+            )
+        { }
+
+        /// <summary>
+        /// Initializes a new <see cref="ParserOptions"/> instance.
+        /// </summary>
+        /// <param name="ignoreCase">A value that determines whether the parser ignores case or not when parsing argument names.</param>
+        /// <param name="argumentPrefix">The prefix that is used for arguments.</param>
+        /// <param name="argumentAliasPrefix">The prefix that is used for the aliases of arguments.</param>
+        public ParserOptions(bool ignoreCase, string argumentPrefix, string argumentAliasPrefix)
+            : this(
+                ignoreCase,
+                argumentPrefix,
+                argumentAliasPrefix,
+                argumentPrefix != argumentAliasPrefix
+            )
+        { }
+
+        /// <summary>
+        /// Initializes a new <see cref="ParserOptions"/> instance.
+        /// </summary>
+        /// <param name="ignoreCase">A value that determines whether the parser ignores case or not when parsing argument names.</param>
+        /// <param name="argumentPrefix">The prefix that is used for arguments.</param>
+        /// <param name="argumentAliasPrefix">The prefix that is used for the aliases of arguments.</param>
+        /// <param name="allowMultiCharacterFlags">A value that determines whether multiple flags arguments can be combined into a single flag.</param>
+        public ParserOptions(bool ignoreCase, string argumentPrefix, string argumentAliasPrefix, bool allowMultiCharacterFlags)
         {
-            get => ParserOptions.defaultOptions;
+            this.IgnoreCase = ignoreCase;
+            this.ArgumentPrefix = argumentPrefix;
+            this.ArgumentAliasPrefix = argumentAliasPrefix;
+            this.AllowMultiCharacterFlags = allowMultiCharacterFlags;
         }
 
         #endregion
@@ -41,7 +92,7 @@ namespace System.CommandLine
         /// <summary>
         /// Gets or sets a value that determines whether the parser ignores case or not when parsing argument names.
         /// </summary>
-        public bool IgnoreCase { get; set; }
+        public bool IgnoreCase { get; set; } = false;
 
         /// <summary>
         /// Gets or sets the prefix that is used for arguments. Under UNIX-like operating systems, this is usually two hyphen-minuses or dash characters: "--". Under Windows this is usually a single forward slash "/".

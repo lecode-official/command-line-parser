@@ -66,7 +66,7 @@ namespace System.CommandLine
         /// <param name="alias">The alias of the command, which can be used as an alternative to the name.</param>
         /// <param name="description">A descriptive help text for the command, which is used in the help string.</param>
         public Command(string name, string alias, string description)
-            : this(name, alias, description, ParserOptions.Default)
+            : this(name, alias, description, new ParserOptions())
         {}
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace System.CommandLine
         /// <param name="name">The name of the command.</param>
         /// <param name="description">A descriptive help text for the command, which is used in the help string.</param>
         public Command(string name, string description)
-            : this(name, null, description, ParserOptions.Default)
+            : this(name, null, description, new ParserOptions())
         {}
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace System.CommandLine
         /// </summary>
         /// <param name="name">The name of the command.</param>
         public Command(string name)
-            : this(name, null, null, ParserOptions.Default)
+            : this(name, null, null, new ParserOptions())
         {}
 
         #endregion
