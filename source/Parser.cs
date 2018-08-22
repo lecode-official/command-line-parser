@@ -325,18 +325,11 @@ namespace System.CommandLine
                 string nextToken = tokenQueue.Dequeue();
                 if (this.IsNamedArgument(nextToken, out Argument namedArgument))
                 {
-                    // Named arguments may have more than one value if they are declared to be of a collection type
-                    if (CollectionHelper.IsSupportedCollectionType(namedArgument.Type))
-                    {
-                        // Since the named argument is of a collection type, the next tokens are interpreted as values as long as they do not reference any arguments or commands
-                        while (tokenQueue.Any() && !this.IsArgumentOrCommand(tokenQueue.Peek()))
-                            parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
-                    }
-                    else
-                    {
-                        // Since the named argument is not of a collection type, only one value needs to be parsed
+                    // Named arguments may have more than one value (which is helpful when dealing with lists or custom duplicate resolution policies), therefore the next tokens are interpreted as values as long as
+                    // they do not reference any arguments or commands (but at least the first token after the named parameter is used as a value)
+                    parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                    while (tokenQueue.Any() && !this.IsArgumentOrCommand(tokenQueue.Peek()))
                         parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
-                    }
 
                     // Since the named argument was parsed it is not missing from the command line arguments and the default value does not need to be set
                     missingNamedArguments.Remove(namedArgument);
