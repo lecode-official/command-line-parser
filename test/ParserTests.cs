@@ -264,6 +264,48 @@ namespace System.CommandLine.Tests
         }
 
         /// <summary>
+        /// Represents an enumeration used for testing the multi-character flags.
+        /// </summary>
+        private enum VerbosityLevel { None, Low, Medium, High }
+
+        /// <summary>
+        /// Tests how the parser handles multi-character flags.
+        /// </summary>
+        [Fact]
+        public void TestMultiCharacterFlagArguments()
+        {
+            // Sets up the parser
+            Parser parser = new Parser(new ParserOptions
+            {
+                ArgumentPrefix = "--",
+                ArgumentAliasPrefix = "-"
+            });
+            parser.AddFlagArgument<VerbosityLevel>("verbosity", "v");
+            parser.AddFlagArgument<int>("count", "c");
+            parser.AddFlagArgument<bool>("activate", "a");
+
+            // Parses the command line arguments
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "-vca" });
+            ParsingResults thirdParsingResults = parser.Parse(new string[] { "test.exe", "-vvv", "-ccc", "-aaa" });
+            ParsingResults fourthParsingResults = parser.Parse(new string[] { "test.exe", "-vvvcccaaa" });
+
+            // Validates that the parsed values are correct
+            Assert.Equal(VerbosityLevel.None, firstParsingResults.GetParsedValue<VerbosityLevel>("Verbosity"));
+            Assert.Equal(0, firstParsingResults.GetParsedValue<int>("Count"));
+            Assert.False(firstParsingResults.GetParsedValue<bool>("Activate"));
+            Assert.Equal(VerbosityLevel.Low, secondParsingResults.GetParsedValue<VerbosityLevel>("Verbosity"));
+            Assert.Equal(1, secondParsingResults.GetParsedValue<int>("Count"));
+            Assert.True(secondParsingResults.GetParsedValue<bool>("Activate"));
+            Assert.Equal(VerbosityLevel.High, thirdParsingResults.GetParsedValue<VerbosityLevel>("Verbosity"));
+            Assert.Equal(3, thirdParsingResults.GetParsedValue<int>("Count"));
+            Assert.True(thirdParsingResults.GetParsedValue<bool>("Activate"));
+            Assert.Equal(VerbosityLevel.High, fourthParsingResults.GetParsedValue<VerbosityLevel>("Verbosity"));
+            Assert.Equal(3, fourthParsingResults.GetParsedValue<int>("Count"));
+            Assert.True(fourthParsingResults.GetParsedValue<bool>("Activate"));
+        }
+
+        /// <summary>
         /// Tests how the parser handles a situation where it parses a named argument that was not declared.
         /// </summary>
         [Fact]
@@ -409,6 +451,23 @@ namespace System.CommandLine.Tests
             parsingResults = parser.Parse(new string[] { "test.exe", "=feature", "off", "=i", "987" });
 
             // Validates that the parsed values with non-standard argument prefixes are correct
+            Assert.Equal(false, parsingResults.GetParsedValue<bool>("Feature"));
+            Assert.Equal(987, parsingResults.GetParsedValue<int>("NumberOfIterations"));
+
+            // Sets up the parser with switched Unix style argument prefixes
+            parser = new Parser(new ParserOptions
+            {
+                ArgumentPrefix = "-",
+                ArgumentAliasPrefix = "--"
+            });
+            parser
+                .AddNamedArgument<bool>("feature", "f")
+                .AddNamedArgument<int>("number-of-iterations", "i");
+
+            // Parses the command line arguments with the Unix style argument prefixes
+            parsingResults = parser.Parse(new string[] { "test.exe", "-feature", "off", "--i", "987" });
+
+            // Validates that the parsed values with the Unix style argument prefixes are correct
             Assert.Equal(false, parsingResults.GetParsedValue<bool>("Feature"));
             Assert.Equal(987, parsingResults.GetParsedValue<int>("NumberOfIterations"));
         }
