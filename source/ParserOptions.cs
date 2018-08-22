@@ -23,6 +23,7 @@ namespace System.CommandLine
                 false,
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "--",
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "-",
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ":" : "=",
                 !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
             )
         { }
@@ -37,6 +38,7 @@ namespace System.CommandLine
                 ignoreCase,
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "--",
                 RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "/" : "-",
+                RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? ":" : "=",
                 !RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
             )
         { }
@@ -46,11 +48,13 @@ namespace System.CommandLine
         /// </summary>
         /// <param name="argumentPrefix">The prefix that is used for arguments.</param>
         /// <param name="argumentAliasPrefix">The prefix that is used for the aliases of arguments.</param>
-        public ParserOptions(string argumentPrefix, string argumentAliasPrefix)
+        /// <param name="keyValueSeparator">The separator that separates argument keys and their values.</param>
+        public ParserOptions(string argumentPrefix, string argumentAliasPrefix, string keyValueSeparator)
             : this(
                 false,
                 argumentPrefix,
                 argumentAliasPrefix,
+                keyValueSeparator,
                 argumentPrefix != argumentAliasPrefix
             )
         { }
@@ -60,12 +64,14 @@ namespace System.CommandLine
         /// </summary>
         /// <param name="ignoreCase">A value that determines whether the parser ignores case or not when parsing argument names.</param>
         /// <param name="argumentPrefix">The prefix that is used for arguments.</param>
+        /// <param name="keyValueSeparator">The separator that separates argument keys and their values.</param>
         /// <param name="argumentAliasPrefix">The prefix that is used for the aliases of arguments.</param>
-        public ParserOptions(bool ignoreCase, string argumentPrefix, string argumentAliasPrefix)
+        public ParserOptions(bool ignoreCase, string argumentPrefix, string argumentAliasPrefix, string keyValueSeparator)
             : this(
                 ignoreCase,
                 argumentPrefix,
                 argumentAliasPrefix,
+                keyValueSeparator,
                 argumentPrefix != argumentAliasPrefix
             )
         { }
@@ -76,12 +82,14 @@ namespace System.CommandLine
         /// <param name="ignoreCase">A value that determines whether the parser ignores case or not when parsing argument names.</param>
         /// <param name="argumentPrefix">The prefix that is used for arguments.</param>
         /// <param name="argumentAliasPrefix">The prefix that is used for the aliases of arguments.</param>
+        /// <param name="keyValueSeparator">The separator that separates argument keys and their values.</param>
         /// <param name="allowMultiCharacterFlags">A value that determines whether multiple flags arguments can be combined into a single flag.</param>
-        public ParserOptions(bool ignoreCase, string argumentPrefix, string argumentAliasPrefix, bool allowMultiCharacterFlags)
+        public ParserOptions(bool ignoreCase, string argumentPrefix, string argumentAliasPrefix, string keyValueSeparator, bool allowMultiCharacterFlags)
         {
             this.IgnoreCase = ignoreCase;
             this.ArgumentPrefix = argumentPrefix;
             this.ArgumentAliasPrefix = argumentAliasPrefix;
+            this.KeyValueSeparator = keyValueSeparator;
             this.AllowMultiCharacterFlags = allowMultiCharacterFlags;
         }
 
@@ -104,6 +112,12 @@ namespace System.CommandLine
         /// forward slash "/".
         /// </summary>
         public string ArgumentAliasPrefix { get; set; }
+
+        /// <summary>
+        /// Gets or sets the seperator that is used to separate argument keys from the values. Under UNIX-like operating systems, this is usually a single equals sign: "=". Under Windows this is usually a single
+        /// colon sign: ":". This is an optional way to specify values, e.g. these two syntaxes are equivalent: "--age=18" and "--age 18".
+        /// </summary>
+        public string KeyValueSeparator { get; set; }
 
         /// <summary>
         /// Contains a value that determines whether multiple flags can be combined into a single flag.
