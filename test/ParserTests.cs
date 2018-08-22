@@ -519,12 +519,17 @@ namespace System.CommandLine.Tests
                 ArgumentAliasPrefix = "-"
             });
             parser.AddNamedArgument<List<string>>("names", "n");
+            parser.AddNamedArgument<string>("car", "c");
 
             // Parses the command line arguments
-            ParsingResults parsingResults = parser.Parse(new string[] { "test.exe", "--names", "Alice", "-n", "Bob", "--names", "Eve" });
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe", "--names", "Alice", "-n", "Bob", "--car", "blue car", "--names", "Eve" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "-n", "Alice", "Bob", "Eve", "-c", "red car" });
 
             // Validates that the parsed values are correct
-            Assert.Equal(new List<string> { "Alice", "Bob", "Eve" }, parsingResults.GetParsedValue<List<string>>("Names"));
+            Assert.Equal(new List<string> { "Alice", "Bob", "Eve" }, firstParsingResults.GetParsedValue<List<string>>("Names"));
+            Assert.Equal("blue car", firstParsingResults.GetParsedValue<string>("Car"));
+            Assert.Equal(new List<string> { "Alice", "Bob", "Eve" }, secondParsingResults.GetParsedValue<List<string>>("Names"));
+            Assert.Equal("red car", secondParsingResults.GetParsedValue<string>("Car"));
         }
 
         /// <summary>
