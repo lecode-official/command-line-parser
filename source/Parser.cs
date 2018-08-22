@@ -202,29 +202,6 @@ namespace System.CommandLine
         }
 
         /// <summary>
-        /// Determines if the specified token references a command.
-        /// </summary>
-        /// <param name="token">The token that is to be tested.</param>
-        /// <param name="command">This out parameter will be assigned the command which was referenced by the token. If the token does not match any command, then this out parameter will be set to <c>null</c>.</param>
-        /// <returns>Returns <c>true</c> if the token references a command and <c>false</c> otherwise.</returns>
-        private bool IsCommand(string token, out Command command)
-        {
-            // Determines the string comparison type based on whether the casing should be ignored or not
-            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-
-            // Checks if there is a command with the name or alias that is specified in the token
-            if (this.Commands.Any(c => token.Equals(c.Name, stringComparison)) || this.Commands.Any(c => token.Equals(c.Alias, stringComparison)))
-            {
-                command = this.Commands.Single(c => token.Equals(c.Name, stringComparison) || token.Equals(c.Alias, stringComparison));
-                return true;
-            }
-
-            // Since the token neither matches the name of a command nor an alias of a command, the token does not represent a command
-            command = null;
-            return false;
-        }
-
-        /// <summary>
         /// Determines if the specified token is a multi-character flag argument and references multiple flag arguments.
         /// </summary>
         /// <param name="token">The token that is to be tested.</param>
@@ -266,6 +243,50 @@ namespace System.CommandLine
         }
 
         /// <summary>
+        /// Determines if the specified token references a command.
+        /// </summary>
+        /// <param name="token">The token that is to be tested.</param>
+        /// <param name="command">This out parameter will be assigned the command which was referenced by the token. If the token does not match any command, then this out parameter will be set to <c>null</c>.</param>
+        /// <returns>Returns <c>true</c> if the token references a command and <c>false</c> otherwise.</returns>
+        private bool IsCommand(string token, out Command command)
+        {
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            // Checks if there is a command with the name or alias that is specified in the token
+            if (this.Commands.Any(c => token.Equals(c.Name, stringComparison)) || this.Commands.Any(c => token.Equals(c.Alias, stringComparison)))
+            {
+                command = this.Commands.Single(c => token.Equals(c.Name, stringComparison) || token.Equals(c.Alias, stringComparison));
+                return true;
+            }
+
+            // Since the token neither matches the name of a command nor an alias of a command, the token does not represent a command
+            command = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if the specified token references a named argument, a flag argument, a multi-character flag argument, or a command.
+        /// </summary>
+        /// <param name="token">The token that is to be tested.</param>
+        /// <returns>Returns <c>true</c> if the token references a named argument, a flag argument, a multi-character flag argument, or a command and <c>false</c> otherwise.</returns>
+        public bool IsArgumentOrCommand(string token)
+        {
+            // Checks if the token references a named argument, a flag argument, a multi-character flag argument, or a command, if so, true is returned
+            if (this.IsNamedArgument(token, out Argument _))
+                return true;
+            if (this.IsFlagArgument(token, out Argument _))
+                return true;
+            if (this.IsMultiCharacterFlagArgument(token, out IDictionary<Argument, ulong> _))
+                return true;
+            if (this.IsCommand(token, out Command _))
+                return true;
+
+            // Since the neither references a named argument, a flag argument, a multi-character flag argument, nor a command, false is returned
+            return false;
+        }
+
+        /// <summary>
         /// Parses the command line arguments by matching them to the declared arguments and commands.
         /// </summary>
         /// <param name="tokenQueue">A queue, which contains the tokens.</param>
@@ -304,7 +325,20 @@ namespace System.CommandLine
                 string nextToken = tokenQueue.Dequeue();
                 if (this.IsNamedArgument(nextToken, out Argument namedArgument))
                 {
-                    parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                    // Named arguments may have more than one value if they are declared to be of a collection type
+                    if (CollectionHelper.IsSupportedCollectionType(namedArgument.Type))
+                    {
+                        // Since the named argument is of a collection type, the next tokens are interpreted as values as long as they do not reference any arguments or commands
+                        while (tokenQueue.Any() && !this.IsArgumentOrCommand(tokenQueue.Peek()))
+                            parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                    }
+                    else
+                    {
+                        // Since the named argument is not of a collection type, only one value needs to be parsed
+                        parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                    }
+
+                    // Since the named argument was parsed it is not missing from the command line arguments and the default value does not need to be set
                     missingNamedArguments.Remove(namedArgument);
                 }
                 else if (this.IsFlagArgument(nextToken, out Argument flagArgument))
