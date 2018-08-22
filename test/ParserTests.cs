@@ -640,12 +640,16 @@ namespace System.CommandLine.Tests
                 ArgumentAliasPrefix = "-"
             });
             Parser subParser = parser.AddCommand("add");
-            subParser.AddCommand("package");
+            Parser subSubParser = subParser.AddCommand("package");
+            subSubParser.AddCommand("to-project");
+            subSubParser.AddCommand("to-solution");
 
             // Parses the command line arguments
             ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe" });
             ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "add" });
             ParsingResults thirdParsingResults = parser.Parse(new string[] { "test.exe", "add", "package" });
+            ParsingResults fourthParsingResults = parser.Parse(new string[] { "test.exe", "add", "package", "to-project" });
+            ParsingResults fifthParsingResults = parser.Parse(new string[] { "test.exe", "add", "package", "to-solution" });
 
             // Validates that the parsed values are correct
             Assert.False(firstParsingResults.HasSubResults);
@@ -654,6 +658,14 @@ namespace System.CommandLine.Tests
             Assert.Equal("add", thirdParsingResults.SubResults.Command);
             Assert.Equal("package", thirdParsingResults.SubResults.SubResults.Command);
             Assert.False(thirdParsingResults.SubResults.SubResults.HasSubResults);
+            Assert.Equal("add", fourthParsingResults.SubResults.Command);
+            Assert.Equal("package", fourthParsingResults.SubResults.SubResults.Command);
+            Assert.Equal("to-project", fourthParsingResults.SubResults.SubResults.SubResults.Command);
+            Assert.False(fourthParsingResults.SubResults.SubResults.SubResults.HasSubResults);
+            Assert.Equal("add", fifthParsingResults.SubResults.Command);
+            Assert.Equal("package", fifthParsingResults.SubResults.SubResults.Command);
+            Assert.Equal("to-solution", fifthParsingResults.SubResults.SubResults.SubResults.Command);
+            Assert.False(fifthParsingResults.SubResults.SubResults.SubResults.HasSubResults);
         }
 
         /// <summary>
