@@ -183,6 +183,7 @@ namespace System.CommandLine
                     string argumentReference = tokenQueue.Dequeue();
 
                     // Checks if the token is the name or alias of a named argument
+                    bool argumentParsed = false;
                     foreach (Argument namedArgument in this.NamedArguments)
                     {
                         // Checks if the token is a reference to the current argument, if so then the value is parsed and added to the parsing results
@@ -190,9 +191,12 @@ namespace System.CommandLine
                             argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, namedArgument.Alias), stringComparison))
                         {
                             parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                            argumentParsed = true;
                             break;
                         }
                     }
+                    if (argumentParsed)
+                        continue;
 
                     // Checks if the token is the name or alias of a flag argument
                     foreach (Argument flagArgument in this.FlagArguments)
@@ -202,8 +206,30 @@ namespace System.CommandLine
                             argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, flagArgument.Alias), stringComparison))
                         {
                             numberOfFlagOccurrencesMap[flagArgument] += 1;
+                            argumentParsed = true;
                             break;
                         }
+                    }
+                    if (argumentParsed)
+                        continue;
+
+                    // Checks if the parser supports multi-character flags, if so then it is checked if the current token is a multi-character flag
+                    if (this.Options.AllowMultiCharacterFlags &&
+                        argumentReference.StartsWith(this.Options.ArgumentAliasPrefix) &&
+                        !argumentReference.StartsWith(this.Options.ArgumentPrefix))
+                    {
+                        // Splits the multi-character flags and retrieves all matching flag arguments
+                        IEnumerable<Argument> multiCharacterFlags = argumentReference
+                            .Replace(this.Options.ArgumentAliasPrefix, string.Empty)
+                            .Select(flag => this.FlagArguments.SingleOrDefault(flagArgument => flagArgument.Alias.Equals(flag.ToString(), stringComparison)));
+
+                        // Checks if all of the characters in the multi-character flag matched a flag argument, if not, then the multi-character flag is invalid and an exception is thrown
+                        if (multiCharacterFlags.Any(flag => flag == null))
+                            throw new InvalidOperationException($"Unknown argument or multi-character flag {argumentReference}.");
+
+                        // Updates the number of occurrences of the flags in the multi-character flag
+                        foreach (Argument flagArgument in multiCharacterFlags)
+                            numberOfFlagOccurrencesMap[flagArgument] += 1;
                     }
                 }
                 else if (this.Commands.Any(c => string.Equals(c.Name, nextToken, stringComparison) || string.Equals(c.Alias, nextToken, stringComparison)))
