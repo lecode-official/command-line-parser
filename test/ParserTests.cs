@@ -464,10 +464,10 @@ namespace System.CommandLine.Tests
                 .AddNamedArgument<bool>("feature", "f")
                 .AddNamedArgument<int>("number-of-iterations", "i");
 
-            // Parses the command line arguments with the Unix style argument prefixes
+            // Parses the command line arguments with the switched Unix style argument prefixes
             parsingResults = parser.Parse(new string[] { "test.exe", "-feature", "off", "--i", "987" });
 
-            // Validates that the parsed values with the Unix style argument prefixes are correct
+            // Validates that the parsed values with the switched Unix style argument prefixes are correct
             Assert.Equal(false, parsingResults.GetParsedValue<bool>("Feature"));
             Assert.Equal(987, parsingResults.GetParsedValue<int>("NumberOfIterations"));
         }
@@ -494,7 +494,7 @@ namespace System.CommandLine.Tests
         }
 
         /// <summary>
-        /// Tests whether the duplicate resolution policy works, which is used if a single named argument is provided more than once.
+        /// Tests whether the default duplicate resolution policy works, which is used if a single named argument is provided more than once.
         /// </summary>
         [Fact]
         public void TestDuplicateResolutionPolicy()
@@ -512,6 +512,27 @@ namespace System.CommandLine.Tests
 
             // Validates that the parsed values are correct
             Assert.Equal(16, parsingResults.GetParsedValue<int>("Age"));
+        }
+
+        /// <summary>
+        /// Tests whether a custom duplicate resolution policy works, which is used if a single named argument is provided more than once.
+        /// </summary>
+        [Fact]
+        public void TestCustomDuplicateResolutionPolicy()
+        {
+            // Sets up the parser
+            Parser parser = new Parser(new ParserOptions
+            {
+                ArgumentPrefix = "--",
+                ArgumentAliasPrefix = "-"
+            });
+            parser.AddNamedArgument<int>("add", "a", "Add", "Adds numbers together", 0, (a, b) => a + b);
+
+            // Parses the command line arguments
+            ParsingResults parsingResults = parser.Parse(new string[] { "test.exe", "--add", "1", "-a", "2", "--add", "3" });
+
+            // Validates that the parsed values are correct
+            Assert.Equal(6, parsingResults.GetParsedValue<int>("Add"));
         }
 
         /// <summary>
