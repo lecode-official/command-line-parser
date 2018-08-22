@@ -167,6 +167,9 @@ namespace System.CommandLine
                 parsingResults.Add(positionalArgument, ValueConverter.Convert(positionalArgument.Type, tokenQueue.Dequeue()));
             }
 
+            // Named arguments have default values, so a list is needed to keep track of all the named arguments that have not been parsed
+            List<Argument> missingNamedArguments = this.NamedArguments.ToList();
+
             // Since flag arguments get their value from being present or absent, all flag values get a value (missing flags just get their "absent" value, e.g. false), there number of occurrences have to be recorded
             Dictionary<Argument, ulong> numberOfFlagOccurrencesMap = new Dictionary<Argument, ulong>();
             foreach (Argument flagArgument in this.FlagArguments)
@@ -191,6 +194,7 @@ namespace System.CommandLine
                             argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, namedArgument.Alias), stringComparison))
                         {
                             parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                            missingNamedArguments.Remove(namedArgument);
                             argumentParsed = true;
                             break;
                         }
@@ -230,7 +234,13 @@ namespace System.CommandLine
                         // Updates the number of occurrences of the flags in the multi-character flag
                         foreach (Argument flagArgument in multiCharacterFlags)
                             numberOfFlagOccurrencesMap[flagArgument] += 1;
+                        argumentParsed = true;
                     }
+                    if (argumentParsed)
+                        continue;
+
+                    // If the execution hits this point, then the current token is invalid and therefore an exception is thrown
+                    throw new InvalidOperationException($"Unknown argument or multi-character flag {argumentReference}.");
                 }
                 else if (this.Commands.Any(c => string.Equals(c.Name, nextToken, stringComparison) || string.Equals(c.Alias, nextToken, stringComparison)))
                 {
@@ -246,6 +256,16 @@ namespace System.CommandLine
                     // Since the next token in the queue is neither a named argument or flag argument, nor a command, the token is erroneous and an exception is thrown
                     throw new InvalidOperationException($"Unexpected token {nextToken}. This token is neither an argument nor a command.");
                 }
+            }
+
+            // Adds the default values of all named arguments that were not in the command line arguments
+            foreach (Argument namedArgument in missingNamedArguments)
+            {
+                Type namedArgumentType = namedArgument.GetType();
+                if (namedArgumentType.GetGenericTypeDefinition() != typeof(NamedArgument<>))
+                    continue;
+                object namedArgumentDefaultValue = namedArgumentType.GetProperty(nameof(NamedArgument<object>.DefaultValue)).GetValue(namedArgument);
+                parsingResults.Add(namedArgument, namedArgumentDefaultValue);
             }
 
             // Adds the value of the flag arguments
