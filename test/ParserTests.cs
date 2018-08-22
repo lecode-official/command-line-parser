@@ -566,12 +566,15 @@ namespace System.CommandLine.Tests
                 ArgumentAliasPrefix = "-"
             });
             parser.AddNamedArgument<int>("add", "a", "Add", "Adds numbers together", 0, (a, b) => a + b);
+            parser.AddNamedArgument<int>("multiply", "m", "Multiply", "Multiplies numbers together", 0, (a, b) => a * b);
 
             // Parses the command line arguments
-            ParsingResults parsingResults = parser.Parse(new string[] { "test.exe", "--add", "1", "-a", "2", "--add", "3" });
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe", "--add", "1", "-a", "2", "--add", "3" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "--multiply", "4", "5", "-m", "6" });
 
             // Validates that the parsed values are correct
-            Assert.Equal(6, parsingResults.GetParsedValue<int>("Add"));
+            Assert.Equal(6, firstParsingResults.GetParsedValue<int>("Add"));
+            Assert.Equal(120, secondParsingResults.GetParsedValue<int>("Multiply"));
         }
 
         /// <summary>
