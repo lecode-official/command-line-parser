@@ -205,6 +205,40 @@ namespace System.CommandLine.Tests
         }
 
         /// <summary>
+        /// Tests whether the parser correctly handles default values.
+        /// </summary>
+        [Fact]
+        public void TestNamedArgumentDefaultValues()
+        {
+            // Sets up the parser
+            Parser parser = new Parser(new ParserOptions
+            {
+                ArgumentPrefix = "--",
+                ArgumentAliasPrefix = "-"
+            });
+            parser
+                .AddNamedArgument<bool>("feature", "f", "Feature", null, true)
+                .AddNamedArgument<int>("number-of-iterations", "i", "NumberOfIterations", null, 123)
+                .AddNamedArgument<DayOfWeek>("day-of-week", "d", "DayOfWeek");
+
+            // Parses the command line arguments
+            ParsingResults firstParsingResults = parser.Parse(new string[] { "test.exe" });
+            ParsingResults secondParsingResults = parser.Parse(new string[] { "test.exe", "--number-of-iterations", "72" });
+            ParsingResults thirdParsingResults = parser.Parse(new string[] { "test.exe", "--feature", "false", "-i", "72", "-d", "wednesday" });
+
+            // Validates that the parsed values are correct
+            Assert.True(firstParsingResults.GetParsedValue<bool>("Feature"));
+            Assert.Equal(123, firstParsingResults.GetParsedValue<int>("NumberOfIterations"));
+            Assert.Equal(DayOfWeek.Sunday, firstParsingResults.GetParsedValue<DayOfWeek>("DayOfWeek"));
+            Assert.True(secondParsingResults.GetParsedValue<bool>("Feature"));
+            Assert.Equal(72, secondParsingResults.GetParsedValue<int>("NumberOfIterations"));
+            Assert.Equal(DayOfWeek.Sunday, secondParsingResults.GetParsedValue<DayOfWeek>("DayOfWeek"));
+            Assert.False(thirdParsingResults.GetParsedValue<bool>("Feature"));
+            Assert.Equal(72, thirdParsingResults.GetParsedValue<int>("NumberOfIterations"));
+            Assert.Equal(DayOfWeek.Wednesday, thirdParsingResults.GetParsedValue<DayOfWeek>("DayOfWeek"));
+        }
+
+        /// <summary>
         /// Tests whether the parser can handle one flag argument.
         /// </summary>
         [Fact]
