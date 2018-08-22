@@ -144,6 +144,128 @@ namespace System.CommandLine
         }
 
         /// <summary>
+        /// Determines if the specified token references a named argument.
+        /// </summary>
+        /// <param name="token">The token that is to be tested.</param>
+        /// <param name="namedArgument">
+        /// This out parameter will be assigned the named argument which was referenced by the token. If the token does not match any named argument then this out parameter will be set to <c>null</c>.
+        /// </param>
+        /// <returns>Returns <c>true</c> if the token references a named argument and <c>false</c> otherwise.</returns>
+        private bool IsNamedArgument(string token, out Argument namedArgument)
+        {
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            // Checks if there is a named argument with the name or alias that is specified in the token
+            if (this.NamedArguments.Any(argument => token.Equals(string.Concat(this.Options.ArgumentPrefix, argument.Name), stringComparison)) ||
+                this.NamedArguments.Any(argument => token.Equals(string.Concat(this.Options.ArgumentAliasPrefix, argument.Alias), stringComparison)))
+            {
+                namedArgument = this.NamedArguments.Single(argument =>
+                    token.Equals(string.Concat(this.Options.ArgumentPrefix, argument.Name), stringComparison) ||
+                    token.Equals(string.Concat(this.Options.ArgumentAliasPrefix, argument.Alias), stringComparison)
+                );
+                return true;
+            }
+
+            // Since the token neither matches the name of a named argument nor an alias of a named argument, the token does not represent a named argument
+            namedArgument = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if the specified token references a flag argument.
+        /// </summary>
+        /// <param name="token">The token that is to be tested.</param>
+        /// <param name="flagArgument">
+        /// This out parameter will be assigned the flag argument which was referenced by the token. If the token does not match any flag argument then this out parameter will be set to <c>null</c>.
+        /// </param>
+        /// <returns>Returns <c>true</c> if the token references a flag argument and <c>false</c> otherwise.</returns>
+        private bool IsFlagArgument(string token, out Argument flagArgument)
+        {
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            // Checks if there is a flag argument with the name or alias that is specified in the token
+            if (this.FlagArguments.Any(argument => token.Equals(string.Concat(this.Options.ArgumentPrefix, argument.Name), stringComparison)) ||
+                this.FlagArguments.Any(argument => token.Equals(string.Concat(this.Options.ArgumentAliasPrefix, argument.Alias), stringComparison)))
+            {
+                flagArgument = this.FlagArguments.Single(argument =>
+                    token.Equals(string.Concat(this.Options.ArgumentPrefix, argument.Name), stringComparison) ||
+                    token.Equals(string.Concat(this.Options.ArgumentAliasPrefix, argument.Alias), stringComparison)
+                );
+                return true;
+            }
+
+            // Since the token neither matches the name of a flag argument nor an alias of a flag argument, the token does not represent a flag argument
+            flagArgument = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if the specified token references a command.
+        /// </summary>
+        /// <param name="token">The token that is to be tested.</param>
+        /// <param name="command">This out parameter will be assigned the command which was referenced by the token. If the token does not match any command, then this out parameter will be set to <c>null</c>.</param>
+        /// <returns>Returns <c>true</c> if the token references a command and <c>false</c> otherwise.</returns>
+        private bool IsCommand(string token, out Command command)
+        {
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            // Checks if there is a command with the name or alias that is specified in the token
+            if (this.Commands.Any(c => token.Equals(c.Name, stringComparison)) || this.Commands.Any(c => token.Equals(c.Alias, stringComparison)))
+            {
+                command = this.Commands.Single(c => token.Equals(c.Name, stringComparison) || token.Equals(c.Alias, stringComparison));
+                return true;
+            }
+
+            // Since the token neither matches the name of a command nor an alias of a command, the token does not represent a command
+            command = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Determines if the specified token is a multi-character flag argument and references multiple flag arguments.
+        /// </summary>
+        /// <param name="token">The token that is to be tested.</param>
+        /// <param name="command">
+        /// This out parameter will be assigned a dictionary with all the flag arguments and the number of their occurrences that were referenced by the token. If the token is not a valid multi-character flag argument,
+        /// then this out parameter will be set to <c>null</c>.
+        /// </param>
+        /// <returns>Returns <c>true</c> if the token is a multi-character flag argument and <c>false</c> otherwise.</returns>
+        private bool IsMultiCharacterFlagArgument(string token, out IDictionary<Argument, ulong> flagArgumentOccurrences)
+        {
+            // Determines the string comparison type based on whether the casing should be ignored or not
+            StringComparison stringComparison = this.Options.IgnoreCase ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+
+            // Checks if the token starts with the argument alias prefix, if not, then the token cannot reference a multi-character flag
+            flagArgumentOccurrences = null;
+            if (!token.StartsWith(this.Options.ArgumentAliasPrefix))
+                return false;
+
+            // Cycles through all flags and tries to match them with flag arguments
+            Dictionary<Argument, ulong> occurrences = new Dictionary<Argument, ulong>();
+            foreach (string flag in token.Replace(this.Options.ArgumentAliasPrefix, string.Empty).Select(character => character.ToString()))
+            {
+                // Gets the corresponding argument for the flag
+                Argument flagArgument = this.FlagArguments.FirstOrDefault(argument => argument.Alias.Equals(flag, stringComparison));
+
+                // If no flag argument could be found, then the multi-character flag argument does not match, at least not entirely, and is therefore invalid
+                if (flagArgument == null)
+                    return false;
+
+                if (occurrences.ContainsKey(flagArgument))
+                    occurrences[flagArgument] += 1;
+                else
+                    occurrences.Add(flagArgument, 1);
+            }
+
+            // Since all flags in the multi-character flag were matched with a flag argument, the multi-character flag argument is valid
+            flagArgumentOccurrences = occurrences;
+            return true;
+        }
+
+        /// <summary>
         /// Parses the command line arguments by matching them to the declared arguments and commands.
         /// </summary>
         /// <param name="tokenQueue">A queue, which contains the tokens.</param>
@@ -171,82 +293,31 @@ namespace System.CommandLine
             List<Argument> missingNamedArguments = this.NamedArguments.ToList();
 
             // Since flag arguments get their value from being present or absent, all flag values get a value (missing flags just get their "absent" value, e.g. false), there number of occurrences have to be recorded
-            Dictionary<Argument, ulong> numberOfFlagOccurrencesMap = new Dictionary<Argument, ulong>();
+            Dictionary<Argument, ulong> flagArgumentOccurrences = new Dictionary<Argument, ulong>();
             foreach (Argument flagArgument in this.FlagArguments)
-                numberOfFlagOccurrencesMap.Add(flagArgument, 0);
+                flagArgumentOccurrences.Add(flagArgument, 0);
 
             // While there are still token in the queue, the named arguments, flag arguments, and commands have to be parsed
             while (tokenQueue.Any())
             {
-                // Checks if the next token in the queue is a named parameter or a flag, or a command
-                string nextToken = tokenQueue.Peek();
-                if (nextToken.StartsWith(this.Options.ArgumentPrefix) || nextToken.StartsWith(this.Options.ArgumentAliasPrefix))
+                // Checks if the next token references a named argument, a flag argument, a multi-character flag argument, a command, or is an invalid token
+                string nextToken = tokenQueue.Dequeue();
+                if (this.IsNamedArgument(nextToken, out Argument namedArgument))
                 {
-                    // Consumes the next token
-                    string argumentReference = tokenQueue.Dequeue();
-
-                    // Checks if the token is the name or alias of a named argument
-                    bool argumentParsed = false;
-                    foreach (Argument namedArgument in this.NamedArguments)
-                    {
-                        // Checks if the token is a reference to the current argument, if so then the value is parsed and added to the parsing results
-                        if (argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, namedArgument.Name), stringComparison) ||
-                            argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, namedArgument.Alias), stringComparison))
-                        {
-                            parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
-                            missingNamedArguments.Remove(namedArgument);
-                            argumentParsed = true;
-                            break;
-                        }
-                    }
-                    if (argumentParsed)
-                        continue;
-
-                    // Checks if the token is the name or alias of a flag argument
-                    foreach (Argument flagArgument in this.FlagArguments)
-                    {
-                        // Checks if the current token is the name of the current argument, if so then the value of the flag is updated
-                        if (argumentReference.Equals(string.Concat(this.Options.ArgumentPrefix, flagArgument.Name), stringComparison) ||
-                            argumentReference.Equals(string.Concat(this.Options.ArgumentAliasPrefix, flagArgument.Alias), stringComparison))
-                        {
-                            numberOfFlagOccurrencesMap[flagArgument] += 1;
-                            argumentParsed = true;
-                            break;
-                        }
-                    }
-                    if (argumentParsed)
-                        continue;
-
-                    // Checks if the parser supports multi-character flags, if so then it is checked if the current token is a multi-character flag
-                    if (this.Options.AllowMultiCharacterFlags &&
-                        argumentReference.StartsWith(this.Options.ArgumentAliasPrefix) &&
-                        !argumentReference.StartsWith(this.Options.ArgumentPrefix))
-                    {
-                        // Splits the multi-character flags and retrieves all matching flag arguments
-                        IEnumerable<Argument> multiCharacterFlags = argumentReference
-                            .Replace(this.Options.ArgumentAliasPrefix, string.Empty)
-                            .Select(flag => this.FlagArguments.SingleOrDefault(flagArgument => flagArgument.Alias.Equals(flag.ToString(), stringComparison)));
-
-                        // Checks if all of the characters in the multi-character flag matched a flag argument, if not, then the multi-character flag is invalid and an exception is thrown
-                        if (multiCharacterFlags.Any(flag => flag == null))
-                            throw new InvalidOperationException($"Unknown argument or multi-character flag {argumentReference}.");
-
-                        // Updates the number of occurrences of the flags in the multi-character flag
-                        foreach (Argument flagArgument in multiCharacterFlags)
-                            numberOfFlagOccurrencesMap[flagArgument] += 1;
-                        argumentParsed = true;
-                    }
-                    if (argumentParsed)
-                        continue;
-
-                    // If the execution hits this point, then the current token is invalid and therefore an exception is thrown
-                    throw new InvalidOperationException($"Unknown argument or multi-character flag {argumentReference}.");
+                    parsingResults.Add(namedArgument, ValueConverter.Convert(namedArgument.Type, tokenQueue.Dequeue()));
+                    missingNamedArguments.Remove(namedArgument);
                 }
-                else if (this.Commands.Any(c => string.Equals(c.Name, nextToken, stringComparison) || string.Equals(c.Alias, nextToken, stringComparison)))
+                else if (this.IsFlagArgument(nextToken, out Argument flagArgument))
                 {
-                    // Gets the command and parses it
-                    string commandName = tokenQueue.Dequeue();
-                    Command command = this.Commands.First(c => string.Equals(c.Name, commandName, stringComparison) || string.Equals(c.Alias, nextToken, stringComparison));
+                    flagArgumentOccurrences[flagArgument] += 1;
+                }
+                else if (this.IsMultiCharacterFlagArgument(nextToken, out IDictionary<Argument, ulong> occurrences))
+                {
+                    foreach (Argument argument in occurrences.Keys)
+                        flagArgumentOccurrences[argument] += occurrences[argument];
+                }
+                else if (this.IsCommand(nextToken, out Command command))
+                {
                     ParsingResults subResults = command.SubParser.Parse(tokenQueue);
                     parsingResults.AddCommand(command, subResults);
                     break;
@@ -269,8 +340,8 @@ namespace System.CommandLine
             }
 
             // Adds the value of the flag arguments
-            foreach (Argument flagArgument in numberOfFlagOccurrencesMap.Keys)
-                parsingResults.Add(flagArgument, ValueConverter.Convert(flagArgument.Type, numberOfFlagOccurrencesMap[flagArgument].ToString()));
+            foreach (Argument flagArgument in flagArgumentOccurrences.Keys)
+                parsingResults.Add(flagArgument, ValueConverter.Convert(flagArgument.Type, flagArgumentOccurrences[flagArgument].ToString()));
 
             // Returns the result of the parsing
             return parsingResults;
