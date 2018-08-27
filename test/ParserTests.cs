@@ -807,10 +807,10 @@ namespace System.CommandLine.Tests
 
             // Creates the parser for the new command
             Parser newCommandParser = parser.AddCommand("new", "Create a new .NET project or file.");
-            buildCommandParser.AddPositionalArgument<string>("template", "The project template to use.");
+            newCommandParser.AddPositionalArgument<string>("template", "The project template to use.");
             newCommandParser.AddFlagArgument<bool>("help", "h", "Show command line help.");
-            buildCommandParser.AddNamedArgument<string>("name", "n", "The name for the output being created. If no name is specified, the name of the current directory is used.");
-            buildCommandParser.AddNamedArgument<string>("output", "o", "Location to place the generated output.");
+            newCommandParser.AddNamedArgument<string>("name", "n", "The name for the output being created. If no name is specified, the name of the current directory is used.");
+            newCommandParser.AddNamedArgument<string>("output", "o", "Location to place the generated output.");
 
             // Creates the parser for the run command
             Parser runCommandParser = parser.AddCommand("run", "Build and run a .NET project output.");
@@ -831,9 +831,73 @@ namespace System.CommandLine.Tests
             Assert.Equal("add", parsingResults.SubResults.Command);
             Assert.Equal("./test.csproj", parsingResults.SubResults.GetParsedValue<string>("Project"));
             Assert.True(parsingResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.False(parsingResults.SubResults.HasSubResults);
+
+            // Tests how the parser handles the add package command
+            parsingResults = parser.Parse(new string[] { "dotnet", "add", "./test.csproj", "package", "Newtonsoft.Json", "--version", "11.0.2" });
+            Assert.False(parsingResults.GetParsedValue<bool>("Help"));
+            Assert.True(parsingResults.HasSubResults);
+            Assert.Equal("add", parsingResults.SubResults.Command);
+            Assert.Equal("./test.csproj", parsingResults.SubResults.GetParsedValue<string>("Project"));
+            Assert.False(parsingResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.True(parsingResults.SubResults.HasSubResults);
+            Assert.Equal("package", parsingResults.SubResults.SubResults.Command);
+            Assert.Equal("Newtonsoft.Json", parsingResults.SubResults.SubResults.GetParsedValue<string>("PackageName"));
+            Assert.Equal("11.0.2", parsingResults.SubResults.SubResults.GetParsedValue<string>("Version"));
+            Assert.False(parsingResults.SubResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.False(parsingResults.SubResults.SubResults.GetParsedValue<bool>("Interactive"));
+            Assert.False(parsingResults.SubResults.SubResults.HasSubResults);
 
             // Tests how the parser handles the missing package name in the add package command
             Assert.Throws<InvalidOperationException>(() => parser.Parse(new string[] { "dotnet", "add", "./test.csproj", "package" }));
+
+            // Tests how the parser handles the add reference command
+            parsingResults = parser.Parse(new string[] { "dotnet", "add", "./test.csproj", "reference", "../foo/bar.csproj", "--framework", "netcoreapp2.1", "-h" });
+            Assert.False(parsingResults.GetParsedValue<bool>("Help"));
+            Assert.True(parsingResults.HasSubResults);
+            Assert.Equal("add", parsingResults.SubResults.Command);
+            Assert.Equal("./test.csproj", parsingResults.SubResults.GetParsedValue<string>("Project"));
+            Assert.False(parsingResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.True(parsingResults.SubResults.HasSubResults);
+            Assert.Equal("reference", parsingResults.SubResults.SubResults.Command);
+            Assert.Equal("../foo/bar.csproj", parsingResults.SubResults.SubResults.GetParsedValue<string>("ProjectPath"));
+            Assert.Equal("netcoreapp2.1", parsingResults.SubResults.SubResults.GetParsedValue<string>("Framework"));
+            Assert.True(parsingResults.SubResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.False(parsingResults.SubResults.SubResults.HasSubResults);
+
+            // Tests how the parser handles the missing project path in the add reference command
+            Assert.Throws<InvalidOperationException>(() => parser.Parse(new string[] { "dotnet", "add", "./test.csproj", "reference" }));
+
+            // Tests how the parser handles the build command
+            parsingResults = parser.Parse(new string[] { "dotnet", "build", "./test.csproj", "--verbosity", "detailed" });
+            Assert.False(parsingResults.GetParsedValue<bool>("Help"));
+            Assert.True(parsingResults.HasSubResults);
+            Assert.Equal("build", parsingResults.SubResults.Command);
+            Assert.Equal("./test.csproj", parsingResults.SubResults.GetParsedValue<string>("Project"));
+            Assert.Equal(VerbosityLevel.Detailed, parsingResults.SubResults.GetParsedValue<VerbosityLevel>("Verbosity"));
+            Assert.False(parsingResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.False(parsingResults.SubResults.HasSubResults);
+
+            // Tests how the parser handles the new command
+            parsingResults = parser.Parse(new string[] { "dotnet", "new", "console", "-n", "test", "--output", "./test" });
+            Assert.False(parsingResults.GetParsedValue<bool>("Help"));
+            Assert.True(parsingResults.HasSubResults);
+            Assert.Equal("new", parsingResults.SubResults.Command);
+            Assert.Equal("console", parsingResults.SubResults.GetParsedValue<string>("Template"));
+            Assert.Equal("test", parsingResults.SubResults.GetParsedValue<string>("Name"));
+            Assert.Equal("./test", parsingResults.SubResults.GetParsedValue<string>("Output"));
+            Assert.False(parsingResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.False(parsingResults.SubResults.HasSubResults);
+
+            // Tests how the parser handles the run command
+            parsingResults = parser.Parse(new string[] { "dotnet", "run", "--project", "./test.csproj", "-f", "netcoreapp2.0", "-h" });
+            Assert.False(parsingResults.GetParsedValue<bool>("Help"));
+            Assert.True(parsingResults.HasSubResults);
+            Assert.Equal("run", parsingResults.SubResults.Command);
+            Assert.Equal("./test.csproj", parsingResults.SubResults.GetParsedValue<string>("Project"));
+            Assert.Equal("netcoreapp2.0", parsingResults.SubResults.GetParsedValue<string>("Framework"));
+            Assert.True(parsingResults.SubResults.GetParsedValue<bool>("Help"));
+            Assert.False(parsingResults.SubResults.HasSubResults);
         }
 
         #endregion
