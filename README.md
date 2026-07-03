@@ -1,36 +1,20 @@
-# Command Line Parser
+# CLI.NET Core
 
-![Command Line Parser Logo](docs/images/Banner.png "Command Line Parser Logo")
+CLI.NET Core is a command line application framework in the style of ASP.NET Core. It allows you to define commands and command line arguments in much the same way you would define actions and arguments for a Web API in ASP.NET Core.
 
-A simple and light-weight parser for command line arguments, which makes it possible to access parameters
-from the command line via well-defined .NET data structures.
+## Project Structure
 
-## Using the Project
+The repository is organized into a few top-level directories:
 
-You can always get the latest stable version from NuGet:
+- **`source/`** — The source code of the CLI.NET Core framework itself.
+- **`tests/`** — The unit tests and integration tests that verify the behavior of the framework, as well as the linters and code formatters that enforce a consistent and high-quality codebase.
+- **`docs/`** — The project documentation. Start with [`docs/README.md`](docs/README.md).
+- **`design/`** — Design documents, notes, and assets related to the project.
 
-```bash
-Install-Package System.CommandLine.Parser -Version 0.1.1     # Using the Visual Studio Package Manager
-dotnet add package System.CommandLine.Parser --version 0.1.1 # Using the .NET Command Line Interface
-paket add System.CommandLine.Parser --version 0.1.1          # Using the packet Command Line Interface
-```
+## Contributing
 
-**__But please be aware that the current 0.1.1 version on NuGet is outdated and should only be used for
-legacy projects. The next release is a complete rewrite of the original code for .NET Core and will work
-on all supported .NET Core platforms (e.g. Windows, macOS, and Linux).__**
+If you'd like to contribute, there are multiple ways you can help out. If you find a bug or have a feature request, please feel free to open an issue on GitHub. If you want to contribute code, please fork the repository and use a feature branch. Pull requests are always welcome. Before forking, please open an issue where you describe what you want to do. This helps to align your ideas with mine and may prevent you from doing work, that I am already planning on doing. If you have contributed to the project, please add yourself to the [contributors list](CONTRIBUTORS.md) and document your changes in the [changelog](CHANGELOG.md). Also, if necessary, update the [documentation](docs/README.md). To help speed up the merging of your pull request, please comment and document your code extensively and try to emulate the coding style of the project.
 
-If you want to go ahead and use the new version, you can download and manually build the solution. The
-project was built using Visual Studio Code and .NET Core 2.0. To build the solution, clone the repository
-and build it using the command line tools of .NET Core:
+## License
 
-```bash
-git clone https://github.com/lecode-official/command-line-parser
-cd command-line-parser
-dotnet build
-dotnet test ./test/System.CommandLine.Parser.Tests/System.CommandLine.Parser.Tests.csproj
-```
-
-## Contributions
-
-I always greatly appreciate feedback and bug reports. To file a bug, please use GitHub's issue system.
-Alternatively, you can clone the repository and send me a pull request.
+The code in this project is licensed under the GNU Lesser General Public License v3.0 license. This generally means that you may use, distribute, and modify this work freely given that you make the complete source code of your modifications available under the same license. If your project uses this software only through the provided interfaces (i.e., you link against this library), your work may be distributed under different terms without having to publish the source code of your work, even if your project is closed source and commercial. If you make contributions you explicitly grant patent rights if your contribution includes anything patented by you. **This is no legal advice and you should read the [license file](LICENSE) for more information.**

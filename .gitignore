@@ -1,4 +1,29 @@
 
-# Ignores the build outputs
+# Operating system thumbnail databases
+.DS_Store
+Thumbs.db
+
+# IDEs and code editors (Visual Studio Code settings, launch configuration, tasks, and extensions are excluded)
+.c9/
+.classpath
+.history/*
+.project
+.settings/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/settings.json
+!.vscode/tasks.json
+*.launch
+*.sublime-workspace
+/.idea
+
+# Build output
 bin/
 obj/
+
+# To Do Lists
+TODO.md
+
+# Miscellaneous tool logs, outputs, and caches
+.VSCodeCounter/
