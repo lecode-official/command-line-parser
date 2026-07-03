@@ -1,0 +1,16 @@
+{
+    // List of extensions which should be recommended for users of this workspace
+    "recommendations": [
+        // Language support for .gitignore files
+        "codezombiech.gitignore",
+
+        // Adds useful features for editing Markdown tables
+        "TakumiI.markdowntable",
+
+        // Highlights TODOs, FIXMEs, HACKs, DEBUGs, REVIEWs, and NOTEs inside of code files
+        "wayou.vscode-todo-highlight",
+
+        // Integrates many useful features for editing Markdown
+        "yzhang.markdown-all-in-one",
+    ]
+}

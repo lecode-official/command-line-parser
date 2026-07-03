@@ -1,0 +1,62 @@
+
+# Normalize line endings for all text files to Unix-style (LF) on commit; Git auto-detects whether a file is text and, if so, stores it with LF in the
+# repository regardless of the line endings used in the working tree
+*                   text=auto eol=lf
+
+# Source and configuration files that should always be treated as text and normalized to LF
+*.cs                text
+*.csproj            text
+*.sln               text      eol=crlf
+*.props             text
+*.targets           text
+*.json              text
+*.jsonc             text
+*.md                text
+*.yml               text
+*.yaml              text
+*.toml              text
+*.xml               text
+*.svg               text
+*.txt               text
+*.editorconfig      text
+*.gitattributes     text
+*.gitignore         text
+Dockerfile          text
+Containerfile       text
+compose.yaml        text
+
+# Shell scripts must always use LF, otherwise they break on Unix systems
+*.sh                text      eol=lf
+*.bash              text      eol=lf
+
+# Windows-only scripts must keep CRLF, otherwise they break on Windows
+*.bat               text      eol=crlf
+*.cmd               text      eol=crlf
+*.ps1               text      eol=crlf
+
+# Binary files that must never be normalized or line-ending converted
+*.png               binary
+*.jpg               binary
+*.jpeg              binary
+*.gif               binary
+*.ico               binary
+*.webp              binary
+*.avif              binary
+*.woff              binary
+*.woff2             binary
+*.ttf               binary
+*.eot               binary
+*.otf               binary
+*.pdf               binary
+*.zip               binary
+*.gz                binary
+*.7z                binary
+*.mp4               binary
+*.webm              binary
+*.mov               binary
+*.mp3               binary
+*.wav               binary
+*.dll               binary
+*.exe               binary
+*.node              binary
+*.snap              binary    -diff

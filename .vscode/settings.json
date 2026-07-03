@@ -1,18 +1,80 @@
 
 {
-    "files.exclude": {
-        "**/.git": true,
-        "**/.svn": true,
-        "**/.hg": true,
-        "**/CVS": true,
-        "**/.DS_Store": true,
-        "**/bin": true,
-        "**/obj": true
+    // A vertical ruler in the code editor at 150 characters, this is a visual aide to help users keep the 150 character line limit file files that
+    // warrant a line limit
+    "editor.rulers": [150],
+
+    // Maps file names to file types; this is required when Visual Studio Code does not correctly auto-detect file types based on file extension
+    "files.associations": {
+        "**/.vscode/*.json": "jsonc",
+        "LICENSE": "plaintext",
     },
-    "cSpell.words": [
-        "Neumann",
-        "Xunit",
-        "paket",
-        "vvvcccaaa"
-    ]
+
+    // Excludes certain files from being displayed in the file explorer
+    "files.exclude": {
+        ".VSCodeCounter": true,
+        "**/.DS_Store": true,
+        "**/.git": true,
+        "**/bin": true,
+        "**/obj": true,
+        "**/Thumbs.db": true,
+    },
+
+    // Excludes certain files from being watched by the file watcher, this is required, because if the data directory is inside of the workspace, then
+    // Visual Studio Code will watch the entire directory, which can not only cause performance issues, but will also cause the file watcher to run
+    // out of file handles, which are limited by the operating system, that are necessary to watch the files
+    "files.watcherExclude": {
+        ".VSCodeCounter": true,
+        "**/.git/objects/**": true,
+        "**/.git/subtree-cache/**": true,
+        "**/bin": true,
+        "**/obj": true,
+    },
+
+    // Configures the nesting of files that belong together in the explorer (the nested files are not expanded by default); this configuration nests
+    // all Node.js-related configuration files under the "package.json" file, and all linter and code formatter configuration files under the
+    // ".editorconfig" file
+    "explorer.fileNesting.enabled": true,
+    "explorer.fileNesting.expand": false,
+    "explorer.fileNesting.patterns": {
+        ".editorconfig": ".gitattributes, .gitignore",
+        "README.md": "CHANGELOG.md, CONTRIBUTORS.md, LICENSE, TODO.md",
+    },
+
+    // Specifies which Git branches are protected in this repository, Visual Studio will prevent users from committing to these branches (this only
+    // works for the commit feature that is built into Visual Studio Code and not in the terminal)
+    "git.branchProtection": [
+        "main",
+        "staging",
+    ],
+
+    // Specifies that Visual Studio Code should always open the merge editor when a file is opened that has conflicts, instead of the code editor
+    "git.mergeEditor": true,
+
+    // Allows users to force push to a remote Git repository, as we regularly make use of "git commit --amend" in this project
+    "git.allowForcePush": true,
+
+    // Tells Visual Studio Code to fetch all branches instead of only the current one when pulling from a remote repository and to prune references
+    // to remote objects that no longer exist
+    "git.fetchOnPull": true,
+    "git.pruneOnFetch": true,
+
+    // Specifies that Visual Studio Code should push tags and perform a rebase instead of a merge when synching with a remote repository
+    "git.followTagsWhenSync": true,
+    "git.rebaseWhenSync": true,
+
+    // Configures the icon theme to be VSCode Icons and adapts the icons of certain files and directories for the VSCode Icons plugin
+    "workbench.iconTheme": "vscode-icons",
+    "vsicons.associations.files": [
+        {"icon": "dal", "extensions": ["CHANGELOG.md"], "filename": true, "format": "svg"},
+        {"icon": "docz", "extensions": ["README.md"], "filename": true, "format": "svg"},
+        {"icon": "janet", "extensions": ["CONTRIBUTORS.md"], "filename": true, "format": "svg"},
+        {"icon": "todo", "extensions": ["TODO.md"], "filename": true, "format": "svg"},
+        {"icon": "vscode", "extensions": [".vscode/extensions.json", ".vscode/settings.json"], "filename": true, "format": "svg"},
+    ],
+    "vsicons.associations.folders": [
+        {"icon": "coverage", "extensions": ["linters"], "format": "svg"},
+        {"icon": "template", "extensions": ["design"], "format": "svg"},
+        {"icon": "test", "extensions": ["unit-tests"], "format": "svg"},
+    ],
 }
