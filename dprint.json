@@ -1,0 +1,82 @@
+{
+    // By default, dprint only formats files that have changed since the last time it was run; setting "incremental" to false forces dprint to always
+    // format all eligible files; unlike most settings, "incremental" is a global setting that cannot be inherited through "extends" (dprint reports
+    // it as an unknown property when it appears in an extended configuration), so it has to be declared here in the top-level configuration instead
+    // of in the extended configuration in "tests/linters"
+    "incremental": false,
+
+    // By default, everything should be indented with 4 space characters and no tabs should be used (exceptions are configured accordingly)
+    "indentWidth": 4,
+    "useTabs": false,
+
+    // No language should ever exceed 150 characters per line (although dprint may sometimes fail to break lines to fullfil this limit); some
+    // languages, like Markdown have separate settings to disable line breaking, so the character limit does not apply to them
+    "lineWidth": 150,
+
+    // Configuration for Markdown files
+    "markdown": {
+        "textWrap": "never",
+        "emphasisKind": "asterisks",
+    },
+
+    // Configuration for JSON files
+    "json": {
+        // The JSON standard does not allow trailing commas, but the JSONC standard does, so we force trailing commas only for JSONC
+        "trailingCommas": "jsonc",
+        "jsonTrailingCommaFiles": [
+            ".cspell.json",
+            ".vscode/extensions.json",
+            ".vscode/settings.json",
+            ".vscode/tasks.json",
+            "dprint.json",
+        ],
+    },
+
+    // Configuration for XML files
+    "markup": {
+        "formatComments": true,
+        "preferAttrsSingleLine": true,
+
+        // C# project files (.csproj) and the XML-based solution files (.slnx) are XML, but they do not use a file extension that the markup_fmt
+        // plugin recognizes by default, so they are explicitly associated with the plugin here; associations are additive, so the plugin keeps
+        // formatting the file types it already recognizes on its own (e.g. .xml and .html)
+        "associations": [
+            "**/*.csproj",
+            "**/*.slnx",
+        ],
+
+        // The closing angle bracket is on the same line as the last attribute when an HTML tag is broken over multiple lines
+        "closingBracketSameLine": true,
+    },
+
+    // Configuration for YAML files
+    "yaml": {
+        "indentWidth": 2,
+        "trimTrailingZero": true,
+
+        // Forces a whitespace at the beginning of a comment
+        "formatComments": true,
+
+        // Wraps prose text in plain scalars when they exceed the print width
+        "proseWrap": "always",
+    },
+
+    // Configuration for TOML files
+    "toml": {
+        "indentWidth": 2,
+    },
+
+    // Glob patterns for files that should be excluded
+    "excludes": [
+        "**/*.svg",
+    ],
+
+    // A list of plugins that should be used by dprint
+    "plugins": [
+        "https://plugins.dprint.dev/g-plane/markup_fmt-v0.27.3.wasm",
+        "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm",
+        "https://plugins.dprint.dev/json-0.22.0.wasm",
+        "https://plugins.dprint.dev/markdown-0.22.1.wasm",
+        "https://plugins.dprint.dev/toml-0.7.0.wasm",
+    ],
+}

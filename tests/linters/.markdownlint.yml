@@ -1,0 +1,11 @@
+# Use the default configuration for all rules
+default: true
+
+# The line length rule is not used in this project, as breaking the lines manually takes a lot of work and always has to be redone after updating a
+# document, furthermore, many editors allow the auto-breaking of lines to fit the text inside the window, which is optimal for prose
+line-length: false
+
+# There are some inline-HTML tags that are allowed, although in general using HTML should be abstained from
+no-inline-html:
+  allowed_elements:
+    - kbd

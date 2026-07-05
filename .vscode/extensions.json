@@ -4,6 +4,15 @@
         // Language support for .gitignore files
         "codezombiech.gitignore",
 
+        // Perform spell-checking of the documentation, code, and comments with support for warnings/errors in Visual Studio Code
+        "streetsidesoftware.code-spell-checker",
+
+        // Integrates MarkdownLint into the editor
+        "DavidAnson.vscode-markdownlint",
+
+        // Integrates the dprint code formatter into the editor
+        "dprint.dprint",
+
         // Adds useful features for editing Markdown tables
         "TakumiI.markdowntable",
 
@@ -12,5 +21,5 @@
 
         // Integrates many useful features for editing Markdown
         "yzhang.markdown-all-in-one",
-    ]
+    ],
 }
