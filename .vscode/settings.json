@@ -103,6 +103,7 @@
     ],
     "vsicons.associations.folders": [
         { "icon": "coverage", "extensions": ["linters"], "format": "svg" },
+        { "icon": "github", "extensions": ["workflows"], "format": "svg" },
         { "icon": "template", "extensions": ["design"], "format": "svg" },
         { "icon": "test", "extensions": ["unit-tests"], "format": "svg" },
     ],

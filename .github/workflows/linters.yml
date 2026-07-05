@@ -1,0 +1,58 @@
+# The display name of the workflow, shown in the "Actions" tab of the GitHub repository and in the checks of a commit or pull request
+name: Linters
+
+# Defines the events that trigger this workflow; this workflow runs on every push to any branch of the repository
+on:
+  push:
+
+# Defines the jobs that make up the workflow; all jobs run in parallel by default, but here every linter is a separate step of a single job, so that
+# they all share the same checked-out working tree and Node.js installation
+jobs:
+  # A single job that runs all linters and code formatters of the project on a virtual machine with the latest Ubuntu image, which is the fastest and
+  # cheapest of the available runners
+  lint:
+    name: Run Linters
+    runs-on: ubuntu-latest
+
+    # The sequence of tasks that are executed as part of the job; the steps run sequentially in the same runner and share the same file system
+    steps:
+      # Checks out the repository into the runner's working directory, so that the linters have access to the source code and their configuration
+      # files; the "actions/checkout" action is pinned to a major version to receive non-breaking updates automatically
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Installs Node.js, which is required to run the npm-based linters CSpell and MarkdownLint, as well as the dprint code formatter, which is
+      # distributed as an npm package; pins the Node.js version to the current long-term support release, so that the linters run in a stable and
+      # reproducible environment
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # Installs the linters and the code formatter globally, so that they are available as commands in the subsequent steps; installing them in a
+      # dedicated step keeps the linter steps below focused on just running the tools
+      - name: Install Linters
+        run: npm install --global dprint@0.55.1 cspell@10.0.1 markdownlint-cli2@0.23.0
+
+      # Runs the dprint code formatter in check mode; "check" only verifies that all files are already formatted and exits with a non-zero status code
+      # if any file is not, but unlike "dprint fmt" it never modifies any file; dprint automatically discovers the "dprint.json" stub in the
+      # repository root, which extends the real configuration in "tests/linters", so no configuration path has to be passed explicitly, and the
+      # "**/*" glob makes dprint check the whole repository (relative to the working directory)
+      - name: Check Formatting (dprint)
+        run: dprint check "**/*"
+
+      # Runs the CSpell spell checker over every file in the repository; the "lint" command reports spelling mistakes and exits with a non-zero status
+      # code if any are found, the configuration path is passed explicitly, and "--no-progress" suppresses the per-file progress output to keep the
+      # log readable; the "if" ensures that the step runs (unless the workflow was cancelled), even if the previous linter reported an error and
+      # exited with a non-zero exit code, so that the job runs all linters instead of stopping at the first failure
+      - name: Spell Check (CSpell)
+        if: ${{ !cancelled() }}
+        run: cspell lint --config tests/linters/.cspell.json --no-progress "**/*"
+
+      # Runs the MarkdownLint linter over all Markdown files in the repository; the configuration path is passed explicitly via "--config", and the
+      # build output directories are excluded using markdownlint-cli2's "#"-prefixed negated globs (markdownlint-cli2 has no "--ignore" flag), so that
+      # only the project's own documentation is linted; the "if" ensures that the step runs (unless the workflow was cancelled), even if the previous
+      # linter reported an error and exited with a non-zero exit code, so that the job runs all linters instead of stopping at the first failure
+      - name: Lint Markdown (MarkdownLint)
+        if: ${{ !cancelled() }}
+        run: markdownlint-cli2 --config tests/linters/.markdownlint.yml "**/*.md" "#**/bin/**" "#**/obj/**"
