@@ -1,4 +1,3 @@
-
 {
     // A vertical ruler in the code editor at 150 characters, this is a visual aide to help users keep the 150 character line limit file files that
     // warrant a line limit
@@ -7,6 +6,7 @@
     // Maps file names to file types; this is required when Visual Studio Code does not correctly auto-detect file types based on file extension
     "files.associations": {
         "**/.vscode/*.json": "jsonc",
+        "dprint.json": "jsonc",
         "LICENSE": "plaintext",
     },
 
@@ -37,7 +37,7 @@
     "explorer.fileNesting.enabled": true,
     "explorer.fileNesting.expand": false,
     "explorer.fileNesting.patterns": {
-        ".editorconfig": ".gitattributes, .gitignore",
+        ".editorconfig": ".gitattributes, .gitignore, dprint.json",
         "README.md": "CHANGELOG.md, CONTRIBUTORS.md, LICENSE, TODO.md",
     },
 
@@ -63,18 +63,47 @@
     "git.followTagsWhenSync": true,
     "git.rebaseWhenSync": true,
 
+    // Imports the external settings for the code spell checker CSPell, furthermore, the "ignorePaths" and the "useGitignore" settings are reset,
+    // because they overwrite the settings in the imported configuration, also the diagnostic level is increased from "Information" to "Error" to
+    // indicate that spelling mistakes must be corrected
+    "cSpell.ignorePaths": [],
+    "cSpell.useGitignore": false,
+    "cSpell.diagnosticLevel": "Error",
+    "cSpell.import": ["${workspaceFolder}/tests/linters/.cspell.json"],
+
+    // Configures the Markdown linter MarkdownLint to use our custom configuration
+    "markdownlint.config": { "extends": "${workspaceFolder}/tests/linters/.markdownlint.yml" },
+
+    // Configures the code formatter dprint
+    "dprint.verbose": true,
+    "editor.defaultFormatter": "dprint.dprint",
+    "editor.formatOnType": false,
+    "editor.formatOnSave": true,
+
+    // A list of domains from which JSON schema files are automatically downloaded
+    "json.schemaDownload.trustedDomains": {
+        "https://developer.microsoft.com/json-schemas/": true,
+        "https://json-schema.org/": true,
+        "https://json.schemastore.org/": true,
+        "https://plugins.dprint.dev/": true,
+        "https://raw.githubusercontent.com/devcontainers/spec/": true,
+        "https://raw.githubusercontent.com/microsoft/vscode/": true,
+        "https://schemastore.azurewebsites.net/": true,
+        "https://www.schemastore.org/": true,
+    },
+
     // Configures the icon theme to be VSCode Icons and adapts the icons of certain files and directories for the VSCode Icons plugin
     "workbench.iconTheme": "vscode-icons",
     "vsicons.associations.files": [
-        {"icon": "dal", "extensions": ["CHANGELOG.md"], "filename": true, "format": "svg"},
-        {"icon": "docz", "extensions": ["README.md"], "filename": true, "format": "svg"},
-        {"icon": "janet", "extensions": ["CONTRIBUTORS.md"], "filename": true, "format": "svg"},
-        {"icon": "todo", "extensions": ["TODO.md"], "filename": true, "format": "svg"},
-        {"icon": "vscode", "extensions": [".vscode/extensions.json", ".vscode/settings.json"], "filename": true, "format": "svg"},
+        { "icon": "dal", "extensions": ["CHANGELOG.md"], "filename": true, "format": "svg" },
+        { "icon": "docz", "extensions": ["README.md"], "filename": true, "format": "svg" },
+        { "icon": "janet", "extensions": ["CONTRIBUTORS.md"], "filename": true, "format": "svg" },
+        { "icon": "todo", "extensions": ["TODO.md"], "filename": true, "format": "svg" },
+        { "icon": "vscode", "extensions": [".vscode/extensions.json", ".vscode/settings.json"], "filename": true, "format": "svg" },
     ],
     "vsicons.associations.folders": [
-        {"icon": "coverage", "extensions": ["linters"], "format": "svg"},
-        {"icon": "template", "extensions": ["design"], "format": "svg"},
-        {"icon": "test", "extensions": ["unit-tests"], "format": "svg"},
+        { "icon": "coverage", "extensions": ["linters"], "format": "svg" },
+        { "icon": "template", "extensions": ["design"], "format": "svg" },
+        { "icon": "test", "extensions": ["unit-tests"], "format": "svg" },
     ],
 }

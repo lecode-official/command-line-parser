@@ -1,0 +1,94 @@
+{
+    // Version of the settings file, this should always be 0.2
+    "version": "0.2",
+
+    // The code in this repository is checked against American English
+    "language": "en-US",
+
+    // Words do not have to match in case
+    "caseSensitive": false,
+
+    // A list of file types that should be enabled (not all file types are enabled by default)
+    "enableFiletypes": [
+        "gitignore",
+    ],
+
+    // A list of paths that are ignored when spell-checking (ignores the .git directory, but excludes the commit message file that is created by Git
+    // during a commit, and the cSpell configuration file itself)
+    "ignorePaths": [
+        // The CSpell configuration file is ignored, because it contains flag words that are always considered incorrect, which results in the
+        // configuration file being marked as containing spelling errors
+        "**/.cspell.json",
+
+        // Operating system file preview databases
+        "**/.DS_Store",
+        "**/Thumbs.db",
+
+        // Everything in the Git directory is ignored, except for the commit message file
+        "**/.git/!(COMMIT_EDITMSG)",
+
+        // Ignores SVG files (the entire file type could be ignored, but CSpell groups SVG files together with all XML-based file types)
+        "**/*.svg",
+
+        // Build output and caches, which contain binaries and generated code that should not be spell-checked
+        "**/bin/",
+        "**/obj/",
+    ],
+
+    // A list of dictionaries that should be added beyond the American English dictionary
+    "dictionaries": [
+        // Dictionaries that contain common misspellings
+        "en-us",
+        "en-us-common-misspellings",
+        "en-common-misspellings",
+        "de-DE",
+        "es-ES",
+        "fr-FR",
+
+        // Dictionaries that contain the keywords of the programming, markup, styling, and configuration languages used in the project
+        "bash",
+        "docker",
+        "git",
+        "csharp",
+
+        // Other miscellaneous dictionaries
+        "companies",
+        "computing-acronyms",
+        "filetypes",
+        "fonts",
+        "fullstack",
+        "lorem-ipsum",
+        "misc",
+        "networking-terms",
+        "public-licenses",
+        "software-terms",
+        "software-term-suggestions",
+        "software-tools",
+        "coding-compound-words",
+        "web-services",
+    ],
+
+    // A list of words to be always considered incorrect (by default, only words that have 4 or more characters are spell-checked, so this list
+    // includes some common typos of words that are too short to be recognizes by CSpell)
+    "flagWords": [
+        "adn",
+        "fo",
+        "fro",
+        "hte",
+        "ot",
+    ],
+
+    // A list of words that are not in the included default dictionary for American English
+    "words": [
+        "Anson",
+        "codezombiech",
+        "Containerfile",
+        "docz",
+        "markdowntable",
+        "Neumann",
+        "Takumi",
+        "vsicons",
+        "wayou",
+        "yzhang",
+    ],
+}

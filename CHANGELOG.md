@@ -9,6 +9,10 @@ Complete rewrite as a .NET 10 library using the modern application hosting model
 In addition to the rewrite, the following changes were made:
 
 - Since the permissive MIT license has recently been used more and more by large corporations to take from the open source community and not give anything back, the license of this project was changed from MIT to LGPL 3.0. The LGPL still allows people to freely use the library in their own software, even for commercial projects, but making any changes to it forces the derivative work to be released under the same license, thus forcing companies to give back to the community.
+- The project now uses a set of linters and a code formatter to (1) find and correct problems in the code and (2) to consistently format all files. If you use Visual Studio Code to work on the project, all linters and the code formatter are configured to directly work in the code editor. A set of recommended extensions is included for the linters and the code formatter. The following tools are being used:
+  - **CSpell**, a spell checker for code, to ensure that there are no misspellings in the code.
+  - **MarkdownLint**, a linter for Markdown files, which ensures that the Markdown files are consistently formatted and standards are enforced.
+  - **dprint**, an unopinionated, configurable code formatter with plugins for many languages. This code formatter is used to format Markdown, JSON, XML, YAML, and TOML files in the project.
 
 ## v0.2.0
 
