@@ -81,11 +81,13 @@
     // A list of words that are not in the included default dictionary for American English
     "words": [
         "Anson",
+        "clinet",
         "codezombiech",
         "Containerfile",
         "docz",
         "markdowntable",
         "Neumann",
+        "slnx",
         "Takumi",
         "vsicons",
         "wayou",

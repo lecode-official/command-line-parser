@@ -1,0 +1,8 @@
+<Solution>
+    <Folder Name="/clinet-core/">
+        <Project Path="clinet-core/CLI.NET Core.csproj" />
+    </Folder>
+    <Folder Name="/sample-app/">
+        <Project Path="sample-app/CLI.NET Core Sample App.csproj" />
+    </Folder>
+</Solution>
