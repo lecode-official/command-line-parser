@@ -19,13 +19,13 @@ jobs:
       # Checks out the repository into the runner's working directory, so that the linters have access to the source code and their configuration
       # files; the "actions/checkout" action is pinned to a major version to receive non-breaking updates automatically
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Installs Node.js, which is required to run the npm-based linters CSpell and MarkdownLint, as well as the dprint code formatter, which is
       # distributed as an npm package; pins the Node.js version to the current long-term support release, so that the linters run in a stable and
       # reproducible environment
       - name: Set Up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 24
 
