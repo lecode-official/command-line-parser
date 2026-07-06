@@ -1,5 +1,7 @@
 # CLI.NET Core
 
+![CLI.NET Core Logo](design/readme-header-dark.png#gh-dark-mode-only) ![CLI.NET Core Logo](design/readme-header-light.png#gh-light-mode-only)
+
 CLI.NET Core is a command line application framework in the style of ASP.NET Core. It allows you to define commands and command line arguments in much the same way you would define actions and arguments for a Web API in ASP.NET Core.
 
 ## Project Structure
@@ -9,7 +11,7 @@ The repository is organized into a few top-level directories:
 - **`source/`** — The source code of the CLI.NET Core framework itself.
 - **`tests/`** — The unit tests and integration tests that verify the behavior of the framework, as well as the linters and code formatters that enforce a consistent and high-quality codebase.
 - **`docs/`** — The project documentation. Start with [`docs/README.md`](docs/README.md).
-- **`design/`** — Design documents, notes, and assets related to the project.
+- **`design/`** — Design assets related to the project and the [design guide](design/DESIGN.md).
 
 ## Development
 

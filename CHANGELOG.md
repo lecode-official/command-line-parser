@@ -13,6 +13,7 @@ In addition to the rewrite, the following changes were made:
   - **CSpell**, a spell checker for code, to ensure that there are no misspellings in the code.
   - **MarkdownLint**, a linter for Markdown files, which ensures that the Markdown files are consistently formatted and standards are enforced.
   - **dprint**, an unopinionated, configurable code formatter with plugins for many languages. This code formatter is used to format Markdown, JSON, XML, YAML, and TOML files in the project.
+- A completely new, modern logo was designed, which heavily borrows from the ASP.NET Core logo, with the "C" wordmark and a dot. The logo is available in both light and dark mode variants in the `design/` directory and a design guide for it was created.
 
 ## v0.2.0
 

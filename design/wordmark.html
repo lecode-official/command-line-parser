@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>CLI.NET Core — wordmark bar</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet">
+        <style>
+        /* ============================================================
+           CLI.NET Core — fill-width wordmark bar
+           Drop <div class="clinet-core-bar"> anywhere; it fills its container's
+           width, keeps a fixed height, and left-aligns the mark + text
+           without distortion. Use .clinet-core-bar--dark for dark surfaces.
+           ============================================================ */
+        .clinet-core-bar{
+          display:flex; align-items:center; gap:14px;
+          width:100%; box-sizing:border-box;
+          padding:16px 22px; border-radius:16px;
+          background:linear-gradient(150deg,#f3efff,#ece2ff 60%,#f6effb);
+          box-shadow:inset 0 1px 1px rgba(255,255,255,0.9),0 4px 12px rgba(90,60,160,0.1);
+          font-family:'Space Grotesk',system-ui,sans-serif;
+        }
+        .clinet-core-bar svg{ width:40px; height:40px; flex:0 0 auto; }
+        .clinet-core-bar .wm{ font-weight:600; font-size:25px; letter-spacing:-0.015em; color:#23222B; white-space:nowrap; }
+        .clinet-core-bar .wm .dot{ color:#6D4AFF; }
+        .clinet-core-bar .wm .core{ font-weight:400; color:#5A5966; }
+
+        .clinet-core-bar--dark{
+          background:radial-gradient(140% 160% at 20% 10%,#37305a,#201d30 70%);
+          border:1px solid rgba(255,255,255,0.1);
+          box-shadow:inset 0 1px 1px rgba(255,255,255,0.14);
+        }
+        .clinet-core-bar--dark .wm{ color:#F3F2F5; }
+        .clinet-core-bar--dark .wm .dot{ color:#a98cff; }
+        .clinet-core-bar--dark .wm .core{ color:#B7B6C2; }
+
+        /* demo page only */
+        body{ margin:0; background:#ECEBEF; padding:40px; display:flex; flex-direction:column; gap:24px; }
+        .demo-label{ font-family:'Space Grotesk',sans-serif; font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:#8A8994; }
+        </style>
+    </head>
+    <body>
+        <div class="demo-label">Fill-width bar — resize the window; the box grows, content stays put</div>
+
+        <div class="clinet-core-bar">
+            <svg viewBox="0 0 100 100">
+                <path
+                    d="M 80.40 25.57 A 39 39 0 1 0 80.40 74.43 A 3 3 0 0 0 79.74 70.06 L 69.74 63.32 A 3 3 0 0 0 65.81 63.83 A 21 21 0 1 1 65.81 36.17 A 3 3 0 0 0 69.74 36.68 L 79.74 29.94 A 3 3 0 0 0 80.40 25.57 Z"
+                    fill="#4E4672"
+                />
+                <circle cx="73" cy="50" r="8" fill="#6D4AFF" />
+            </svg>
+            <span class="wm">CLI<span class="dot">.</span>NET <span class="core">Core</span></span>
+        </div>
+
+        <div class="clinet-core-bar clinet-core-bar--dark">
+            <svg viewBox="0 0 100 100">
+                <path
+                    d="M 80.40 25.57 A 39 39 0 1 0 80.40 74.43 A 3 3 0 0 0 79.74 70.06 L 69.74 63.32 A 3 3 0 0 0 65.81 63.83 A 21 21 0 1 1 65.81 36.17 A 3 3 0 0 0 69.74 36.68 L 79.74 29.94 A 3 3 0 0 0 80.40 25.57 Z"
+                    fill="#F5F4F8"
+                />
+                <circle cx="73" cy="50" r="8" fill="#a98cff" />
+            </svg>
+            <span class="wm">CLI<span class="dot">.</span>NET <span class="core">Core</span></span>
+        </div>
+    </body>
+</html>
