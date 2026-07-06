@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Build Configuration -->
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <OutputType>Exe</OutputType>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>CliNetCore.SampleApp</RootNamespace>
+    </PropertyGroup>
+
+    <!-- Assembly Info -->
+    <PropertyGroup>
+        <AssemblyTitle>CLI.NET Core Sample App</AssemblyTitle>
+        <Product>CLI.NET Core</Product>
+        <NeutralLanguage>en-US</NeutralLanguage>
+    </PropertyGroup>
+
+    <!-- NuGet Package Information -->
+    <PropertyGroup>
+        <PackageId>CliNetCoreSampleApp</PackageId>
+        <Version>0.1.0</Version>
+        <title>CLI.NET Core Sample App</title>
+        <Authors>David Neumann</Authors>
+        <Description>A sample app for demonstrating the CLI.NET Core application framework.</Description>
+        <Copyright>Copyright © 2026 David Neumann</Copyright>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/lecode-official/command-line-parser/blob/master/source/sample-app</PackageProjectUrl>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/lecode-official/command-line-parser</RepositoryUrl>
+    </PropertyGroup>
+
+    <!-- Referenced NuGet Packages -->
+    <ItemGroup></ItemGroup>
+
+    <!-- Referenced Projects -->
+    <ItemGroup>
+        <ProjectReference Include="..\clinet-core\CLI.NET Core.csproj" />
+    </ItemGroup>
+</Project>
