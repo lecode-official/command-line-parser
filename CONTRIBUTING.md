@@ -17,6 +17,15 @@ Fork the repository and work on a feature branch. Pull requests are always welco
 - Run the linters and the code formatter before opening the pull request (see [Tooling](docs/developer-manual/tooling/README.md)). The same checks run in [Continuous Integration](docs/developer-manual/tooling/continuous-integration.md) on every push.
 - Write commit messages by [the project's rules](docs/developer-manual/conventions/commit-messages.md).
 
+## Using AI to Contribute
+
+Using AI tools to help write a contribution is fine, but two rules apply, without exception:
+
+- **Disclose it.** Say in the pull request description, and in the commit messages themselves, whether AI was involved and what it did — the same rule that governs every commit to this repository (see [Commit Messages](docs/developer-manual/conventions/commit-messages.md)). An undisclosed AI contribution is treated as a violation of this policy, not as a neutral omission.
+- **Review it yourself, fully, before submitting.** You are responsible for every line of a contribution as if you had written it by hand: you must understand it, be able to explain and defend it, and have actually run the relevant tests and linters against it. AI is a tool you use, not a substitute for that responsibility.
+
+A pull request that is raw, unreviewed AI output — one the contributor cannot explain or has not verified — **will be rejected**, disclosed or not. This is not about rejecting AI assistance, it is about rejecting contributions nobody has actually taken responsibility for.
+
 ## Update the Project's Records
 
 A pull request that adds a contribution is expected to also update the records that track the project's history:

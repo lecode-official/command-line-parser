@@ -1,0 +1,40 @@
+{
+    "permissions": {
+        "allow": ["Agent"]
+    },
+    "hooks": {
+        "PostToolUse": [
+            {
+                "matcher": "Edit|Write|NotebookEdit",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "f=$(jq -r '.tool_input.file_path // .tool_input.notebook_path // empty'); case \"$f\" in \"\"|*/bin/*|*/obj/*) exit 0;; esac; case \"$f\" in *.md|*.json|*.jsonc|*.yml|*.yaml|*.toml|*.xml|*.csproj|*.slnx) ;; *) exit 0;; esac; command -v dprint >/dev/null 2>&1 && [ -f \"$f\" ] && dprint fmt \"$f\" 2>&1; true",
+                        "statusMessage": "Formatting (dprint)..."
+                    },
+                    {
+                        "type": "command",
+                        "command": "f=$(jq -r '.tool_input.file_path // empty'); case \"$f\" in *.md) ;; *) exit 0;; esac; command -v npx >/dev/null 2>&1 || exit 0; if [ -f \"$f\" ]; then out=$(npx --yes markdownlint-cli2@0.23.0 --config tests/linters/.markdownlint.yml --fix \"$f\" 2>&1); [ $? -ne 0 ] && { echo \"$out\" >&2; exit 2; }; fi; true",
+                        "statusMessage": "Linting Markdown..."
+                    },
+                    {
+                        "type": "command",
+                        "command": "f=$(jq -r '.tool_input.file_path // .tool_input.notebook_path // empty'); case \"$f\" in \"\"|*/bin/*|*/obj/*|*.svg) exit 0;; esac; command -v npx >/dev/null 2>&1 || exit 0; if [ -f \"$f\" ]; then out=$(npx --yes cspell@10.0.1 lint --config tests/linters/.cspell.json --no-progress \"$f\" 2>&1); [ $? -ne 0 ] && { echo \"$out\" >&2; exit 2; }; fi; true",
+                        "statusMessage": "Spell checking (CSpell)..."
+                    }
+                ]
+            }
+        ],
+        "Stop": [
+            {
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "out=$(dotnet build \"source/CLI.NET Core.slnx\" 2>&1); if [ $? -ne 0 ]; then echo \"$out\" >&2; exit 2; fi",
+                        "statusMessage": "Building the solution..."
+                    }
+                ]
+            }
+        ]
+    }
+}

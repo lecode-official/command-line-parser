@@ -23,9 +23,23 @@ The project uses a set of linters and a code formatter to (1) find and correct p
 - **[MarkdownLint](tests/linters/.markdownlint.yml)**, a linter for Markdown files, which ensures that the Markdown files are consistently formatted and standards are enforced.
 - **[dprint](dprint.json)**, an unopinionated, configurable code formatter with plugins for many languages. This code formatter is used to format Markdown, JSON, XML, YAML, and TOML files in the project.
 
+## Use of AI
+
+This project is developed with the help of AI and I want to be fully transparent about that. The heart of the project — its architecture, its public API, and the implementation of its core — was and will continue to be written by hand, by me. AI is a tool that I use for the work around that core, never a substitute for it, and everything an AI produces is reviewed and, where necessary, rewritten by me before it is committed. Concretely, I use AI for the following kinds of tasks:
+
+- **Documentation** — Writing and revising the documentation, the read me files, and code comments.
+- **Design assets** — Generating logo designs and other visual assets.
+- **Boilerplate** — Generating repetitive, mechanical code, project scaffolding, and configuration files.
+- **Difficult bugs** — Tracking down bugs where a second pair of eyes helps.
+- **Architecture** — Discussing design and architecture decisions as a sounding board. The decisions themselves are always mine.
+
+Every commit message states whether AI was involved and, if it was, what exactly the AI did. Such commits additionally carry a `Co-Authored-By: Claude <noreply@anthropic.com>` trailer, so that the extent of AI involvement can be traced through the Git history at any point. Commits without such a note were written entirely by hand.
+
+This is my own policy for my own commits. If you are contributing to the project yourself, see [`CONTRIBUTING.md`](CONTRIBUTING.md) for the AI-assistance rules that apply to contributions.
+
 ## Contributing
 
-If you'd like to contribute, there are multiple ways you can help out — bug reports, feature requests, or code. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full process. Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+If you'd like to contribute, there are multiple ways you can help out — bug reports, feature requests, or code. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full process, including how AI-assisted contributions are handled. Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## Security
 
