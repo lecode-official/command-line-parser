@@ -1,16 +1,18 @@
 # CLAUDE.md
 
-Guidance for AI assistants working on CLI.NET Core.
+Guidance for AI assistants working on CLI.NET Core. Humans should read the [documentation](docs/README.md) too.
 
 ## What This Project Is
 
 CLI.NET Core is a .NET command line application framework, built in the style of ASP.NET Core: it lets consumers define commands and command-line arguments much the same way they would define actions and parameters for a Web API. The repository holds one solution, [`source/CLI.NET Core.slnx`](source/CLI.NET%20Core.slnx), with two projects — the framework itself (`clinet-core`) and a sample app that references it (`sample-app`). Both target `net10.0` with nullable reference types and implicit usings enabled.
 
+Start from [docs/developer-manual/architecture/overview.md](docs/developer-manual/architecture/overview.md).
+
 ## Golden Rules
 
-- **Match the surrounding code** This code is heavily and consistently documented — follow it.
-- **Formatting is owned by dprint** Markdown, JSON, XML (including `.csproj`/`.slnx`), YAML, and TOML — never add a lint rule that reformats one of these. Run `dprint fmt` before finishing. **C# is not covered by dprint** (there is no C# plugin configured); its whitespace comes from [`.editorconfig`](.editorconfig), so review it by eye.
-- **Run the linters before finishing** — there is no npm-script wrapper, so invoke them directly:
+- **Match the surrounding code and the documented conventions** ([docs/developer-manual/conventions/](docs/developer-manual/conventions/csharp-style.md)). This code is heavily and consistently documented — follow it.
+- **Formatting is owned by dprint** ([docs/developer-manual/tooling/formatting-dprint.md](docs/developer-manual/tooling/formatting-dprint.md)) for Markdown, JSON, XML (including `.csproj`/`.slnx`), YAML, and TOML — never add a lint rule that reformats one of these. Run `dprint fmt` before finishing. **C# is not covered by dprint** (there is no C# plugin configured); its whitespace comes from [`.editorconfig`](.editorconfig) and its style from [C# Style](docs/developer-manual/conventions/csharp-style.md) alone, so review it by eye.
+- **Run the linters before finishing** — there is no npm-script wrapper, so invoke them directly with the versions [Continuous Integration](docs/developer-manual/tooling/continuous-integration.md) pins:
 
   ```shell
   dprint check "**/*"
@@ -18,14 +20,14 @@ CLI.NET Core is a .NET command line application framework, built in the style of
   npx --yes markdownlint-cli2@0.23.0 --config tests/linters/.markdownlint.yml "**/*.md" "#**/bin/**" "#**/obj/**"
   ```
 
-  This file is Markdown and is linted too.
-- **Markdown headings are title case** at every level, in every file. Preserve the real casing of code spans, brand names (`dprint`), and acronyms.
-- **Prose uses periods, not semicolons.** In prose (docs, XML documentation comments, commit messages, this file) end each sentence with a period rather than joining two with a semicolon. Plain in-code comments (`//`) do the reverse: sentences are separated by semicolons and the last one takes no terminal punctuation.
-- **C# structure**: file-scoped namespaces, an XML documentation comment (`<summary>`, `<param>`, `<returns>`) on every public and internal member, `<inheritdoc/>` for members that implement an interface or override a base member, `sealed` classes by default (composition over inheritance for anything that would otherwise need to extend a sealed framework type), explicit `this.` on member access, expression-bodied members where the implementation is a single expression, and `camelCase` private fields with no underscore.
+  The docs and this file are Markdown and are linted too.
+- **Markdown headings are title case** at every level, in every file ([docs/developer-manual/conventions/markdown-style.md](docs/developer-manual/conventions/markdown-style.md)). Preserve the real casing of code spans, brand names (`dprint`), and acronyms.
+- **Prose uses periods, not semicolons.** In prose (docs, XML documentation comments, commit messages, this file) end each sentence with a period rather than joining two with a semicolon. Plain in-code comments (`//`) do the reverse: sentences are separated by semicolons and the last one takes no terminal punctuation ([docs/developer-manual/conventions/csharp-style.md](docs/developer-manual/conventions/csharp-style.md)).
+- **C# structure**: file-scoped namespaces, an XML documentation comment (`<summary>`, `<param>`, `<returns>`) on every public and internal member, `<inheritdoc/>` for members that implement an interface or override a base member, `sealed` classes by default (composition over inheritance for anything that would otherwise need to extend a sealed framework type), explicit `this.` on member access, expression-bodied members where the implementation is a single expression, and `camelCase` private fields with no underscore. Full detail: [C# Style](docs/developer-manual/conventions/csharp-style.md).
 - **Nullable reference types and implicit usings are enabled everywhere.** Write genuinely null-safe code rather than silencing the analyzer.
-- **Files and directories are kebab-case**, except well-known and tool-mandated names (`README.md`, `LICENSE`, `.editorconfig`, ...). Inside a C# project's own source tree, directories and files switch to PascalCase, one type per file.
-- **Every dependency is pinned to an exact version — never a range.** NuGet packages, dprint plugins, and the linter versions CI installs are all pinned exactly. Every C# project sets `RestorePackagesWithLockFile`, so a `PackageReference` version bump must be followed by `dotnet restore` and the resulting `packages.lock.json` change committed alongside it.
-- **Write commit messages by the rules** — the 50/72 rule, a title-cased, past-tense subject, and a prose body. State whether AI was involved and, if it was, what exactly the AI did — this project is developed openly with AI assistance and the commit history is where that is tracked (see the "Use of AI" section of the [root README](README.md)). When you did any of the work, add the trailer this project uses (not a model-specific one):
+- **Files and directories are kebab-case**, except well-known and tool-mandated names (`README.md`, `LICENSE`, `.editorconfig`, ...). Inside a C# project's own source tree, directories and files switch to PascalCase, one type per file. Full detail: [File Naming Conventions](docs/developer-manual/conventions/file-naming-conventions.md).
+- **Every dependency is pinned to an exact version — never a range.** NuGet packages, dprint plugins, and the linter versions CI installs are all pinned exactly. Every C# project sets `RestorePackagesWithLockFile`, so a `PackageReference` version bump must be followed by `dotnet restore` and the resulting `packages.lock.json` change committed alongside it. Full detail: [Dependency Management](docs/developer-manual/conventions/dependency-management.md).
+- **Write commit messages by the rules** ([docs/developer-manual/conventions/commit-messages.md](docs/developer-manual/conventions/commit-messages.md)) — the 50/72 rule, a title-cased, past-tense subject, and a prose body. State whether AI was involved and, if it was, what exactly the AI did — this project is developed openly with AI assistance and the commit history is where that is tracked (see the "Use of AI" section of the [root README](README.md)). When you did any of the work, add the trailer this project uses (not a model-specific one):
 
   ```text
   Co-Authored-By: Claude <noreply@anthropic.com>
@@ -33,6 +35,29 @@ CLI.NET Core is a .NET command line application framework, built in the style of
 
 - **Delegating to subagents is pre-approved.** `.claude/settings.json` allows the agent/subagent tool by default, so use one whenever a task genuinely benefits from parallel or isolated work, without asking first.
 
+## When Working on X, Read Y
+
+- **Repository layout, the solution, the projects** → [docs/developer-manual/architecture/](docs/developer-manual/architecture/overview.md).
+- **C# source code** → [docs/developer-manual/conventions/csharp-style.md](docs/developer-manual/conventions/csharp-style.md).
+- **Linting, formatting, spell checking, CI, editor setup** → [docs/developer-manual/tooling/](docs/developer-manual/tooling/README.md).
+- **Markdown and documentation style** → [docs/developer-manual/conventions/markdown-style.md](docs/developer-manual/conventions/markdown-style.md).
+- **Writing commit messages** → [docs/developer-manual/conventions/commit-messages.md](docs/developer-manual/conventions/commit-messages.md).
+- **Naming a new file or directory** → [docs/developer-manual/conventions/file-naming-conventions.md](docs/developer-manual/conventions/file-naming-conventions.md).
+- **Adding or upgrading a dependency** → [docs/developer-manual/conventions/dependency-management.md](docs/developer-manual/conventions/dependency-management.md).
+- **Opening an issue, submitting a pull request, the AI-contribution policy, updating `CONTRIBUTORS.md`/`CHANGELOG.md`** → [CONTRIBUTING.md](CONTRIBUTING.md).
+- **How consumers use the framework** → [docs/user-manual/](docs/user-manual/README.md).
+
 ## Conventions in Brief
 
-Files use file-scoped namespaces and, in larger files, `#region` blocks (`Constructors`, `Private Fields`, `Public Methods`, and so on) to group members — small files skip regions entirely. Every public and internal member is documented with XML comments that explain *why*, not just what. Sealed types compose the framework types they wrap instead of inheriting from them. Markdown headings are title case everywhere, and prose ends sentences with periods; plain code comments do the reverse.
+Files use file-scoped namespaces and, in larger files, `#region` blocks (`Constructors`, `Private Fields`, `Public Methods`, and so on) to group members — small files skip regions entirely. Every public and internal member is documented with XML comments that explain *why*, not just what. Sealed types compose the framework types they wrap instead of inheriting from them. Markdown headings are title case everywhere, and prose ends sentences with periods; plain code comments do the reverse. Full detail: [docs/developer-manual/conventions/](docs/developer-manual/conventions/csharp-style.md).
+
+## Keep the Documentation up to Date
+
+**This is important.** Whenever you change, add, remove, or discover something about the project, update the relevant [`docs/`](docs/README.md) article **and** this `CLAUDE.md` in the same change:
+
+- Keep the "When working on X" routing table above accurate.
+- Keep the [docs index](docs/README.md) and the [Developer Manual index](docs/developer-manual/README.md) accurate — every article must be listed.
+- If a change introduces a topic that does not fit an existing article, add a new small, single-topic article, link it from the relevant index, and reference it here if relevant.
+- If a change invalidates something a doc says, fix the doc — do not leave it stale.
+
+Treat the docs as part of the code: a change is not done until the docs and this file reflect it.
