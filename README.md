@@ -25,7 +25,11 @@ The project uses a set of linters and a code formatter to (1) find and correct p
 
 ## Contributing
 
-If you'd like to contribute, there are multiple ways you can help out. If you find a bug or have a feature request, please feel free to open an issue on GitHub. If you want to contribute code, please fork the repository and use a feature branch. Pull requests are always welcome. Before forking, please open an issue where you describe what you want to do. This helps to align your ideas with mine and may prevent you from doing work, that I am already planning on doing. If you have contributed to the project, please add yourself to the [contributors list](CONTRIBUTORS.md) and document your changes in the [changelog](CHANGELOG.md). Also, if necessary, update the [documentation](docs/README.md). To help speed up the merging of your pull request, please comment and document your code extensively and try to emulate the coding style of the project.
+If you'd like to contribute, there are multiple ways you can help out — bug reports, feature requests, or code. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the full process. Participation is governed by the [Code of Conduct](CODE_OF_CONDUCT.md).
+
+## Security
+
+To report a security vulnerability, please do not open a public issue — see [`SECURITY.md`](SECURITY.md) for how to report it privately.
 
 ## License
 
