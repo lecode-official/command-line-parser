@@ -13,6 +13,9 @@
         // Integrates the dprint code formatter into the editor
         "dprint.dprint",
 
+        // Enables us to have a shared Visual Studio configuration, while allowing each user to locally add or overwrite settings
+        "Swellaby.workspace-config-plus",
+
         // Adds useful features for editing Markdown tables
         "TakumiI.markdowntable",
 

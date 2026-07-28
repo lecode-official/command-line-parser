@@ -11,9 +11,9 @@ Thumbs.db
 .settings/
 .vscode/*
 !.vscode/extensions.json
-!.vscode/launch.json
-!.vscode/settings.json
-!.vscode/tasks.json
+!.vscode/launch.shared.json
+!.vscode/settings.shared.json
+!.vscode/tasks.shared.json
 *.launch
 *.sublime-workspace
 /.idea
