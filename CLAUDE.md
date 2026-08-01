@@ -12,7 +12,7 @@ Start from [docs/developer-manual/architecture/overview.md](docs/developer-manua
 
 - **Match the surrounding code and the documented conventions** ([docs/developer-manual/conventions/](docs/developer-manual/conventions/csharp-style.md)). This code is heavily and consistently documented — follow it.
 - **Formatting is owned by dprint** ([docs/developer-manual/tooling/formatting-dprint.md](docs/developer-manual/tooling/formatting-dprint.md)) for Markdown, JSON, XML (including `.csproj`/`.slnx`), YAML, and TOML — never add a lint rule that reformats one of these. Run `dprint fmt` before finishing. **C# is not covered by dprint** (there is no C# plugin configured); its whitespace comes from [`.editorconfig`](.editorconfig) and its style from [C# Style](docs/developer-manual/conventions/csharp-style.md) alone, so review it by eye.
-- **Run the linters before finishing** — there is no npm-script wrapper, so invoke them directly with the versions [Continuous Integration](docs/developer-manual/tooling/continuous-integration.md) pins:
+- **Run the linters before finishing** — there is no NPM-script wrapper, so invoke them directly with the versions [Continuous Integration](docs/developer-manual/tooling/continuous-integration.md) pins:
 
   ```shell
   dprint check "**/*"
@@ -41,6 +41,7 @@ Start from [docs/developer-manual/architecture/overview.md](docs/developer-manua
 
 - **Repository layout, the solution, the projects** → [docs/developer-manual/architecture/](docs/developer-manual/architecture/overview.md).
 - **C# source code** → [docs/developer-manual/conventions/csharp-style.md](docs/developer-manual/conventions/csharp-style.md).
+- **Installing the SDK, Node.js, or the editor before working on the project** → [docs/developer-manual/tooling/developer-setup.md](docs/developer-manual/tooling/developer-setup.md).
 - **Linting, formatting, spell checking, CI, editor setup** → [docs/developer-manual/tooling/](docs/developer-manual/tooling/README.md).
 - **Markdown and documentation style** → [docs/developer-manual/conventions/markdown-style.md](docs/developer-manual/conventions/markdown-style.md).
 - **Writing commit messages** → [docs/developer-manual/conventions/commit-messages.md](docs/developer-manual/conventions/commit-messages.md).

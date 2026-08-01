@@ -21,8 +21,8 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v7
 
-      # Installs Node.js, which is required to run the npm-based linters CSpell and MarkdownLint, as well as the dprint code formatter, which is
-      # distributed as an npm package; pins the Node.js version to the current long-term support release, so that the linters run in a stable and
+      # Installs Node.js, which is required to run the NPM-based linters CSpell and MarkdownLint, as well as the dprint code formatter, which is
+      # distributed as an NPM package; pins the Node.js version to the current long-term support release, so that the linters run in a stable and
       # reproducible environment
       - name: Set Up Node.js
         uses: actions/setup-node@v6
