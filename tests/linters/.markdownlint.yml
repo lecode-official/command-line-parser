@@ -5,7 +5,9 @@ default: true
 # document, furthermore, many editors allow the auto-breaking of lines to fit the text inside the window, which is optimal for prose
 line-length: false
 
-# There are some inline-HTML tags that are allowed, although in general using HTML should be abstained from
+# There are some inline-HTML tags that are allowed, although in general using HTML should be abstained from; <kbd> is for keyboard shortcuts, and
+# <div> is used to center-align images and text (<div align="center">)
 no-inline-html:
   allowed_elements:
     - kbd
+    - div

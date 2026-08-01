@@ -1,5 +1,11 @@
 # ![CLI.NET Core](design/readme-header-dark.png#gh-dark-mode-only) ![CLI.NET Core](design/readme-header-light.png#gh-light-mode-only)
 
+<div align="center">
+
+[![Tests](https://github.com/lecode-official/command-line-parser/actions/workflows/tests.yml/badge.svg)](https://github.com/lecode-official/command-line-parser/actions/workflows/tests.yml) [![Linters](https://github.com/lecode-official/command-line-parser/actions/workflows/linters.yml/badge.svg)](https://github.com/lecode-official/command-line-parser/actions/workflows/linters.yml)
+
+</div>
+
 CLI.NET Core is a command line application framework in the style of ASP.NET Core. It allows you to define commands and command line arguments in much the same way you would define actions and arguments for a Web API in ASP.NET Core.
 
 ## Project Structure
@@ -20,6 +26,16 @@ The project uses a set of linters and a code formatter to (1) find and correct p
 - **[CSpell](tests/linters/.cspell.json)**, a spell checker for code, to ensure that there are no misspellings in the code.
 - **[MarkdownLint](tests/linters/.markdownlint.yml)**, a linter for Markdown files, which ensures that the Markdown files are consistently formatted and standards are enforced.
 - **[dprint](dprint.json)**, an unopinionated, configurable code formatter with plugins for many languages. This code formatter is used to format Markdown, JSON, XML, YAML, and TOML files in the project.
+
+### Testing
+
+The framework's behavior is verified by an xUnit unit test project, [`tests/unit-tests`](tests/unit-tests/). Every new feature is expected to come with unit tests covering it, in the same pull request (see [`CONTRIBUTING.md`](CONTRIBUTING.md)). Run the tests with:
+
+```shell
+dotnet test "source/CLI.NET Core.slnx"
+```
+
+See [the developer manual](docs/developer-manual/tooling/testing-and-code-coverage.md) for how code coverage is collected and reported.
 
 ### Visual Studio Code
 

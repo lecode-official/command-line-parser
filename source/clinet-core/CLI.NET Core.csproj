@@ -34,4 +34,13 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
     </ItemGroup>
+
+    <!-- Internals Visibility -->
+    <ItemGroup>
+        <!--
+            Grants the unit test project access to internal members, so that internal types (for example CliCommandDispatcherService) can be unit
+            tested directly instead of only indirectly through the public surface that wraps them
+        -->
+        <InternalsVisibleTo Include="CLI.NET Core Unit Tests" />
+    </ItemGroup>
 </Project>

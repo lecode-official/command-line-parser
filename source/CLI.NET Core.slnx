@@ -5,4 +5,7 @@
     <Folder Name="/sample-app/">
         <Project Path="sample-app/CLI.NET Core Sample App.csproj" />
     </Folder>
+    <Folder Name="/unit-tests/">
+        <Project Path="../tests/unit-tests/CLI.NET Core Unit Tests.csproj" />
+    </Folder>
 </Solution>

@@ -10,7 +10,11 @@ Every dependency is pinned to an exact version — never a floating range (`*`),
 <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
 ```
 
-not `Version="10.*"` or `Version="[10.0.0,)"`. The same rule applies outside of NuGet: the dprint plugins in [`dprint.json`](../../../dprint.json) are pinned to an exact release URL, [Continuous Integration](../tooling/continuous-integration.md) installs `dprint`, `cspell`, and `markdownlint-cli2` at exact, explicit versions, and [`global.json`](../../../global.json) pins the exact .NET SDK version (with `"rollForward": "disable"`, so a newer SDK on a machine or runner is never silently substituted) that every `dotnet` command in this repository builds with. An upgrade is always a deliberate, visible change to a version string, never something that happens silently on the next restore.
+not `Version="10.*"` or `Version="[10.0.0,)"`. The same rule applies outside of NuGet: the dprint plugins in [`dprint.json`](../../../dprint.json) are pinned to an exact release URL, [Continuous Integration](../tooling/continuous-integration.md) installs `dprint`, `cspell`, and `markdownlint-cli2` at exact, explicit versions, and [`global.json`](../../../global.json) pins the exact .NET SDK version (with `"rollForward": "disable"`, so a newer SDK on a machine or runner is never silently substituted) that every `dotnet` command in this repository, including CI, builds with. An upgrade is always a deliberate, visible change to a version string, never something that happens silently on the next restore.
+
+## Local .NET Tools
+
+[`.config/dotnet-tools.json`](../../../.config/dotnet-tools.json) is a `dotnet` local tool manifest, restored with `dotnet tool restore`. It exists for tools that are invoked as part of the .NET build rather than through Node.js — currently just ReportGenerator, used to turn raw code-coverage data into a human-readable report (see [Testing and Code Coverage](../tooling/testing-and-code-coverage.md)). Like every other dependency, its version is pinned exactly; upgrading it is `dotnet tool update dotnet-reportgenerator-globaltool --version <exact version>`, followed by committing the resulting change to the manifest.
 
 ## Lock Files
 
