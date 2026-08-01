@@ -3,8 +3,15 @@
     // warrant a line limit
     "editor.rulers": [150],
 
+    // Points the C# extension (OmniSharp or C# Dev Kit, whichever is installed) at the one solution file in the repository; without this, the
+    // extension has to guess which solution to load, and since "CLI.NET Core.slnx" lives in "source/" rather than at the repository root, and
+    // references the unit test project one level up in "tests/unit-tests" (see Architecture), that guess can miss the cross-directory project
+    // reference and report its files as not part of any opened project
+    "dotnet.defaultSolution": "source/CLI.NET Core.slnx",
+
     // Maps file names to file types; this is required when Visual Studio Code does not correctly auto-detect file types based on file extension
     "files.associations": {
+        ".cspell.json": "jsonc",
         "**/.vscode/*.json": "jsonc",
         "dprint.json": "jsonc",
         "LICENSE": "plaintext",

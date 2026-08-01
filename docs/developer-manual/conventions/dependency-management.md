@@ -10,7 +10,7 @@ Every dependency is pinned to an exact version — never a floating range (`*`),
 <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
 ```
 
-not `Version="10.*"` or `Version="[10.0.0,)"`. The same rule applies outside of NuGet: the dprint plugins in [`dprint.json`](../../../dprint.json) are pinned to an exact release URL, and [Continuous Integration](../tooling/continuous-integration.md) installs `dprint`, `cspell`, and `markdownlint-cli2` at exact, explicit versions. An upgrade is always a deliberate, visible change to a version string, never something that happens silently on the next restore.
+not `Version="10.*"` or `Version="[10.0.0,)"`. The same rule applies outside of NuGet: the dprint plugins in [`dprint.json`](../../../dprint.json) are pinned to an exact release URL, [Continuous Integration](../tooling/continuous-integration.md) installs `dprint`, `cspell`, and `markdownlint-cli2` at exact, explicit versions, and [`global.json`](../../../global.json) pins the exact .NET SDK version (with `"rollForward": "disable"`, so a newer SDK on a machine or runner is never silently substituted) that every `dotnet` command in this repository builds with. An upgrade is always a deliberate, visible change to a version string, never something that happens silently on the next restore.
 
 ## Lock Files
 

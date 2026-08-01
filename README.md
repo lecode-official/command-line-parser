@@ -1,6 +1,4 @@
-# CLI.NET Core
-
-![CLI.NET Core Logo](design/readme-header-dark.png#gh-dark-mode-only) ![CLI.NET Core Logo](design/readme-header-light.png#gh-light-mode-only)
+# ![CLI.NET Core](design/readme-header-dark.png#gh-dark-mode-only) ![CLI.NET Core](design/readme-header-light.png#gh-light-mode-only)
 
 CLI.NET Core is a command line application framework in the style of ASP.NET Core. It allows you to define commands and command line arguments in much the same way you would define actions and arguments for a Web API in ASP.NET Core.
 
@@ -22,6 +20,10 @@ The project uses a set of linters and a code formatter to (1) find and correct p
 - **[CSpell](tests/linters/.cspell.json)**, a spell checker for code, to ensure that there are no misspellings in the code.
 - **[MarkdownLint](tests/linters/.markdownlint.yml)**, a linter for Markdown files, which ensures that the Markdown files are consistently formatted and standards are enforced.
 - **[dprint](dprint.json)**, an unopinionated, configurable code formatter with plugins for many languages. This code formatter is used to format Markdown, JSON, XML, YAML, and TOML files in the project.
+
+### Visual Studio Code
+
+The project maintainer uses Visual Studio Code for the development of CLI.NET Core and the configuration is committed to the repository. To allow other developers to change the local configuration when using Visual Studio Code, the [Workspace Config+](https://marketplace.visualstudio.com/items?itemName=swellaby.workspace-config-plus) extension is used to manage the workspace configuration. Instead of having a single set of configuration files (`settings.json`, `tasks.json`, and `launch.json`), the project has shared configuration files (`settings.shared.json`, `tasks.shared.json`, and `launch.shared.json`) that are checked into source control, while allowing individual developers to override specific settings in their local configuration files (`settings.local.json`, `tasks.local.json`, and `launch.local.json`). The extension automatically merges the shared and local configuration files into a single configuration file that is used by Visual Studio Code, giving the local configuration files preference when there are conflicts. The extension is included in the list of recommended extensions (`.vscode/extensions.json`) and will be recommended by Visual Studio Code when opening the repository for the first time.
 
 ## Use of AI
 

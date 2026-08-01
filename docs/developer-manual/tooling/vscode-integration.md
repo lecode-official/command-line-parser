@@ -20,7 +20,7 @@ The `settings.local.json` layer wins over `settings.shared.json`, so each develo
 
 ## Settings
 
-[`settings.shared.json`](../../../.vscode/settings.shared.json) sets a 150-character editor ruler to match [dprint's line width](formatting-dprint.md), maps a few file names to the correct language for syntax highlighting, hides build output and OS clutter from the explorer and file watcher, protects the `main` and `development` branches from direct commits, imports the [CSpell](spell-checking-cspell.md) configuration and raises its diagnostic severity to error, points [MarkdownLint](linting-markdownlint.md) at the project configuration, and enables format-on-save with [dprint](formatting-dprint.md).
+[`settings.shared.json`](../../../.vscode/settings.shared.json) sets a 150-character editor ruler to match [dprint's line width](formatting-dprint.md), maps a few file names to the correct language for syntax highlighting, hides build output and OS clutter from the explorer and file watcher, protects the `main` and `development` branches from direct commits, imports the [CSpell](spell-checking-cspell.md) configuration and raises its diagnostic severity to error, points [MarkdownLint](linting-markdownlint.md) at the project configuration, enables format-on-save with [dprint](formatting-dprint.md), and points `dotnet.defaultSolution` at [`CLI.NET Core.slnx`](../../../source/CLI.NET%20Core.slnx) so a C# extension (OmniSharp or C# Dev Kit) does not have to guess which solution to load — without it, the solution's non-standard location (in `source/`, not the repository root) can lead the extension to miss part of the solution and report a file as not belonging to any project.
 
 ## Extensions
 

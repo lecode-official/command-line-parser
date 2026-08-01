@@ -13,6 +13,17 @@
     // languages, like Markdown have separate settings to disable line breaking, so the character limit does not apply to them
     "lineWidth": 150,
 
+    // Configuration for C# files; the Roslyn plugin does not define its own option names, it reflects them straight off Microsoft's
+    // "Microsoft.CodeAnalysis.CSharp.Formatting.CSharpFormattingOptions" class (the same type the Roslyn formatter itself uses), converting
+    // "csharp.somePropertyName" into the "SomePropertyName" property; unknown keys are rejected with a configuration diagnostic; the plugin only
+    // drives whitespace/newline/indentation (Formatter.Format), never style-analyzer preferences (there is no "csharp_style_*" or "dotnet_*"
+    // support)
+    "roslyn": {
+        // The line ending written to formatted files; it defaults to Carriage Return + Line Feed (CRLF), since ".gitattributes" normalizes "*.cs"
+        // files to Line Feed (LF) on commit anyway, we can use LF here to reduce friction
+        "newLineKind": "lf",
+    },
+
     // Configuration for Markdown files
     "markdown": {
         "textWrap": "never",
@@ -81,6 +92,7 @@
         "https://plugins.dprint.dev/g-plane/pretty_yaml-v0.6.0.wasm",
         "https://plugins.dprint.dev/json-0.22.0.wasm",
         "https://plugins.dprint.dev/markdown-0.22.1.wasm",
+        "https://plugins.dprint.dev/roslyn-0.21.0.json@c1429e04de13cff489025e8739f76a476fce6513128366f30feecef2bec0848d",
         "https://plugins.dprint.dev/toml-0.7.0.wasm",
     ],
 }
