@@ -11,7 +11,7 @@ The repository is organized into a few top-level directories:
 - [`docs/`](../../README.md) — This documentation.
 - [`design/`](../../../design/) — Logo and brand assets, and the [design guide](../../../design/DESIGN.md) that governs them.
 
-Top-level files round out the repository: [`README.md`](../../../README.md) is the project's front door, [`CHANGELOG.md`](../../../CHANGELOG.md) records what changed in each version, [`CONTRIBUTORS.md`](../../../CONTRIBUTORS.md) lists everyone who has contributed, and [`LICENSE`](../../../LICENSE) is the full text of the license (see [Contributing](../contributing.md) for how these are kept up to date). [`CONTRIBUTING.md`](../../../CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](../../../CODE_OF_CONDUCT.md), and [`SECURITY.md`](../../../SECURITY.md) round out the community-facing files GitHub recognizes by name.
+Top-level files round out the repository: [`README.md`](../../../README.md) is the project's front door, [`CHANGELOG.md`](../../../CHANGELOG.md) records what changed in each version, [`CONTRIBUTORS.md`](../../../CONTRIBUTORS.md) lists everyone who has contributed, and [`LICENSE`](../../../LICENSE) is the full text of the license (see [Contributing](../contributing.md) for how these are kept up to date). [`CONTRIBUTING.md`](../../../CONTRIBUTING.md), [`CODE_OF_CONDUCT.md`](../../../CODE_OF_CONDUCT.md), and [`SECURITY.md`](../../../SECURITY.md) round out the community-facing files GitHub recognizes by name. [`global.json`](../../../global.json) pins the exact .NET SDK version the repository builds with.
 
 ## Solution and Projects
 

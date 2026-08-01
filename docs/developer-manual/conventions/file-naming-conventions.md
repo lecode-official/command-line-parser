@@ -15,7 +15,7 @@ Files with a conventional, tool- or ecosystem-mandated name keep that name inste
 
 ## PascalCase Inside C# Projects
 
-Inside a C# project's own source tree, directories and files switch to **PascalCase** — for example `source/clinet-core/Hosting/CliApplication.cs`. This follows the standard .NET convention of naming a file after the single type it contains, and grouping related types into a PascalCase namespace folder. The project's own top-level folder (`clinet-core`, `sample-app`) still follows the repository's kebab-case rule — the switch to PascalCase only happens once you are inside the project, looking at its namespaces and types.
+Inside a C# project's own source tree, directories and files switch to **PascalCase** — for example `source/clinet-core/Application/CliApplication.cs`. This follows the standard .NET convention of naming a file after the single type it contains, and grouping related types into a PascalCase namespace folder. The project's own top-level folder (`clinet-core`, `sample-app`) still follows the repository's kebab-case rule — the switch to PascalCase only happens once you are inside the project, looking at its namespaces and types.
 
 The project and solution files themselves (`CLI.NET Core.csproj`, `CLI.NET Core Sample App.csproj`, `CLI.NET Core.slnx`) are named after the product, spaces included, rather than either convention — see [Architecture](../architecture/overview.md) for where they live.
 

@@ -22,6 +22,10 @@ Title case never overrides the real casing of a name. Leave these exactly as the
 
 When a name is intrinsically lowercase, it stays lowercase even as the first word: `## dprint Owns Formatting`.
 
+## Wrap Code in Backticks
+
+Anywhere prose mentions code — a type or member name, a file or directory path, a package name, a configuration key, a CLI flag — wrap it in backticks: `CliApplication`, `global.json`, `source/clinet-core/`, `RestorePackagesWithLockFile`. This applies in this documentation, in XML documentation comments, and in commit messages (see [Commit Messages](commit-messages.md)), not only in Markdown proper.
+
 ## Punctuation
 
 - **Prefer a period over a semicolon.** Where a semicolon joins two full sentences, split them into two sentences with a period instead. This applies to all prose — the documentation, `README.md`, etc. In-code comments are the one exception and follow their own rule (see [C# Style](csharp-style.md)).

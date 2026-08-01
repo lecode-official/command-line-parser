@@ -20,6 +20,8 @@ The subject is **title case** (see [Markdown Style](markdown-style.md)) and **pa
 
 When present, the body explains what changed and why — the diff already shows what changed, so the *why* is what earns its place. It is written as prose paragraphs, bulleted or numbered lists, or a mix of both, freely intermixed (an opening paragraph followed by a list, followed by another paragraph, is fine). Whichever form it takes, it follows the same punctuation rule as the rest of the documentation: periods, not semicolons (see [Markdown Style](markdown-style.md)).
 
+Code, file names, paths, and identifiers are wrapped in backticks, the same as in the documentation (see [Wrap Code in Backticks](markdown-style.md#wrap-code-in-backticks)). This applies even though most Git tools render commit messages as plain text: the backticks still mark the boundary between prose and literal code for a human reader.
+
 ## Disclosing AI Involvement
 
 Every commit message states whether AI was involved in producing it and, if it was, what exactly the AI did — this project is developed openly with AI assistance, and the commit history is where that involvement is tracked (see the "Use of AI" section of the [root README](../../../README.md)). A commit written entirely by hand carries no such note. A commit where AI was involved:
