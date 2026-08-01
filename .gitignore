@@ -22,6 +22,11 @@ Thumbs.db
 bin/
 obj/
 
+# Test results and code coverage reports
+TestResults/
+/coverage/
+/coverage-report/
+
 # To Do Lists
 TODO.md
 

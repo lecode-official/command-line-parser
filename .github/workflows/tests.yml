@@ -1,0 +1,67 @@
+# The display name of the workflow, shown in the "Actions" tab of the GitHub repository and in the checks of a commit or pull request
+name: Tests
+
+# Defines the events that trigger this workflow; this workflow runs on every push to any branch of the repository, just like the "Linters" workflow;
+# it is a separate workflow file (rather than another job or step in "linters.yml") so that the two concerns show up as two independent checks on a
+# commit or pull request and either one can be re-run or extended without touching the other
+on:
+  push:
+
+# Defines the jobs that make up the workflow
+jobs:
+  # A single job that restores, builds, and tests the solution with code coverage collection enabled, on a virtual machine with the latest Ubuntu
+  # image, which is the fastest and cheapest of the available runners
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    # The sequence of tasks that are executed as part of the job; the steps run sequentially in the same runner and share the same file system
+    steps:
+      # Checks out the repository into the runner's working directory, so that the solution and its projects are available to the following steps;
+      # the "actions/checkout" action is pinned to a major version to receive non-breaking updates automatically
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      # Installs the .NET SDK; the version is read from "global.json" in the repository root instead of being duplicated here, so the SDK version
+      # this workflow builds with can never drift from the exact version pinned there (see Dependency Management); the "actions/setup-dotnet" action
+      # is pinned to a major version to receive non-breaking updates automatically
+      - name: Set Up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      # Restores every project of the solution (the framework, the sample app, and the unit test project); "--locked-mode" makes the restore fail
+      # instead of silently regenerating a project's "packages.lock.json" if the resolved dependency graph would no longer match what is locked, so a
+      # "PackageReference" change that was not restored and committed locally is caught here rather than only showing up as a mismatch later
+      - name: Restore Dependencies
+        run: dotnet restore "source/CLI.NET Core.slnx" --locked-mode
+
+      # Builds and runs every test project of the solution and collects code coverage while doing so; "--no-restore" reuses the restore from the
+      # previous step, "XPlat Code Coverage" is the cross-platform coverlet data collector that ships with "Microsoft.NET.Test.Sdk", and
+      # "--results-directory" gives the Cobertura report a predictable location for the next step to pick up (see Testing and Code Coverage)
+      - name: Run Tests With Coverage
+        run: >
+          dotnet test "source/CLI.NET Core.slnx" --no-restore --configuration Release
+          --collect:"XPlat Code Coverage" --results-directory ./coverage
+
+      # Restores the pinned version of ReportGenerator from ".config/dotnet-tools.json" (see Dependency Management) and turns the raw Cobertura XML
+      # coverage collects into a human-readable HTML report plus a Markdown summary; the Markdown summary is appended to the job's own summary page,
+      # so the coverage percentages are visible directly on the workflow run without opening the uploaded report
+      - name: Generate Coverage Report
+        run: |
+          dotnet tool restore
+          dotnet tool run reportgenerator \
+            -reports:"coverage/**/coverage.cobertura.xml" \
+            -targetdir:coverage-report \
+            -reporttypes:"Html;MarkdownSummaryGithub"
+          cat coverage-report/SummaryGithub.md >> "$GITHUB_STEP_SUMMARY"
+
+      # Uploads the HTML coverage report as a workflow artifact, so that the detailed, file-by-file coverage can be downloaded and inspected even
+      # though only the summary is shown inline; the "actions/upload-artifact" action is pinned to a major version to receive non-breaking updates
+      # automatically
+      - name: Upload Coverage Report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v7
+        with:
+          name: code-coverage-report
+          path: coverage-report

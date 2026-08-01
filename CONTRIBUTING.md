@@ -14,7 +14,8 @@ Fork the repository and work on a feature branch. Pull requests are always welco
 
 - Match the project's conventions: [C# Style](docs/developer-manual/conventions/csharp-style.md) or [Markdown Style](docs/developer-manual/conventions/markdown-style.md), depending on what you are changing, and [File Naming Conventions](docs/developer-manual/conventions/file-naming-conventions.md) for anything new.
 - Comment and document your code — see [C# Style](docs/developer-manual/conventions/csharp-style.md) for what a documentation comment and a plain comment are each expected to cover.
-- Run the linters and the code formatter before opening the pull request (see [Tooling](docs/developer-manual/tooling/README.md)). The same checks run in [Continuous Integration](docs/developer-manual/tooling/continuous-integration.md) on every push.
+- **Add unit tests for any new feature, in the same pull request** (a bug fix adds a test that reproduces the bug) — see [Testing](docs/developer-manual/conventions/testing.md) for how tests are structured and named.
+- Run the linters, the code formatter, and the tests before opening the pull request (see [Tooling](docs/developer-manual/tooling/README.md) and [Testing and Code Coverage](docs/developer-manual/tooling/testing-and-code-coverage.md)). The same checks run in [Continuous Integration](docs/developer-manual/tooling/continuous-integration.md) on every push.
 - Write commit messages by [the project's rules](docs/developer-manual/conventions/commit-messages.md).
 
 ## Using AI to Contribute

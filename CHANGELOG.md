@@ -14,6 +14,7 @@ In addition to the rewrite, the following changes were made:
   - **MarkdownLint**, a linter for Markdown files, which ensures that the Markdown files are consistently formatted and standards are enforced.
   - **dprint**, an unopinionated, configurable code formatter with plugins for many languages. This code formatter is used to format Markdown, JSON, XML, YAML, and TOML files in the project.
 - A completely new, modern logo was designed, which heavily borrows from the ASP.NET Core logo, with the "C" wordmark and a dot. The logo is available in both light and dark mode variants in the `design/` directory and a design guide for it was created.
+- An xUnit unit test project was added at `tests/unit-tests`, covering the hosting layer, and code coverage is now collected and reported, locally with ReportGenerator and in a dedicated Continuous Integration workflow. From now on, every new feature is expected to come with unit tests in the same pull request.
 
 ## v0.2.0
 
