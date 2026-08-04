@@ -102,5 +102,5 @@ CLI.NET Core does not yet have a command model: there is no way to define indivi
 
 ## Related
 
-- How the framework's projects and packages are laid out: [Architecture](../developer-manual/architecture/overview.md).
+- How the framework's projects and packages are laid out: [Architecture](../developer-manual/architecture.md).
 - Back to the [User Manual](README.md).

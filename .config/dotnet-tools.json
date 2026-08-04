@@ -8,6 +8,13 @@
                 "reportgenerator"
             ],
             "rollForward": false
+        },
+        "xmldoc2markdown": {
+            "version": "6.0.0",
+            "commands": [
+                "xmldoc2md"
+            ],
+            "rollForward": false
         }
     }
 }

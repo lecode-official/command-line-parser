@@ -1,0 +1,9 @@
+{
+    "name": "command-line-parser",
+    "private": true,
+    "devDependencies": {
+        "cspell": "10.0.1",
+        "dprint": "0.55.1",
+        "markdownlint-cli2": "0.23.0"
+    }
+}

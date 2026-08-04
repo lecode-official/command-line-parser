@@ -29,17 +29,18 @@ jobs:
         with:
           node-version: 24
 
-      # Installs the linters and the code formatter globally, so that they are available as commands in the subsequent steps; installing them in a
-      # dedicated step keeps the linter steps below focused on just running the tools
+      # Installs the exact versions of the linters and the code formatter declared in "package.json" and locked in "package-lock.json" (see
+      # Dependency Management); "ci" (rather than "install") fails instead of silently updating the lock file if it would no longer match
+      # "package.json", the same guarantee "--locked-mode" gives the NuGet restore in the Tests workflow
       - name: Install Linters
-        run: npm install --global dprint@0.55.1 cspell@10.0.1 markdownlint-cli2@0.23.0
+        run: npm ci
 
       # Runs the dprint code formatter in check mode; "check" only verifies that all files are already formatted and exits with a non-zero status code
-      # if any file is not, but unlike "dprint fmt" it never modifies any file; dprint automatically discovers the "dprint.json" stub in the
-      # repository root, which extends the real configuration in "tests/linters", so no configuration path has to be passed explicitly, and the
-      # "**/*" glob makes dprint check the whole repository (relative to the working directory)
+      # if any file is not, but unlike "dprint fmt" it never modifies any file; dprint automatically discovers "dprint.json" in the repository root,
+      # so no configuration path has to be passed explicitly, and the "**/*" glob makes dprint check the whole repository (relative to the working
+      # directory); "npx" resolves the version "npm ci" just installed into "node_modules/.bin" rather than downloading one
       - name: Check Formatting (dprint)
-        run: dprint check "**/*"
+        run: npx dprint check "**/*"
 
       # Runs the CSpell spell checker over every file in the repository; the "lint" command reports spelling mistakes and exits with a non-zero status
       # code if any are found, the configuration path is passed explicitly, and "--no-progress" suppresses the per-file progress output to keep the
@@ -47,12 +48,13 @@ jobs:
       # exited with a non-zero exit code, so that the job runs all linters instead of stopping at the first failure
       - name: Spell Check (CSpell)
         if: ${{ !cancelled() }}
-        run: cspell lint --config tests/linters/.cspell.json --no-progress "**/*"
+        run: npx cspell lint --config tests/linters/.cspell.json --no-progress "**/*"
 
-      # Runs the MarkdownLint linter over all Markdown files in the repository; the configuration path is passed explicitly via "--config", and the
-      # build output directories are excluded using markdownlint-cli2's "#"-prefixed negated globs (markdownlint-cli2 has no "--ignore" flag), so that
-      # only the project's own documentation is linted; the "if" ensures that the step runs (unless the workflow was cancelled), even if the previous
-      # linter reported an error and exited with a non-zero exit code, so that the job runs all linters instead of stopping at the first failure
+      # Runs the MarkdownLint linter over all Markdown files in the repository; the configuration path is passed explicitly via "--config", and build
+      # output and "node_modules" (unlike dprint and CSpell, markdownlint-cli2 does not ignore it by default) are excluded using markdownlint-cli2's
+      # "#"-prefixed negated globs (it has no "--ignore" flag), so that only the project's own documentation is linted; the "if" ensures that the
+      # step runs (unless the workflow was cancelled), even if the previous linter reported an error and exited with a non-zero exit code, so that
+      # the job runs all linters instead of stopping at the first failure
       - name: Lint Markdown (MarkdownLint)
         if: ${{ !cancelled() }}
-        run: markdownlint-cli2 --config tests/linters/.markdownlint.yml "**/*.md" "#**/bin/**" "#**/obj/**"
+        run: npx markdownlint-cli2 --config tests/linters/.markdownlint.yml "**/*.md" "#**/build/**" "#**/node_modules/**" "#**/.venv/**"

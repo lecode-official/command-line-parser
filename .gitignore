@@ -16,11 +16,18 @@ Thumbs.db
 !.vscode/tasks.shared.json
 *.launch
 *.sublime-workspace
-/.idea
+.idea
 
-# Build output
-bin/
-obj/
+# Installed packages
+node_modules/
+.venv/
+
+# Build output (redirected here from every project's own folder, and from the documentation website, see Architecture and Documentation Website)
+/build/
+__pycache__/
+
+# Personal, unreviewed NPM install-script policy (see docs/developer-manual/tooling/developer-setup.md)
+/.npmrc
 
 # Test results and code coverage reports
 TestResults/

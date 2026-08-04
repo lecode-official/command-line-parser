@@ -1,0 +1,10 @@
+<!--
+    Overrides only the "extrahead" block of mkdocs-material's own "main.html" (see
+    docs/developer-manual/tooling/documentation-website.md) to add a light/dark favicon pair, on top of the single
+    "theme.favicon" fallback properdocs.yml already sets - browser support for "media" on "<link rel="icon">" is
+    inconsistent, so the plain favicon.ico fallback stays in place for browsers that ignore these.
+-->
+{% extends "base.html" %} {% block extrahead %} {{ super() }}
+<link rel="icon" href="{{ 'assets/favicon/favicon-light.svg' | url }}" media="(prefers-color-scheme: light)">
+<link rel="icon" href="{{ 'assets/favicon/favicon-dark.svg' | url }}" media="(prefers-color-scheme: dark)">
+{% endblock %}

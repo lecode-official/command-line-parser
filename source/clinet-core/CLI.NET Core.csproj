@@ -33,6 +33,15 @@
     <!-- Referenced NuGet Packages -->
     <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+
+        <!--
+            Roslyn never expands <inheritdoc/> into real text in the generated XML documentation file, it is left in verbatim, so any tool
+            reading that file (xmldoc2md, a consumer's IDE tooltip for the compiled package, ...) sees an empty member; this task rewrites
+            <inheritdoc/> into the real, inherited text as a build step, for every non-Debug build (see Documentation Site and Dependency
+            Management); "PrivateAssets=all" keeps it a build-time-only dependency of this project, it is never referenced by a consumer of the
+            compiled package
+        -->
+        <PackageReference Include="SauceControl.InheritDoc" Version="2.0.2" PrivateAssets="all" />
     </ItemGroup>
 
     <!-- Internals Visibility -->

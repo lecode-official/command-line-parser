@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        // Debugs the sample app, this builds the project via the "Build Sample App" task (see "tasks.shared.json") before attaching the debugger to
+        // the resulting executable
+        {
+            "name": "Debug Sample App",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "Build Sample App",
+            "program": "${workspaceFolder}/build/sample-app/bin/Debug/net10.0/CLI.NET Core Sample App.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/source/sample-app",
+            "console": "integratedTerminal",
+            "stopAtEntry": false,
+        },
+    ],
+}

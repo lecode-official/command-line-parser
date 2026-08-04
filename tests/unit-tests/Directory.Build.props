@@ -1,0 +1,12 @@
+<Project>
+    <!--
+        Redirects "bin/" and "obj/" out of this project's own folder and into the repository root's "build/unit-tests/" instead, keeping the
+        source tree free of build output (see Architecture), the same as "source/Directory.Build.props" does for "clinet-core" and "sample-app".
+        This file lives directly in the project's own folder rather than needing "$([System.IO.Path]::GetFileName(...))" to derive it, since there
+        is only the one project under "tests/" to cover
+    -->
+    <PropertyGroup>
+        <BaseOutputPath>$(MSBuildThisFileDirectory)../../build/unit-tests/bin/</BaseOutputPath>
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../../build/unit-tests/obj/</BaseIntermediateOutputPath>
+    </PropertyGroup>
+</Project>

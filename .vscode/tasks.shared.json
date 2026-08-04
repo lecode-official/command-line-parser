@@ -1,0 +1,210 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        // Restores the Node.js dependencies of the project (dprint, CSpell, and MarkdownLint, see Dependency Management); "ci" (rather than
+        // "install") fails instead of silently updating "package-lock.json" if it no longer matches "package.json"
+        {
+            "label": "Install Node Dependencies",
+            "type": "shell",
+            "command": "npm ci",
+            "problemMatcher": [],
+            "icon": {
+                "id": "desktop-download",
+                "color": "terminal.ansiBlue",
+            },
+        },
+
+        // Restores the pinned local dotnet tools declared in ".config/dotnet-tools.json" (ReportGenerator and xmldoc2md, see Dependency Management)
+        {
+            "label": "Restore .NET Tools",
+            "type": "shell",
+            "command": "dotnet tool restore",
+            "problemMatcher": [],
+            "icon": {
+                "id": "desktop-download",
+                "color": "terminal.ansiBlue",
+            },
+        },
+
+        // Installs the pinned Python dependencies that build the documentation website (ProperDocs, the Material theme, and its plugins, see
+        // Documentation Website)
+        {
+            "label": "Install Python Dependencies",
+            "type": "shell",
+            "command": "python -m pip install --requirement requirements.txt",
+            "problemMatcher": [],
+            "icon": {
+                "id": "desktop-download",
+                "color": "terminal.ansiBlue",
+            },
+        },
+
+        // Installs every dependency of the project in one go; if you only use Visual Studio Code tasks, you do not have to run this task manually,
+        // all other tasks that require up-to-date dependencies run the relevant one of the three tasks above automatically as a dependency
+        {
+            "label": "Install Dependencies",
+            "dependsOn": ["Install Node Dependencies", "Restore .NET Tools", "Install Python Dependencies"],
+            "dependsOrder": "parallel",
+            "problemMatcher": [],
+            "icon": {
+                "id": "desktop-download",
+                "color": "terminal.ansiBlue",
+            },
+        },
+
+        // Runs the dprint code formatter on the entire code base
+        {
+            "label": "Format",
+            "type": "shell",
+            "command": "npx dprint fmt",
+            "dependsOn": ["Install Node Dependencies"],
+            "problemMatcher": [],
+            "icon": {
+                "id": "case-sensitive",
+                "color": "terminal.ansiYellow",
+            },
+        },
+
+        // Runs CSpell on the entire codebase
+        {
+            "label": "Lint Spelling",
+            "type": "shell",
+            "command": "npx cspell lint --config tests/linters/.cspell.json --no-progress \"**/*\"",
+            "dependsOn": ["Install Node Dependencies"],
+            "problemMatcher": [
+                {
+                    "owner": "cspell",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.+?):(\\d+):(\\d+)\\s+-\\s+(.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "message": 4,
+                    },
+                },
+            ],
+            "group": "test",
+            "icon": {
+                "id": "shield",
+                "color": "terminal.ansiCyan",
+            },
+        },
+
+        // Runs MarkdownLint on the entire codebase
+        {
+            "label": "Lint Markdown",
+            "type": "shell",
+            "command": "npx markdownlint-cli2 --config tests/linters/.markdownlint.yml \"**/*.md\" \"#**/build/**\" \"#**/node_modules/**\" \"#**/.venv/**\"",
+            "dependsOn": ["Install Node Dependencies"],
+            "problemMatcher": [
+                {
+                    "owner": "markdownlint",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.+?):(\\d+)(?::(\\d+))?\\s+(error|warning)\\s+(MD\\d+\\S*)\\s+(.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "code": 5,
+                        "message": 6,
+                    },
+                },
+            ],
+            "group": "test",
+            "icon": {
+                "id": "shield",
+                "color": "terminal.ansiCyan",
+            },
+        },
+
+        // Runs every linter used by this project (dprint in check mode, CSpell, and MarkdownLint) on the entire codebase, the same three checks the
+        // Linters GitHub Actions workflow runs
+        {
+            "label": "Lint",
+            "type": "shell",
+            "command": "npx dprint check \"**/*\" && npx cspell lint --config tests/linters/.cspell.json --no-progress \"**/*\" && npx markdownlint-cli2 --config tests/linters/.markdownlint.yml \"**/*.md\" \"#**/build/**\" \"#**/node_modules/**\" \"#**/.venv/**\"",
+            "dependsOn": ["Install Node Dependencies"],
+            "problemMatcher": [
+                {
+                    "owner": "cspell",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.+?):(\\d+):(\\d+)\\s+-\\s+(.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "message": 4,
+                    },
+                },
+                {
+                    "owner": "markdownlint",
+                    "fileLocation": ["relative", "${workspaceFolder}"],
+                    "pattern": {
+                        "regexp": "^(.+?):(\\d+)(?::(\\d+))?\\s+(error|warning)\\s+(MD\\d+\\S*)\\s+(.+)$",
+                        "file": 1,
+                        "line": 2,
+                        "column": 3,
+                        "severity": 4,
+                        "code": 5,
+                        "message": 6,
+                    },
+                },
+            ],
+            "group": {
+                "kind": "test",
+                "isDefault": true,
+            },
+            "icon": {
+                "id": "shield",
+                "color": "terminal.ansiCyan",
+            },
+        },
+
+        // Builds the sample app, this is the "preLaunchTask" of the "Debug Sample App" launch configuration in "launch.shared.json"
+        {
+            "label": "Build Sample App",
+            "type": "shell",
+            "command": "dotnet build \"source/sample-app/CLI.NET Core Sample App.csproj\"",
+            "problemMatcher": ["$msCompile"],
+            "group": "build",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiRed",
+            },
+        },
+
+        // Runs the xUnit unit tests of the framework
+        {
+            "label": "Test",
+            "type": "shell",
+            "command": "dotnet test \"source/CLI.NET Core.slnx\"",
+            "problemMatcher": ["$msCompile"],
+            "group": {
+                "kind": "test",
+                "isDefault": false,
+            },
+            "icon": {
+                "id": "beaker",
+                "color": "terminal.ansiCyan",
+            },
+        },
+
+        // Builds the ProperDocs documentation website, including generating the "docs/api" C# API reference from the framework's current XML
+        // documentation comments (see Documentation Website); requires both the Python and the .NET dependencies to be installed
+        {
+            "label": "Build Docs",
+            "type": "shell",
+            "command": "properdocs build",
+            "dependsOn": ["Install Python Dependencies", "Restore .NET Tools"],
+            "dependsOrder": "parallel",
+            "problemMatcher": [],
+            "group": "build",
+            "icon": {
+                "id": "tools",
+                "color": "terminal.ansiRed",
+            },
+        },
+    ],
+}

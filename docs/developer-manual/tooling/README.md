@@ -5,9 +5,10 @@ This section gives an overview of the tools used for development, including code
 1. [Developer Setup](developer-setup.md)
 2. [Visual Studio Code Integration](vscode-integration.md)
 3. [Spell Checking (CSpell)](spell-checking-cspell.md)
-4. [MarkdownLint](linting-markdownlint.md)
-5. [dprint](formatting-dprint.md)
-6. [Continuous Integration](continuous-integration.md)
-7. [Testing and Code Coverage](testing-and-code-coverage.md)
+4. [Markdown Linting (MarkdownLint)](linting-markdownlint.md)
+5. [Code Formatting (dprint)](code-formatting-dprint.md)
+6. [Documentation Website](documentation-website.md)
+7. [Continuous Integration](continuous-integration.md)
+8. [Testing and Code Coverage](testing-and-code-coverage.md)
 
-The linters and the code formatter are not installed as project dependencies (there is no Node.js package manifest in this repository) — they are run directly from the command line, either installed globally or invoked on demand through `npx`. [Continuous Integration](continuous-integration.md) installs pinned versions of all three explicitly; running them locally with the same versions keeps results consistent with what CI reports. The test project and its tools are the exception: they are restored the normal .NET way, as `PackageReference`s and a local tool manifest (see [Testing and Code Coverage](testing-and-code-coverage.md)).
+The linters and the code formatter are pinned as `devDependencies` in [`package.json`](../../../package.json) at the repository root and locked in [`package-lock.json`](../../../package-lock.json), restored with `npm ci` and run through `npx` — dprint additionally needs a persistent global install for its Visual Studio Code extension (see [Developer Setup](developer-setup.md)). [Continuous Integration](continuous-integration.md) runs the same `npm ci` and `npx` invocations; running them locally keeps results consistent with what CI reports. The test project and its tools follow the equivalent .NET pattern instead, as `PackageReference`s and a local tool manifest (see [Testing and Code Coverage](testing-and-code-coverage.md)).

@@ -44,4 +44,4 @@ Open `coverage-report/index.html` to browse coverage by assembly, class, and lin
 - The conventions the tests themselves follow: [Testing](../conventions/testing.md).
 - How dependencies, including this local `dotnet` tool, are pinned: [Dependency Management](../conventions/dependency-management.md).
 - The workflow that runs this in CI: [Continuous Integration](continuous-integration.md).
-- Where the test project sits in the repository: [Architecture](../architecture/overview.md).
+- Where the test project sits in the repository: [Architecture](../architecture.md).

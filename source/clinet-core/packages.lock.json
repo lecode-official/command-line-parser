@@ -32,6 +32,12 @@
                     "Microsoft.Extensions.Options": "10.0.0"
                 }
             },
+            "SauceControl.InheritDoc": {
+                "type": "Direct",
+                "requested": "[2.0.2, )",
+                "resolved": "2.0.2",
+                "contentHash": "QGassHKg6wfLZStucfxW4lsfVf2KOxHSEtrd0whP9R6PJSSSua3WPcOXxyVzRVqfmXV8dLQcp9oCnMYiJNhFaQ=="
+            },
             "Microsoft.Extensions.Configuration": {
                 "type": "Transitive",
                 "resolved": "10.0.0",

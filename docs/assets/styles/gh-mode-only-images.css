@@ -1,0 +1,11 @@
+/* Reuses the exact "#gh-dark-mode-only" / "#gh-light-mode-only" URL suffixes that GitHub itself recognizes on an <img> element (see
+ * docs/developer-manual/tooling/documentation-website.md), so the same Markdown image pair that already switches with GitHub's own color
+ * scheme also switches with mkdocs-material's - keyed off the "data-md-color-scheme" attribute the theme's light/dark toggle sets, exactly
+ * like mkdocs-material's own built-in "#only-light" / "#only-dark" suffixes (see the "img[src$=...]" rules mkdocs-material ships for those). */
+[data-md-color-scheme="slate"] img[src$="#gh-light-mode-only"] {
+  display: none;
+}
+
+[data-md-color-scheme="default"] img[src$="#gh-dark-mode-only"] {
+  display: none;
+}

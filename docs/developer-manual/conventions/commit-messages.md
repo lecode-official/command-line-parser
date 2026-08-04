@@ -49,4 +49,5 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 ## Related
 
 - The punctuation and title-case rules these messages follow: [Markdown Style](markdown-style.md).
-- The full policy on AI-assisted work: the "Use of AI" section of the [root README](../../../README.md), and [Contributing](../contributing.md).
+- The full policy on AI-assisted work: the "Use of AI" section of the [root README](../../../README.md), and [Contributing](../contribution-guide.md).
+- The golden rule an AI assistant follows for staging and committing: [CLAUDE.md](../../../CLAUDE.md#golden-rules).
