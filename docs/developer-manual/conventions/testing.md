@@ -4,13 +4,13 @@ This article covers the conventions for the unit tests in [`tests/unit-tests`](.
 
 ## Every New Feature Is Unit Tested
 
-From this point forward, a change that implements a new feature is not done until it has unit tests covering it, in the same pull request. This applies to human and AI-assisted contributions alike (see [Contributing](../contributing.md)). A bug fix should also add a test that reproduces the bug and would fail without the fix. Documentation-only changes, formatting, and pure refactors that do not change behavior are exempt, but a refactor that changes behavior along the way is not.
+From this point forward, a change that implements a new feature is not done until it has unit tests covering it, in the same pull request. This applies to human and AI-assisted contributions alike (see [Contributing](../contribution-guide.md)). A bug fix should also add a test that reproduces the bug and would fail without the fix. Documentation-only changes, formatting, and pure refactors that do not change behavior are exempt, but a refactor that changes behavior along the way is not.
 
 Not every line needs to be covered for its own sake: a placeholder implementation that has no reachable failure path yet (for example a `catch` block nothing can currently throw into) does not need a contrived test written just to touch it. Test the behavior that exists, not the branches a future change will eventually make reachable.
 
 ## One Test Class per Source Type
 
-Each type in `source/clinet-core` that has behavior worth verifying gets one test class, named `<TypeName>Tests`, in the mirroring namespace and folder: `CliNetCore.Application.CliApplication` is tested by `CliNetCore.UnitTests.Application.CliApplicationTests` in `tests/unit-tests/Application/CliApplicationTests.cs`. This mirrors how `source/clinet-core` itself is organized (see [Architecture](../architecture/overview.md)) so that a source file's tests are always easy to find.
+Each type in `source/clinet-core` that has behavior worth verifying gets one test class, named `<TypeName>Tests`, in the mirroring namespace and folder: `CliNetCore.Application.CliApplication` is tested by `CliNetCore.UnitTests.Application.CliApplicationTests` in `tests/unit-tests/Application/CliApplicationTests.cs`. This mirrors how `source/clinet-core` itself is organized (see [Architecture](../architecture.md)) so that a source file's tests are always easy to find.
 
 ## Internal Types Are Tested Directly
 
@@ -42,5 +42,5 @@ xUnit has no fixture mechanism (`IClassFixture<T>`, `ICollectionFixture<T>`) sui
 
 - How to run the tests and generate a coverage report: [Testing and Code Coverage](../tooling/testing-and-code-coverage.md).
 - The general C# conventions these tests also follow: [C# Style](csharp-style.md).
-- Where the test project sits in the repository: [Architecture](../architecture/overview.md).
-- The pull request requirement this article's first section states: [Contributing](../contributing.md).
+- Where the test project sits in the repository: [Architecture](../architecture.md).
+- The pull request requirement this article's first section states: [Contributing](../contribution-guide.md).

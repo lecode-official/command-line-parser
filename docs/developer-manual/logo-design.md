@@ -1,6 +1,6 @@
 # CLI.NET Core — Brand & Logo Guide
 
-This document describes the CLI.NET Core visual identity and how to use the logo assets in this repository. All assets live in this folder.
+This document describes the CLI.NET Core visual identity and how to use the logo assets in this repository. All assets live in [`design/`](../../design/).
 
 ## Concept
 
@@ -57,15 +57,15 @@ Do not re-draw the mark by hand; use the vector files below.
 ### Wordmark Lockups
 
 - `wordmark-light.svg` / `-dark.svg` — compact bar (mark + text).
-- `readme-light.svg` / `-dark.svg` — tall horizontal lockup for READMEs.
+- `readme-header-light.svg` / `-dark.svg` — tall horizontal lockup for READMEs.
 - `wordmark-bars.html` — responsive, fill-width HTML version of the bar (`.clinet-core-bar`, add `.clinet-core-bar--dark` on dark surfaces).
 
 ## Using the Logo on GitHub
 
-GitHub sanitizes SVG `<filter>` effects when rendered via `<img>`, so use the **baked PNGs** for the glass look, and let GitHub pick light/dark:
+GitHub sanitizes SVG `<filter>` effects when rendered via `<img>`, so use the **baked PNGs** for the glass look, and let GitHub pick light/dark. The vector masters (`readme-header-dark.svg` / `-light.svg`) stay in [`design/`](../../design/), but the baked PNGs themselves live in [`docs/assets/images/`](../assets/images/) — the only copy, referenced by both the root [`README.md`](../../README.md) and [`docs/README.md`](../README.md):
 
 ```markdown
-![CLI.NET Core Logo](design/readme-header-dark.png#gh-dark-mode-only) ![CLI.NET Core Logo](design/readme-header-light.png#gh-light-mode-only)
+![CLI.NET Core Logo](docs/assets/images/header-logo-dark.png#gh-dark-mode-only) ![CLI.NET Core Logo](docs/assets/images/header-logo-light.png#gh-light-mode-only)
 ```
 
 ## Dos/Don'ts

@@ -14,11 +14,13 @@ Build output (`bin` and `obj`), SVG files, and OS metadata files (`.DS_Store`, `
 
 ## Running It and Handling Findings
 
+After [installing the pinned Node.js dependencies](developer-setup.md) with `npm ci`:
+
 ```shell
-npx --yes cspell@10.0.1 lint --config tests/linters/.cspell.json --no-progress "**/*"
+npx cspell lint --config tests/linters/.cspell.json --no-progress "**/*"
 ```
 
-The version matches the one [Continuous Integration](continuous-integration.md) installs, so a local run agrees with what CI reports. When a legitimate technical term or proper noun is flagged, add it to the `words` list in [`.cspell.json`](../../../tests/linters/.cspell.json) rather than rewording the text.
+`npx` resolves this to the exact version pinned in [`package.json`](../../../package.json) and locked in [`package-lock.json`](../../../package-lock.json), the same version [Continuous Integration](continuous-integration.md) installs, so a local run agrees with what CI reports. When a legitimate technical term or proper noun is flagged, add it to the `words` list in [`.cspell.json`](../../../tests/linters/.cspell.json) rather than rewording the text.
 
 ## Related
 

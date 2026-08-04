@@ -6,6 +6,6 @@ Participation is governed by [`CODE_OF_CONDUCT.md`](../../CODE_OF_CONDUCT.md), a
 
 ## Related
 
-- Where the code you are changing likely lives: [Architecture](architecture/overview.md).
+- Where the code you are changing likely lives: [Architecture](architecture.md).
 - The tools that check your change before it merges: [Tooling](tooling/README.md).
 - The conventions a change is expected to follow: [Conventions](conventions/README.md).

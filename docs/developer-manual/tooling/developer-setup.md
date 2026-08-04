@@ -16,23 +16,50 @@ This currently installs [ReportGenerator](https://github.com/danielpalme/ReportG
 
 ## Node.js and NPM
 
-[dprint](formatting-dprint.md), [CSpell](spell-checking-cspell.md), and [MarkdownLint](linting-markdownlint.md) are not installed as project dependencies (there is no Node.js package manifest in this repository) — install [Node.js](https://nodejs.org) (which bundles NPM), then:
+[dprint](code-formatting-dprint.md), [CSpell](spell-checking-cspell.md), and [MarkdownLint](linting-markdownlint.md) are pinned as `devDependencies` in [`package.json`](../../../package.json) and locked in [`package-lock.json`](../../../package-lock.json). Install [Node.js](https://nodejs.org) (which bundles NPM), then, from the repository root:
 
-- Install dprint globally, pinned to the version [Continuous Integration](continuous-integration.md) uses:
+```shell
+npm ci
+```
 
-  ```shell
-  npm install --global dprint@0.55.1
-  ```
+installs the exact versions locked in `package-lock.json` into `node_modules` (never `npm install`, which would happily update the lock file — see [Dependency Management](../conventions/dependency-management.md)). NPM prints a notice that `dprint`'s install scripts are not yet covered by the `allowScripts` field, since `dprint` uses a `postinstall` script to fetch its platform-specific binary. `npm approve-scripts dprint` reviews and approves it, but writes the approval to the shared, checked-in `package.json` — approving it for every other developer too, not just you.
 
-  A persistent install is required here, not just for the `dprint check "**/*"` and `dprint fmt` commands, but because the Visual Studio Code dprint extension has no formatting engine of its own — it calls the `dprint` executable on the machine directly (see [Visual Studio Code Integration](vscode-integration.md)).
-- CSpell and MarkdownLint-cli2 do not need a persistent install — run them on demand through `npx`, pinned to the versions CI uses:
+To approve `dprint`'s install scripts for yourself only, without touching `package.json`, put an `allow-scripts` line in an `.npmrc` (`--allow-scripts` on the command line or as an environment variable is rejected outright for project-scoped installs):
 
-  ```shell
-  npx --yes cspell@10.0.1 lint --config tests/linters/.cspell.json --no-progress "**/*"
-  npx --yes markdownlint-cli2@0.23.0 --config tests/linters/.markdownlint.yml "**/*.md" "#**/bin/**" "#**/obj/**"
-  ```
+```ini
+allow-scripts=dprint
+```
 
-  `npx` downloads and caches the pinned version the first time it runs, so a local pass reliably predicts a green CI run. Their Visual Studio Code extensions bundle their own engines, so no global install is needed for editor integration either.
+Either the user-level `~/.npmrc` (applies to every project on the machine, never touches this repository at all) or a project-level `.npmrc` at the repository root works. A project-level `.npmrc` is covered by [`.gitignore`](../../../.gitignore), to avoid accidentally committing a personal, unreviewed policy for other developers.
+
+CSpell and MarkdownLint-cli2 are then available through `npx`:
+
+```shell
+npx cspell lint --config tests/linters/.cspell.json --no-progress "**/*"
+npx markdownlint-cli2 --config tests/linters/.markdownlint.yml "**/*.md" "#**/build/**" "#**/node_modules/**"
+```
+
+`npx` resolves these straight to the pinned version in `node_modules/.bin`, so a local pass reliably predicts a green CI run; their Visual Studio Code extensions bundle their own engines, so no further install is needed for editor integration.
+
+dprint is different: `npm ci` also installs it into `node_modules` (so `npx dprint check "**/*"` / `npx dprint fmt` work), but that alone is **not enough** for the editor — the Visual Studio Code dprint extension has no formatting engine of its own and requires `dprint` installed **globally, on the PATH**, regardless of any local, project-level install (see [Visual Studio Code Integration](vscode-integration.md)). Install it separately, pinned to the same version as `package.json`:
+
+```shell
+npm install --global dprint@0.55.1
+```
+
+## Python and ProperDocs
+
+The [documentation website](documentation-website.md) is built with [ProperDocs](https://properdocs.org/), themed with [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/). Install [Python](https://www.python.org/downloads/) (which bundles `pip`), then create a virtual environment and install the pinned dependencies from [`requirements.txt`](../../../requirements.txt) into it, rather than into the global or user Python installation (see [Dependency Management](../conventions/dependency-management.md)):
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --requirement requirements.txt
+```
+
+On Windows, activate with `.venv\Scripts\activate` instead of the `source` line above. `.venv` is already excluded in [`.gitignore`](../../../.gitignore), so it is never committed.
+
+This installs ProperDocs itself, the Material theme, and the two plugins that generate the `docs/api` C# API reference and the site navigation, all pinned to the exact versions in `requirements.txt`, isolated to this project. Activate the virtual environment (`source .venv/bin/activate`) in every new shell before running `properdocs` or the other commands in [Documentation Website](documentation-website.md) — deactivate it with `deactivate` when done.
 
 ## Visual Studio Code
 
@@ -43,6 +70,7 @@ One of those, [Workspace Config Plus](https://marketplace.visualstudio.com/items
 ## Related
 
 - [Visual Studio Code Integration](vscode-integration.md) — the shared/local settings mechanism Workspace Config Plus enables.
+- [Documentation Website](documentation-website.md) — running ProperDocs locally and how the `docs/api` reference is generated.
 - [Continuous Integration](continuous-integration.md) — the pinned tool versions to match locally.
 - [Dependency Management](../conventions/dependency-management.md) — how the SDK, local tool, and NuGet package versions are kept exact.
 - [Testing and Code Coverage](testing-and-code-coverage.md) — running the tests and collecting coverage once the SDK is installed.

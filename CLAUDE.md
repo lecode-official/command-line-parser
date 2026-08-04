@@ -6,18 +6,19 @@ Guidance for AI assistants working on CLI.NET Core. Humans should read the [docu
 
 CLI.NET Core is a .NET command line application framework, built in the style of ASP.NET Core: it lets consumers define commands and command-line arguments much the same way they would define actions and parameters for a Web API. The repository holds one solution, [`source/CLI.NET Core.slnx`](source/CLI.NET%20Core.slnx), with three projects — the framework itself (`clinet-core`), a sample app that references it (`sample-app`), and its xUnit unit test project (`tests/unit-tests`). All three target `net10.0` with nullable reference types and implicit usings enabled.
 
-Start from [docs/developer-manual/architecture/overview.md](docs/developer-manual/architecture/overview.md).
+Start from [docs/developer-manual/architecture.md](docs/developer-manual/architecture.md).
 
 ## Golden Rules
 
 - **Match the surrounding code and the documented conventions** ([docs/developer-manual/conventions/](docs/developer-manual/conventions/csharp-style.md)). This code is heavily and consistently documented — follow it.
-- **Formatting is owned by dprint** ([docs/developer-manual/tooling/formatting-dprint.md](docs/developer-manual/tooling/formatting-dprint.md)) for Markdown, JSON, XML (including `.csproj`/`.slnx`), YAML, and TOML — never add a lint rule that reformats one of these. Run `dprint fmt` before finishing. **C# is not covered by dprint** (there is no C# plugin configured); its whitespace comes from [`.editorconfig`](.editorconfig) and its style from [C# Style](docs/developer-manual/conventions/csharp-style.md) alone, so review it by eye.
-- **Run the linters before finishing** — there is no NPM-script wrapper, so invoke them directly with the versions [Continuous Integration](docs/developer-manual/tooling/continuous-integration.md) pins:
+- **Formatting is owned by dprint** ([docs/developer-manual/tooling/code-formatting-dprint.md](docs/developer-manual/tooling/code-formatting-dprint.md)) for Markdown, JSON, XML (including `.csproj`/`.slnx`), YAML, and TOML — never add a lint rule that reformats one of these. Run `dprint fmt` before finishing. **C# is not covered by dprint** (there is no C# plugin configured); its whitespace comes from [`.editorconfig`](.editorconfig) and its style from [C# Style](docs/developer-manual/conventions/csharp-style.md) alone, so review it by eye.
+- **Run the linters before finishing** — `dprint`, `cspell`, and `markdownlint-cli2` are pinned in [`package.json`](package.json) and locked in `package-lock.json`; there is no NPM-script wrapper, so restore them with `npm ci` once, then invoke each directly through `npx`:
 
   ```shell
-  dprint check "**/*"
-  npx --yes cspell@10.0.1 lint --config tests/linters/.cspell.json --no-progress "**/*"
-  npx --yes markdownlint-cli2@0.23.0 --config tests/linters/.markdownlint.yml "**/*.md" "#**/bin/**" "#**/obj/**"
+  npm ci
+  npx dprint check "**/*"
+  npx cspell lint --config tests/linters/.cspell.json --no-progress "**/*"
+  npx markdownlint-cli2 --config tests/linters/.markdownlint.yml "**/*.md" "#**/build/**" "#**/node_modules/**" "#**/.venv/**"
   ```
 
   The docs and this file are Markdown and are linted too.
@@ -27,7 +28,7 @@ Start from [docs/developer-manual/architecture/overview.md](docs/developer-manua
 - **C# structure**: file-scoped namespaces, an XML documentation comment (`<summary>`, `<param>`, `<returns>`) on **every member, including `private` ones** (not just public and internal — this is for readers of the source, not only consumers of the compiled output), `<inheritdoc/>` for members that implement an interface or override a base member, `sealed` classes by default (composition over inheritance for anything that would otherwise need to extend a sealed framework type), explicit `this.` on member access, expression-bodied members where the implementation is a single expression, and `camelCase` private fields with no underscore. Full detail: [C# Style](docs/developer-manual/conventions/csharp-style.md).
 - **Nullable reference types and implicit usings are enabled everywhere.** Write genuinely null-safe code rather than silencing the analyzer.
 - **Files and directories are kebab-case**, except well-known and tool-mandated names (`README.md`, `LICENSE`, `.editorconfig`, ...). Inside a C# project's own source tree, directories and files switch to PascalCase, one type per file. Full detail: [File Naming Conventions](docs/developer-manual/conventions/file-naming-conventions.md).
-- **Every dependency is pinned to an exact version — never a range.** NuGet packages, dprint plugins, the linter versions CI installs, and the .NET SDK (`global.json`), and local `dotnet` tools (`.config/dotnet-tools.json`) are all pinned exactly. Every C# project sets `RestorePackagesWithLockFile`, so a `PackageReference` version bump must be followed by `dotnet restore` and the resulting `packages.lock.json` change committed alongside it. Full detail: [Dependency Management](docs/developer-manual/conventions/dependency-management.md).
+- **Every dependency is pinned to an exact version — never a range.** NuGet packages, dprint plugins, the linters (`package.json`/`package-lock.json`), the .NET SDK (`global.json`), local `dotnet` tools (`.config/dotnet-tools.json`), and the Python packages that build the documentation website with ProperDocs (`requirements.txt`) are all pinned exactly. Every C# project sets `RestorePackagesWithLockFile`, so a `PackageReference` version bump must be followed by `dotnet restore` and the resulting `packages.lock.json` change committed alongside it. Full detail: [Dependency Management](docs/developer-manual/conventions/dependency-management.md).
 - **Every new feature is unit tested, in the same change.** A bug fix adds a test that reproduces the bug. Test classes live in `tests/unit-tests`, mirror the source namespace and folder they cover, and are named `<TypeName>Tests`; `internal` types are tested directly (the core project grants the test assembly `InternalsVisibleTo`). Full detail: [Testing](docs/developer-manual/conventions/testing.md). Run `dotnet test "source/CLI.NET Core.slnx"` before finishing; see [Testing and Code Coverage](docs/developer-manual/tooling/testing-and-code-coverage.md) for coverage collection.
 - **Write commit messages by the rules** ([docs/developer-manual/conventions/commit-messages.md](docs/developer-manual/conventions/commit-messages.md)) — the 50/72 rule, a title-cased, past-tense subject, and a prose body. State whether AI was involved and, if it was, what exactly the AI did — this project is developed openly with AI assistance and the commit history is where that is tracked (see the "Use of AI" section of the [root README](README.md)). When you did any of the work, add the trailer this project uses (not a model-specific one):
 
@@ -36,13 +37,16 @@ Start from [docs/developer-manual/architecture/overview.md](docs/developer-manua
   ```
 
 - **Delegating to subagents is pre-approved.** `.claude/settings.json` allows the agent/subagent tool by default, so use one whenever a task genuinely benefits from parallel or isolated work, without asking first.
+- **Never stage or commit changes yourself.** Leave every change unstaged (no `git add`) — the user reviews and stages everything by hand. Writing a commit message is not permission to commit: only run `git commit` when the user explicitly asks for a commit in that same turn, never as a follow-on to drafting the message or to any other request. Full detail: [Commit Messages](docs/developer-manual/conventions/commit-messages.md#never-stage-or-commit-automatically).
 
 ## When Working on X, Read Y
 
-- **Repository layout, the solution, the projects** → [docs/developer-manual/architecture/](docs/developer-manual/architecture/overview.md).
+- **Repository layout, the solution, the projects** → [docs/developer-manual/architecture.md](docs/developer-manual/architecture.md).
+- **The logo, brand assets, `design/`** → [docs/developer-manual/logo-design.md](docs/developer-manual/logo-design.md).
 - **C# source code** → [docs/developer-manual/conventions/csharp-style.md](docs/developer-manual/conventions/csharp-style.md).
 - **Installing the SDK, Node.js, or the editor before working on the project** → [docs/developer-manual/tooling/developer-setup.md](docs/developer-manual/tooling/developer-setup.md).
 - **Linting, formatting, spell checking, CI, editor setup** → [docs/developer-manual/tooling/](docs/developer-manual/tooling/README.md).
+- **The ProperDocs documentation website, its navigation, or the generated `docs/api` C# API reference** → [docs/developer-manual/tooling/documentation-website.md](docs/developer-manual/tooling/documentation-website.md).
 - **Markdown and documentation style** → [docs/developer-manual/conventions/markdown-style.md](docs/developer-manual/conventions/markdown-style.md).
 - **Writing commit messages** → [docs/developer-manual/conventions/commit-messages.md](docs/developer-manual/conventions/commit-messages.md).
 - **Naming a new file or directory** → [docs/developer-manual/conventions/file-naming-conventions.md](docs/developer-manual/conventions/file-naming-conventions.md).

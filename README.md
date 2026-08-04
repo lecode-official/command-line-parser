@@ -1,8 +1,8 @@
-# ![CLI.NET Core](design/readme-header-dark.png#gh-dark-mode-only) ![CLI.NET Core](design/readme-header-light.png#gh-light-mode-only)
+# ![CLI.NET Core](docs/assets/images/header-logo-dark.png#gh-dark-mode-only) ![CLI.NET Core](docs/assets/images/header-logo-light.png#gh-light-mode-only)
 
 <div align="center">
 
-[![Tests](https://github.com/lecode-official/command-line-parser/actions/workflows/tests.yml/badge.svg)](https://github.com/lecode-official/command-line-parser/actions/workflows/tests.yml) [![Linters](https://github.com/lecode-official/command-line-parser/actions/workflows/linters.yml/badge.svg)](https://github.com/lecode-official/command-line-parser/actions/workflows/linters.yml)
+[![Tests](https://github.com/lecode-official/command-line-parser/actions/workflows/tests.yml/badge.svg)](https://github.com/lecode-official/command-line-parser/actions/workflows/tests.yml) [![Linters](https://github.com/lecode-official/command-line-parser/actions/workflows/linters.yml/badge.svg)](https://github.com/lecode-official/command-line-parser/actions/workflows/linters.yml) [![Documentation](https://img.shields.io/badge/Docs-GitHub%20Pages-blue)](https://lecode-official.github.io/command-line-parser/)
 
 </div>
 
@@ -15,7 +15,7 @@ The repository is organized into a few top-level directories:
 - **`source/`** — The source code of the CLI.NET Core framework itself.
 - **`tests/`** — The unit tests and integration tests that verify the behavior of the framework, as well as the linters and code formatters that enforce a consistent and high-quality codebase.
 - **`docs/`** — The project documentation. Start with [`docs/README.md`](docs/README.md).
-- **`design/`** — Design assets related to the project and the [design guide](design/DESIGN.md).
+- **`design/`** — Logo and brand assets; see [`design/README.md`](design/README.md) for the file list and the [Logo Design](docs/developer-manual/logo-design.md) guide that governs them.
 
 ## Development
 

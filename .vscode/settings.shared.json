@@ -20,22 +20,23 @@
     // Excludes certain files from being displayed in the file explorer
     "files.exclude": {
         ".VSCodeCounter": true,
+        "**/__pycache__": true,
         "**/.DS_Store": true,
         "**/.git": true,
-        "**/bin": true,
-        "**/obj": true,
+        "**/.venv": true,
+        "**/node_modules": true,
         "**/Thumbs.db": true,
     },
 
     // Excludes certain files from being watched by the file watcher, this is required, because if the data directory is inside of the workspace, then
     // Visual Studio Code will watch the entire directory, which can not only cause performance issues, but will also cause the file watcher to run
-    // out of file handles, which are limited by the operating system, that are necessary to watch the files
+    // out of file handles, which are limited by the operating system, that are necessary to watch the files; "/build" is anchored to the workspace
+    // root, the same as in "files.exclude" above, so "docs/build/" is still watched
     "files.watcherExclude": {
         ".VSCodeCounter": true,
         "**/.git/objects/**": true,
         "**/.git/subtree-cache/**": true,
-        "**/bin": true,
-        "**/obj": true,
+        "/build": true,
     },
 
     // Specifies which Git branches are protected in this repository, Visual Studio will prevent users from committing to these branches (this only
@@ -69,7 +70,7 @@
     "cSpell.import": ["${workspaceFolder}/tests/linters/.cspell.json"],
 
     // Configures the Markdown linter MarkdownLint to use our custom configuration
-    "markdownlint.config": { "extends": "${workspaceFolder}/tests/linters/.markdownlint.yml" },
+    "markdownlint.configFile": "${workspaceFolder}/tests/linters/.markdownlint.yml",
 
     // Configures the code formatter dprint
     "dprint.verbose": true,

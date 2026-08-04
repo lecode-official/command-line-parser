@@ -1,0 +1,9 @@
+/* "theme.logo" in properdocs.yml points at "assets/images/logo-light.png" as the fallback mkdocs-material renders into every "<img>" it puts
+ * inside a ".md-logo" element (the header logo and the mobile drawer's copy of it - see docs/developer-manual/tooling/documentation-website.md).
+ * Since "theme.logo" itself is a single file with no light/dark option, this replaces that rendered image with the dark variant whenever the
+ * "data-md-color-scheme" attribute mkdocs-material's light/dark toggle sets is "slate" - the same color-scheme switch
+ * "gh-mode-only-images.css" applies to a pair of "<img>" elements, applied here to the CSS "content" property instead, since only one "<img>"
+ * exists for this logo. */
+[data-md-color-scheme="slate"] .md-logo img {
+  content: url("../images/logo-dark.png");
+}

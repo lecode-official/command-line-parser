@@ -1,10 +1,10 @@
 # C# Style
 
-This article covers the conventions for C# code in [`source/`](../../../source/). It is about style and structure on top of the language itself — for the repository layout the code lives in, see [Architecture](../architecture/overview.md).
+This article covers the conventions for C# code in [`source/`](../../../source/). It is about style and structure on top of the language itself — for the repository layout the code lives in, see [Architecture](../architecture.md).
 
 ## File Layout
 
-Every file starts with a file-scoped namespace declaration (`namespace CliNetCore.Application;`), not a namespace block. Beyond the usings that [`ImplicitUsings`](../architecture/overview.md) already brings in, additional `using` directives are wrapped in a `#region Using Directives` block above the namespace declaration.
+Every file starts with a file-scoped namespace declaration (`namespace CliNetCore.Application;`), not a namespace block. Beyond the usings that [`ImplicitUsings`](../architecture.md) already brings in, additional `using` directives are wrapped in a `#region Using Directives` block above the namespace declaration.
 
 Every type groups its members into `#region` blocks, regardless of file size — even a type with a single constructor and a single property uses regions. There is no size threshold below which regions are skipped.
 
@@ -37,7 +37,7 @@ public interface ITest
 
 ## Documentation Comments
 
-Every member has an XML documentation comment — public and internal ones because `GenerateDocumentationFile` is enabled in [the project files](../architecture/overview.md), so those ship in the compiled output and reach a consumer's editor tooltips, but `private` members are documented exactly the same way, for the same reason every other convention on this page exists: someone reading the source, not just the compiled output, needs it. A `<summary>` explains not just what a member does, but why it exists and how it relates to the rest of the design — the reasoning belongs next to the code, not only in a commit message. Parameters and return values are documented with `<param>` and `<returns>`. When a member implements an interface member or overrides a base member and has nothing to add beyond what is already documented there, use `<inheritdoc/>` instead of repeating the text.
+Every member has an XML documentation comment — public and internal ones because `GenerateDocumentationFile` is enabled in [the project files](../architecture.md), so those ship in the compiled output and reach a consumer's editor tooltips, but `private` members are documented exactly the same way, for the same reason every other convention on this page exists: someone reading the source, not just the compiled output, needs it. A `<summary>` explains not just what a member does, but why it exists and how it relates to the rest of the design — the reasoning belongs next to the code, not only in a commit message. Parameters and return values are documented with `<param>` and `<returns>`. When a member implements an interface member or overrides a base member and has nothing to add beyond what is already documented there, use `<inheritdoc/>` instead of repeating the text. The C# compiler never expands `<inheritdoc/>` into real text in the generated XML documentation file — it is left in verbatim — so [`clinet-core`'s `.csproj`](../../../source/clinet-core/CLI.NET%20Core.csproj) references [SauceControl.InheritDoc](https://github.com/saucecontrol/InheritDoc), which rewrites every `<inheritdoc/>` with the real, inherited text as a build step (see [Documentation Website](../tooling/documentation-website.md)); without it, both a consumer's editor tooltip and the generated `docs/api` reference would show nothing for these members.
 
 Prose inside documentation comments follows the same punctuation rule as the rest of the documentation: periods, not semicolons (see [Markdown Style](markdown-style.md)).
 
@@ -71,14 +71,14 @@ Do not write a comment that only restates what the code already says. If removin
 
 ## Nullability and Implicit Usings
 
-Every project enables `<Nullable>enable</Nullable>` and `<ImplicitUsings>enable</ImplicitUsings>` (see [Architecture](../architecture/overview.md)). Write code that is genuinely null-safe rather than silencing the analyzer with `!`; a nullable parameter or return type should mean that `null` is a real, handled case.
+Every project enables `<Nullable>enable</Nullable>` and `<ImplicitUsings>enable</ImplicitUsings>` (see [Architecture](../architecture.md)). Write code that is genuinely null-safe rather than silencing the analyzer with `!`; a nullable parameter or return type should mean that `null` is a real, handled case.
 
 ## Formatting
 
-C# is **not** formatted by [dprint](../tooling/formatting-dprint.md) — dprint has no C# plugin in this project, so `.csproj` and `.slnx` files are formatted by it (they are XML), but `.cs` files are not. Indentation and basic whitespace rules for C# come from [`.editorconfig`](../../../.editorconfig) (4 spaces, no tabs), which most editors, including Visual Studio Code, apply automatically. Beyond what `.editorconfig` enforces, matching the conventions on this page during review is the only guard C# has today.
+C# is **not** formatted by [dprint](../tooling/code-formatting-dprint.md) — dprint has no C# plugin in this project, so `.csproj` and `.slnx` files are formatted by it (they are XML), but `.cs` files are not. Indentation and basic whitespace rules for C# come from [`.editorconfig`](../../../.editorconfig) (4 spaces, no tabs), which most editors, including Visual Studio Code, apply automatically. Beyond what `.editorconfig` enforces, matching the conventions on this page during review is the only guard C# has today.
 
 ## Related
 
-- Where these files live in the repository: [Architecture](../architecture/overview.md).
+- Where these files live in the repository: [Architecture](../architecture.md).
 - The punctuation rule for prose versus plain comments also governs [Markdown Style](markdown-style.md).
-- Formatting for the file types dprint does own: [dprint](../tooling/formatting-dprint.md).
+- Formatting for the file types dprint does own: [dprint](../tooling/code-formatting-dprint.md).

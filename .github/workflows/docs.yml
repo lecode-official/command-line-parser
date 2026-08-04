@@ -1,0 +1,97 @@
+# The display name of the workflow, shown in the "Actions" tab of the GitHub repository and in the checks of a commit or pull request
+name: Docs
+
+# Defines the events that trigger this workflow; unlike "Linters" and "Tests", which run on every push to any branch, this workflow only runs on
+# pushes to "main" - it deploys the documentation website to GitHub Pages, so it only ever needs to run against what is actually published
+on:
+  push:
+    branches:
+      - main
+
+# Grants the workflow only the permissions the GitHub Pages deployment needs: reading the repository contents, writing to the Pages deployment,
+# and requesting the OpenID Connect token GitHub Pages uses to verify the deployment came from this workflow
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Ensures that at most one deployment runs at a time and that a newer push is never overtaken by an older one still in flight; unlike most
+# concurrency groups, an in-progress Pages deployment is allowed to finish rather than being cancelled, since a cancelled deployment can leave the
+# site in a partially updated state
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+# Defines the jobs that make up the workflow; building the site and deploying it are two separate jobs so that the deployment step only runs
+# through the dedicated "github-pages" environment, which is what makes the deployment show up in the repository's "Environments" and gives it
+# its own audit trail, separate from the build
+jobs:
+  # Builds the ProperDocs site, including the generated "api" section (see docs/developer-manual/tooling/documentation-website.md), and uploads it as
+  # a Pages artifact; runs on the latest Ubuntu image, which is the fastest and cheapest of the available runners
+  build:
+    name: Build Site
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks out the repository into the runner's working directory; the "actions/checkout" action is pinned to a major version to receive
+      # non-breaking updates automatically
+      - name: Checkout Repository
+        uses: actions/checkout@v7
+
+      # Installs the .NET SDK; the version is read from "global.json" in the repository root, so this workflow can never drift from the exact
+      # version pinned there (see Dependency Management); the generator script (below) shells out to "dotnet" to build the framework and to run
+      # the pinned xmldoc2md local tool
+      - name: Set Up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      # Restores the local .NET tools declared in ".config/dotnet-tools.json", which is where xmldoc2md, the C# XML documentation to Markdown
+      # generator the "api" section uses, is pinned (see Documentation Website and Dependency Management)
+      - name: Restore .NET Tools
+        run: dotnet tool restore
+
+      # Installs Python, pinned to an exact patch version, so that ProperDocs and its plugins run in a stable and reproducible environment; the
+      # "actions/setup-python" action is pinned to a major version to receive non-breaking updates automatically
+      - name: Set Up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.13.14"
+
+      # Installs ProperDocs, the Material theme, and the plugins that generate the site's navigation and its "api" section, all pinned to exact
+      # versions in "requirements.txt" (see Dependency Management)
+      - name: Install Documentation Dependencies
+        run: python -m pip install --requirement requirements.txt
+
+      # Builds the static site into "build/documentation-website/" (see "site_dir" in "properdocs.yml"); this regenerates the "docs/api" section
+      # from the framework's current XML documentation comments as part of the build (see Documentation Website) - nothing under "docs/api" is
+      # ever committed, so this step is what produces it, every time
+      - name: Build Documentation Website
+        run: properdocs build
+
+      # Configures GitHub Pages for the repository, so the following upload step knows where to send the built site
+      - name: Configure Pages
+        uses: actions/configure-pages@v6
+
+      # Uploads the built site as the artifact that the "deploy" job below publishes to GitHub Pages
+      - name: Upload Pages Artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: build/documentation-website
+
+  # Publishes the artifact the "build" job uploaded to GitHub Pages, through the "github-pages" deployment environment
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      # Publishes the previously uploaded artifact to GitHub Pages; "id: deployment" lets the "environment.url" above surface the live URL on
+      # the workflow run and in the repository's "Environments" tab
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

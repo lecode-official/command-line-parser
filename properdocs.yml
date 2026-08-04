@@ -1,0 +1,132 @@
+# ProperDocs configuration for the CLI.NET Core documentation website (see docs/developer-manual/tooling/documentation-website.md); "docs_dir" points at
+# the existing hand-written documentation tree instead of a dedicated "site" source folder, so this is the only configuration file the site needs
+site_name: CLI.NET Core Documentation
+site_description: A .NET command line application framework in the style of ASP.NET Core.
+repo_url: https://github.com/lecode-official/command-line-parser
+repo_name: lecode-official/command-line-parser
+docs_dir: docs
+
+# Builds the site into "build/documentation-website/" instead of the default "site/", so the built website sits alongside the ".NET projects'"
+# redirected build output under "build/" (see Architecture and Documentation Website); read dynamically off "config['site_dir']" by
+# "copy-favicon-to-site-root.py" below, so nothing else needs to change to honor this
+site_dir: build/documentation-website
+
+# All four "build/*.py" scripts live inside "docs_dir" itself, and "assets/templates/" holds a theme template rather than a documentation page
+# (see docs/developer-manual/tooling/documentation-website.md), so all five are excluded here - otherwise ProperDocs would copy them into the
+# built site as static assets, the same as it would any other file under "docs_dir"
+exclude_docs: |
+  build/generate-api-docs.py
+  build/copy-favicon-to-site-root.py
+  build/rewrite-repo-links.py
+  build/inject-api-reference-link.py
+  assets/templates/
+
+# All three are plain MkDocs "hooks" modules (not plugins - none needs an entry point, just an event function) (see
+# docs/developer-manual/tooling/documentation-website.md): "copy-favicon-to-site-root.py" runs "on_post_build" to copy the built favicon to the
+# site root, "rewrite-repo-links.py" runs "on_page_markdown" to rewrite links pointing outside "docs_dir" into absolute GitHub URLs, and
+# "inject-api-reference-link.py" runs "on_page_markdown" to append the "API Reference" entry to the overview page's list, since "docs/api" does
+# not exist to link to until "generate-api-docs.py" (wired in via "gen-files" below) has run
+hooks:
+  - docs/build/copy-favicon-to-site-root.py
+  - docs/build/rewrite-repo-links.py
+  - docs/build/inject-api-reference-link.py
+
+theme:
+  name: material
+
+  # "theme.favicon" writes a single "<link rel="shortcut icon">" from this one file, which is the fallback for every browser that does not honor
+  # "assets/templates/main.html"'s light/dark "<link>" pair below, and also what "copy-favicon-to-site-root.py" copies to the site root for
+  # browsers and crawlers that request "/favicon.ico" directly (see docs/developer-manual/tooling/documentation-website.md)
+  favicon: assets/favicon/favicon.ico
+
+  # "docs/assets/templates/main.html" (excluded from the built site above, like the two scripts) adds a light/dark favicon pair on top of the
+  # "favicon" fallback above (see docs/developer-manual/tooling/documentation-website.md); "custom_dir" itself is relative to this file, not to
+  # "docs_dir", unlike every other path on this page
+  custom_dir: docs/assets/templates
+
+  # "theme.logo" is mkdocs-material's single, built-in header logo setting, and only ever a single file - it has no light/dark option, so this
+  # points at the light variant as the fallback; "assets/styles/site-logo.css" below swaps in the dark variant for the dark palette (see
+  # docs/developer-manual/tooling/documentation-website.md)
+  logo: assets/images/logo-light.png
+
+  # Two palettes, each tied to a "prefers-color-scheme" media query, so the site opens in whichever scheme matches the visitor's OS setting instead
+  # of always defaulting to light; the "toggle" on each lets a visitor override that for the rest of the session
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+# "gh-mode-only-images.css" teaches mkdocs-material to also honor the "#gh-dark-mode-only" / "#gh-light-mode-only" URL suffixes GitHub itself
+# recognizes on an "<img>" element, so the same Markdown image pair switches with both GitHub's and mkdocs-material's color scheme (see
+# docs/developer-manual/tooling/documentation-website.md); paths here are relative to "docs_dir", like "theme.favicon" above. "site-logo.css"
+# swaps "theme.logo" itself to its dark variant for the dark palette, the same color-scheme switch applied to a single "<img>" instead of a pair
+extra_css:
+  - assets/styles/gh-mode-only-images.css
+  - assets/styles/site-logo.css
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+
+  # Without this, Python-Markdown only recognizes a nested list item (as used by the table of contents in the various "README.md" files) when it is
+  # indented by a fixed 4 spaces, regardless of the width of the parent marker - a 3-character ordered marker like "1. " followed by only 3 spaces
+  # of indent (the natural, minimal alignment) renders as a second top-level list instead of nesting. "nested_indent: 3" makes indentation relative
+  # to the parent marker's width instead, so 3-space indent nests correctly under "1. " markers without reformatting any Markdown file
+  - mdx_truly_sane_lists:
+      nested_indent: 3
+
+plugins:
+  - search
+
+  # Generates the "api" section at build time from the C# XML documentation comments; nothing it produces is ever written to "docs/api" on disk
+  # (see docs/developer-manual/tooling/documentation-website.md)
+  - gen-files:
+      scripts:
+        - docs/build/generate-api-docs.py
+
+  # Lets the "api" section's nav entry below (the "api/" line) point at a directory instead of a file; "generate-api-docs.py" writes that
+  # directory's "SUMMARY.md" itself (see docs/developer-manual/tooling/documentation-website.md), so the "api" section's nav is generated exactly
+  # like its pages are, without a ".pages" file anywhere. "nav_file" is left at its default, "SUMMARY.md", rather than renamed to "README.md" to
+  # match every other section's overview-page name: this plugin option is global, not per-directory, and it also makes literate-nav look for
+  # that file at "docs_dir"'s own root before it even reads "nav" below - since a hand-written "docs/README.md" already exists there, renaming
+  # this to "README.md" makes the plugin try to parse that hand-written prose page as a literate nav list instead of using the "nav" list below
+  - literate-nav
+
+# The one hand-maintained navigation list for the site, instead of a ".pages" file per directory (see
+# docs/developer-manual/tooling/documentation-website.md); adding, removing, or reordering an article means editing this list, except the "api"
+# entry below, whose own nav comes from the generated "api/README.md" (literate-nav) instead of being hand-listed here
+nav:
+  - Overview: README.md
+  - User Manual:
+      - Overview: user-manual/README.md
+      - Building Applications: user-manual/building-applications.md
+  - Developer Manual:
+      - Overview: developer-manual/README.md
+      - Architecture: developer-manual/architecture.md
+      - Tooling:
+          - Overview: developer-manual/tooling/README.md
+          - Developer Setup: developer-manual/tooling/developer-setup.md
+          - Visual Studio Code Integration: developer-manual/tooling/vscode-integration.md
+          - Spell Checking (CSpell): developer-manual/tooling/spell-checking-cspell.md
+          - Markdown Linting (MarkdownLint): developer-manual/tooling/linting-markdownlint.md
+          - Code Formatting (dprint): developer-manual/tooling/code-formatting-dprint.md
+          - Documentation Website: developer-manual/tooling/documentation-website.md
+          - Continuous Integration: developer-manual/tooling/continuous-integration.md
+          - Testing and Code Coverage: developer-manual/tooling/testing-and-code-coverage.md
+      - Conventions:
+          - Overview: developer-manual/conventions/README.md
+          - C# Style: developer-manual/conventions/csharp-style.md
+          - Markdown Style: developer-manual/conventions/markdown-style.md
+          - Commit Messages: developer-manual/conventions/commit-messages.md
+          - File Naming Conventions: developer-manual/conventions/file-naming-conventions.md
+          - Dependency Management: developer-manual/conventions/dependency-management.md
+          - Testing: developer-manual/conventions/testing.md
+      - Contributing: developer-manual/contribution-guide.md
+  - API Reference: api/

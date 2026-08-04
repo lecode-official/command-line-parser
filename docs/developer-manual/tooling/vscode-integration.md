@@ -4,23 +4,31 @@ This article covers the Visual Studio Code setup under [`.vscode/`](../../../.vs
 
 ## Shared and Local Configuration
 
-The workspace configuration is split with the [Workspace Config Plus](https://marketplace.visualstudio.com/items?itemName=Swellaby.workspace-config-plus) extension (`Swellaby.workspace-config-plus`, recommended in [`extensions.json`](../../../.vscode/extensions.json)). For `settings` (and, if they are ever added, `tasks` and `launch`), the extension reads two source files and merges them into the file Visual Studio Code actually loads:
+The workspace configuration is split with the [Workspace Config Plus](https://marketplace.visualstudio.com/items?itemName=Swellaby.workspace-config-plus) extension (`Swellaby.workspace-config-plus`, recommended in [`extensions.json`](../../../.vscode/extensions.json)). For `settings`, `tasks`, and `launch`, the extension reads two source files and merges them into the file Visual Studio Code actually loads:
 
-- `settings.shared.json` — checked into Git, applies to every developer.
-- `settings.local.json` — per-developer, ignored by Git (see [`.gitignore`](../../../.gitignore)).
-- `settings.json` — **generated** by the extension from the two files above.
+- `settings.shared.json`, `tasks.shared.json`, `launch.shared.json` — checked into Git, apply to every developer.
+- `settings.local.json`, `tasks.local.json`, `launch.local.json` — per-developer, ignored by Git (see [`.gitignore`](../../../.gitignore)).
+- `settings.json`, `tasks.json`, `launch.json` — **generated** by the extension from the two files above.
 
-The `settings.local.json` layer wins over `settings.shared.json`, so each developer can override or extend the shared config without touching it.
+The local layer wins over the shared layer, so each developer can override or extend the shared config without touching it.
 
 ### Rules
 
-- **Never edit the generated `settings.json`.** It is produced by the extension and overwritten on every change; any manual edit is lost. It is also Git-ignored — only `extensions.json` and the `*.shared.json` files are committed.
-- **Change `settings.shared.json` only for things useful to every developer.** A shared change is committed and affects the whole team, so it must be genuinely common (a project-wide setting, a lint integration).
-- **Everything personal goes in `settings.local.json`.** Anything specific to your machine or preference — icon themes, file-nesting patterns, other personal editor tweaks — belongs in the local layer, never in the shared one.
+- **Never edit a generated file (`settings.json`, `tasks.json`, `launch.json`).** Each is produced by the extension and overwritten on every change; any manual edit is lost. They are also Git-ignored — only `extensions.json` and the `*.shared.json` files are committed.
+- **Change a `*.shared.json` file only for things useful to every developer.** A shared change is committed and affects the whole team, so it must be genuinely common (a project-wide setting, a build or debug configuration, a lint integration).
+- **Everything personal goes in the matching `*.local.json` file.** Anything specific to your machine or preference — icon themes, file-nesting patterns, other personal editor tweaks — belongs in the local layer, never in the shared one.
 
 ## Settings
 
-[`settings.shared.json`](../../../.vscode/settings.shared.json) sets a 150-character editor ruler to match [dprint's line width](formatting-dprint.md), maps a few file names to the correct language for syntax highlighting, hides build output and OS clutter from the explorer and file watcher, protects the `main` and `development` branches from direct commits, imports the [CSpell](spell-checking-cspell.md) configuration and raises its diagnostic severity to error, points [MarkdownLint](linting-markdownlint.md) at the project configuration, enables format-on-save with [dprint](formatting-dprint.md), and points `dotnet.defaultSolution` at [`CLI.NET Core.slnx`](../../../source/CLI.NET%20Core.slnx) so a C# extension (OmniSharp or C# Dev Kit) does not have to guess which solution to load — without it, the solution's non-standard location (in `source/`, not the repository root) and its cross-directory reference to the unit test project under `tests/` (see [Architecture](../architecture/overview.md)) can lead the extension to miss part of the solution and report a file as not belonging to any project.
+[`settings.shared.json`](../../../.vscode/settings.shared.json) sets a 150-character editor ruler to match [dprint's line width](code-formatting-dprint.md), maps a few file names to the correct language for syntax highlighting, hides build output and OS clutter from the explorer and file watcher, protects the `main` and `development` branches from direct commits, imports the [CSpell](spell-checking-cspell.md) configuration and raises its diagnostic severity to error, points [MarkdownLint](linting-markdownlint.md) at the project configuration, enables format-on-save with [dprint](code-formatting-dprint.md), and points `dotnet.defaultSolution` at [`CLI.NET Core.slnx`](../../../source/CLI.NET%20Core.slnx) so a C# extension (OmniSharp or C# Dev Kit) does not have to guess which solution to load — without it, the solution's non-standard location (in `source/`, not the repository root) and its cross-directory reference to the unit test project under `tests/` (see [Architecture](../architecture.md)) can lead the extension to miss part of the solution and report a file as not belonging to any project.
+
+## Tasks
+
+[`tasks.shared.json`](../../../.vscode/tasks.shared.json) exposes the same commands the [Golden Rules](../../../CLAUDE.md#golden-rules) and [Continuous Integration](continuous-integration.md) run, as Visual Studio Code tasks: installing the Node.js, .NET tool, and Python dependencies (individually and combined as "Install Dependencies"), running `dprint` ("Format"), `cspell` ("Lint Spelling"), `markdownlint-cli2` ("Lint Markdown", combined with the two linters as the default "Lint" task), building the sample app ("Build Sample App", the `preLaunchTask` of the "Debug Sample App" launch configuration below), running the unit tests ("Test"), and building the ProperDocs documentation website ("Build Docs").
+
+## Launch Configuration
+
+[`launch.shared.json`](../../../.vscode/launch.shared.json) defines "Debug Sample App", a `coreclr` launch configuration (from the `ms-dotnettools.csharp` extension) that runs the "Build Sample App" task first and then attaches the debugger to the built `sample-app` executable, with its working directory set to `source/sample-app` so relative paths in the sample app behave the same as running it from the command line.
 
 ## Extensions
 
@@ -30,5 +38,5 @@ The CSpell and MarkdownLint extensions bundle their own engines, so the version 
 
 ## Related
 
-- The tools these settings configure: [Spell Checking (CSpell)](spell-checking-cspell.md), [MarkdownLint](linting-markdownlint.md), [dprint](formatting-dprint.md).
+- The tools these settings configure: [Spell Checking (CSpell)](spell-checking-cspell.md), [MarkdownLint](linting-markdownlint.md), [dprint](code-formatting-dprint.md).
 - The pinned versions these extensions approximate: [Continuous Integration](continuous-integration.md).

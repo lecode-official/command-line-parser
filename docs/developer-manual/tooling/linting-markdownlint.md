@@ -1,4 +1,4 @@
-# MarkdownLint
+# Markdown Linting (MarkdownLint)
 
 This article covers Markdown linting.
 
@@ -10,11 +10,13 @@ The config keeps the default rules but disables line-length (prose is not hard-w
 
 ## Running It
 
+After [installing the pinned Node.js dependencies](developer-setup.md) with `npm ci`:
+
 ```shell
-npx --yes markdownlint-cli2@0.23.0 --config tests/linters/.markdownlint.yml "**/*.md" "#**/bin/**" "#**/obj/**"
+npx markdownlint-cli2 --config tests/linters/.markdownlint.yml "**/*.md" "#**/build/**" "#**/node_modules/**" "#**/.venv/**"
 ```
 
-The version matches the one [Continuous Integration](continuous-integration.md) installs. The trailing `#`-prefixed globs are `markdownlint-cli2`'s negated-glob syntax (it has no `--ignore` flag) and exclude build output.
+`npx` resolves this to the exact version pinned in [`package.json`](../../../package.json) and locked in [`package-lock.json`](../../../package-lock.json), the same version [Continuous Integration](continuous-integration.md) installs. The trailing `#`-prefixed globs are `markdownlint-cli2`'s negated-glob syntax (it has no `--ignore` flag) and exclude build output, `node_modules`, and the Python `.venv` used to build the documentation website — unlike dprint and CSpell, `markdownlint-cli2` does not ignore these by default.
 
 ## Writing Docs That Pass
 

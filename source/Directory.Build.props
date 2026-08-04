@@ -1,0 +1,14 @@
+<Project>
+    <!--
+        Applies to both projects under "source/" ("clinet-core" and "sample-app"). Redirects "bin/" and "obj/" out of each project's own folder
+        and into "../build/<project folder name>/" instead, keeping the source tree free of build output (see Architecture); "$(MSBuildThisFileDirectory)"
+        is "source/" itself here, so "../build/" lands the output at the repository root's "build/", alongside "tests/unit-tests"'s own
+        "Directory.Build.props" and the documentation website's build output. "$([System.IO.Path]::GetFileName(...))" reads each project's own
+        directory name at evaluation time, so this one file covers both projects (and any added later under "source/") without listing them by name
+    -->
+    <PropertyGroup>
+        <ProjectFolderName>$([System.IO.Path]::GetFileName('$(MSBuildProjectDirectory)'))</ProjectFolderName>
+        <BaseOutputPath>$(MSBuildThisFileDirectory)../build/$(ProjectFolderName)/bin/</BaseOutputPath>
+        <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)../build/$(ProjectFolderName)/obj/</BaseIntermediateOutputPath>
+    </PropertyGroup>
+</Project>
